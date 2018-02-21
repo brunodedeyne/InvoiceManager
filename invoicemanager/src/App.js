@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Header from './Components/HeaderComponent/Header';
+import Menu from './Components/MenuComponent/Menu';
+
+
+//Import CSS
 import './assets/css/styles.min.css';
+import './App.css';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        Test
+        <Header />
+        <Menu />
       </div>
     );
   }
