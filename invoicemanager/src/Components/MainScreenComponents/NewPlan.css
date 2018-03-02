@@ -1,0 +1,11 @@
+.form {
+    display: inline-block;
+    margin-left: 3rem;
+}
+
+.form__TextField {
+    display: block;
+    float: left;
+    width: 50%;
+    font-size: 5rem;
+}

@@ -1,19 +1,36 @@
 import React, { Component } from 'react';
-import Header from './Components/HeaderComponent/Header';
-import Menu from './Components/MenuComponent/Menu';
-
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import Login from './Components/LoginComponents/Login';
+import Main from './Components/Main';
 
 //Import CSS
 import './assets/css/styles.min.css';
 import './App.css';
 
+injectTapEventPlugin();
+
 class App extends Component {
+  state = {
+    fields: {}
+  };
+
+  onChange = updatedValue => {
+    this.setState({
+      fields: {
+        ...this.state.fields,
+        ...updatedValue
+      }
+    });
+  };
+
   render() {
     return (
-      <div className="App">
-        <Header />
-        <Menu />
-      </div>
+      <MuiThemeProvider>
+        <div className="App">
+          <Main />
+        </div>
+      </MuiThemeProvider>
     );
   }
 }
