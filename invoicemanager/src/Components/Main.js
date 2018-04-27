@@ -1,46 +1,37 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-//import { BrowserRouter, Route } from 'react-router-dom'
+
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Header from './HeaderComponents/Header';
 import Menu from './MenuComponents/Menu';
 import Login from './LoginComponents/Login';
 import NewPlan from './MainScreenComponents/NewPlan';
-
+import Home from './Home';
+//import Overview from './OverviewComponents/Overview';
+import * as routes from '../constants/routes/routes';
 //Import CSS
-import '../assets/css/styles.min.css';
+//import '../assets/css/styles.min.css';
 import './Main.css';
 
 
 class Main extends Component {
-  constructor (){
-    super();
-    this.state = {
-      fields: {},
-      authenticated: false
-    };
-  }
-
-
-  onChange = updatedValue => {
-    this.setState({
-      fields: {
-        ...this.state.fields,
-        ...updatedValue
-      }
-    });
-  };
-
   render() {
     return (
-      <MuiThemeProvider>
-        <div className="App">
-          <Header authenticated={this.state.authenticated} />
-          <Menu />
-          <NewPlan />
+      <Router>
+        <div>
+          <MuiThemeProvider>
+            <div className="App">
+                <Login />
+                <Route
+                  exact path={routes.HOME}
+                  component={Home}
+                />
+            </div>
+          </MuiThemeProvider>
         </div>
-      </MuiThemeProvider>
+      </Router>
     );
   }
 }

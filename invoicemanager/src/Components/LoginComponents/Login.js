@@ -46,7 +46,7 @@ class Login extends Component {
             </section>
             <div className="section__Box">
                 <img src={logoImg} alt="logo" className="section__Img" />
-                <LoginForm onChange={fields => this.onChange(fields)} className="section__loginForm" />
+                    <LoginForm className="section__loginForm" />                 
             </div>            
         </section>
     );

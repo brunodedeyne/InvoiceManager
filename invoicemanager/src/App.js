@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+//import { firebase } from './Firebase';
+import withAuthentication from './withAuthentication';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Login from './Components/LoginComponents/Login';
 import Main from './Components/Main';
+import Home from './Components/Home';
+
+import * as routes from './constants/routes/routes';
 
 //Import CSS
 import './assets/css/styles.min.css';
@@ -10,29 +16,35 @@ import './App.css';
 
 injectTapEventPlugin();
 
-class App extends Component {
-  state = {
-    fields: {}
-  };
+const App = () =>
+  // constructor(props) {
+  //   super(props);
 
-  onChange = updatedValue => {
-    this.setState({
-      fields: {
-        ...this.state.fields,
-        ...updatedValue
-      }
-    });
-  };
+  //   this.state = {
+  //     authUser: null,
+  //   };
+  // }
 
-  render() {
-    return (
-      <MuiThemeProvider>
-        <div className="App">
-          <Main />
-        </div>
-      </MuiThemeProvider>
-    );
-  }
-}
+  // componentDidMount() {
+  //   firebase.auth.onAuthStateChanged(authUser => {
+  //     authUser
+  //       ? this.setState(() => ({ authUser }))
+  //       : this.setState(() => ({ authUser: null }));
+  //   });
+  // }
 
-export default App;
+
+      <Router>
+        <MuiThemeProvider>
+          <div className="App">
+            <Login />
+            <Route
+              exact path={routes.HOME}
+              component={Home}
+            />
+          </div>
+        </MuiThemeProvider>
+      </Router>
+
+
+export default withAuthentication(App);

@@ -2,19 +2,22 @@
   "name": "invoicemanager",
   "version": "1.0.0",
   "dependencies": {
+    "firebase": "^4.13.1",
     "material-ui": "^0.20.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "python": "0.0.4",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-grid-layout": "^0.16.6",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.1.1",
+    "react-scripts": "^1.1.4",
     "react-tap-event-plugin": "^3.0.2"
   },
   "devDependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-clean-css": "^3.9.2",
+    "gulp-clean-css": "^3.9.3",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^3.1.0",
+    "gulp-sass": "^3.2.1",
     "gulp-uglify": "^3.0.0"
   },
   "scripts": {
