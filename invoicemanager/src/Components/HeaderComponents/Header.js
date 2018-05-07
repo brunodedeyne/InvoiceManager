@@ -13,7 +13,7 @@ import { auth } from '../../Firebase';
 class Header extends Component {
   render() {
     return (
-      <AuthUserContext.Consumer>
+      //<AuthUserContext.Consumer>
         <header className="header">
           <Logo text="Dedeyne - Coomans"/>
           <p className="header__Title">Overzicht</p>
@@ -21,7 +21,7 @@ class Header extends Component {
             <Logout className="header__Logout-Link"/>
           </p>
         </header>
-      </AuthUserContext.Consumer>
+      //</AuthUserContext.Consumer>
     );
   }
 }

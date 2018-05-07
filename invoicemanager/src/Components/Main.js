@@ -7,7 +7,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from './HeaderComponents/Header';
 import Menu from './MenuComponents/Menu';
 import Login from './LoginComponents/Login';
-import NewPlan from './MainScreenComponents/NewPlan';
 import Home from './Home';
 //import Overview from './OverviewComponents/Overview';
 import * as routes from '../constants/routes/routes';
@@ -19,19 +18,16 @@ import './Main.css';
 class Main extends Component {
   render() {
     return (
-      <Router>
+      //<Router>
         <div>
           <MuiThemeProvider>
-            <div className="App">
-                <Login />
-                <Route
-                  exact path={routes.HOME}
-                  component={Home}
-                />
+            <div>
+                <Menu />
+                <Header />
             </div>
           </MuiThemeProvider>
         </div>
-      </Router>
+      //</Router>
     );
   }
 }

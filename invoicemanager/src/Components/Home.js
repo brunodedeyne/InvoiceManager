@@ -9,17 +9,16 @@ import Menu from './MenuComponents/Menu';
 import '../assets/css/styles.min.css';
 import './Home.css';
 
-class Main extends Component {
+class Home extends React.Component {
   render() {
     return (
-        <MuiThemeProvider>
-          <div className="App">
-            <Header />
-            <Menu />
-          </div>
-        </MuiThemeProvider>
+      <MuiThemeProvider>
+        <div>
+
+        </div>
+      </MuiThemeProvider>
     );
   }
 }
 
-export default Main;
+export default Home;

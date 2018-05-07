@@ -33,8 +33,7 @@ const INITIAL_STATE = {
 
 class LoginForm extends React.Component { 
   constructor(props) {
-    super(props);
-
+    super();
     this.state = { ...INITIAL_STATE };
   }
 
