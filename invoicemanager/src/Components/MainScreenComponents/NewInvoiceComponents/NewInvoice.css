@@ -1,11 +1,11 @@
-.contactCard {
+.contactCardInvoice {
     width: 60%;
     max-width: 647px;
     margin: 0 auto;
     margin-top: 10px;
     position: relative;
-    transition: 1s ease-out;
     margin-left: 10px;
+    float: left;
 }
 
 .title, .buttons {
@@ -44,7 +44,7 @@ img {
     position: absolute;
     width: 1px;
     height: 11rem;
-    top: 70px;
+    top: 100px;
     left: 50%;
     display: block;
 }
@@ -98,6 +98,10 @@ img {
     height: 25rem;
 }
 
+.form__TextField {
+    background-color: red;
+}
+
 .border {
     border: #293541 1px solid;
     margin: 0 2rem 2rem 2rem;
@@ -110,7 +114,6 @@ img {
 
 .form__Container {
     margin-left: 14rem;
-    height: 70rem;
 }
 
 .SubmitButton {

@@ -66,7 +66,7 @@ export default class NewInvoice extends React.Component {
         <DropDownMenu maxHeight={300} value={this.state.value} onChange={this.handleChange}>
             {items}
         </DropDownMenu>
-        <div className="contactCard">
+        <div className="contactCardInvoice">
             <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
                 <CardTitle className="title" title={this.state.name + " " + this.state.familyName } expandable={true}/>
                 <CardText className="Text" expandable={true}>

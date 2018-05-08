@@ -1,10 +1,9 @@
 .contactCard {
     width: 60%;
-    max-width: 647px;
+    max-width: 647px;    
+    position: relative;
     margin: 0 auto;
     margin-top: 10px;
-    position: relative;
-    transition: 1s ease-out;
 }
 
 .title, .buttons {
@@ -43,7 +42,7 @@ img {
     position: absolute;
     width: 1px;
     height: 11rem;
-    top: 70px;
+    top: 100px;
     left: 50%;
     display: block;
 }
@@ -68,11 +67,11 @@ img {
     margin-top: 7px;
 }
 
-.info p {
+.info div {
     display: -webkit-box;
 }
 
-.info p div {
+.info div div {
     margin-top: 4px;
 }
 
@@ -87,9 +86,16 @@ img {
     float: left;
     width: 45% !important;
     font-size: 20px !important;
-    color: crimson;
     margin-right: 5%;
     height: 85px !important;
+}
+
+.form__TextField:nth-child(2n+1) input{
+    text-align: right;
+}
+
+.form__TextField:nth-child(2n+1) label{
+    float: right;
 }
 
 .form__Personal {
@@ -109,7 +115,6 @@ img {
 
 .form__Container {
     margin-left: 14rem;
-    height: 70rem;
 }
 
 .SubmitButton {
@@ -128,10 +133,23 @@ img {
     webkit-transition-duration: 0.2s;
     -o-transition-duration: 0.2s;
     transition-duration: 0.2s;
+    text-align: center;
 }
 
 .RaisedButton:hover {
     background-color: #16683C;
+}
+
+.RaisedButton:disabled,
+.RaisedButton[disabled]{
+  background-color: #cccccc;
+  color: #666666;
+}
+
+.RaisedButton:disabled:hover,
+.RaisedButton[disabled]:hover{
+  background-color: #cccccc;
+  color: #666666;
 }
 
 .RaisedButton span {

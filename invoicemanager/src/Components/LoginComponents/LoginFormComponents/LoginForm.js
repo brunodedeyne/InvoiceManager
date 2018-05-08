@@ -16,7 +16,7 @@ import * as routes from '../../../constants/routes/routes';
 //Import CSS
 import './LoginForm.css';
 
-const SignInPage = ({ history }) =>
+/*const SignInPage = ({ history }) =>
   <div>
     <LoginForm history={history} />
   </div>
@@ -29,15 +29,15 @@ const INITIAL_STATE = {
   email: '',
   password: '',
   error: null,
-};
+};*/
 
 class LoginForm extends React.Component { 
   constructor(props) {
     super();
-    this.state = { ...INITIAL_STATE };
+    //this.state = { ...INITIAL_STATE };
   }
 
-  onSubmit = (event) => {
+  /*onSubmit = (event) => {
     const {
       email,
       password,
@@ -57,7 +57,7 @@ class LoginForm extends React.Component {
       });
 
     event.preventDefault();
-  }
+  }*/
     render() {
       const {
         email,
@@ -73,13 +73,13 @@ class LoginForm extends React.Component {
           <form onSubmit={this.onSubmit}>
               <TextField
                 value={email}
-                onChange={event => this.setState(byPropKey('email', event.target.value))}
+                //onChange={event => this.setState(byPropKey('email', event.target.value))}
                 name="email"
                 floatingLabelText="Email"
               /><br />
               <TextField
                 value={password}
-                onChange={event => this.setState(byPropKey('password', event.target.value))}
+                //onChange={event => this.setState(byPropKey('password', event.target.value))}
                 name="password"
                 floatingLabelText="Wachtwoord"
                 type="password"
@@ -95,8 +95,9 @@ class LoginForm extends React.Component {
     }
   }
 
-export default withRouter(SignInPage);
+//export default withRouter(/*SignInPage*/);
 
-export {
+/*export {
   LoginForm,
-};
+};*/
+export default LoginForm;
