@@ -24,9 +24,7 @@ var config = {
     storageBucket: "invoicemanager-1525702104034.appspot.com",
     messagingSenderId: "908003589667"
   };
-  firebase.initializeApp(config);
-
-
+firebase.initializeApp(config);
 
 class NewPlan extends React.Component {
     constructor(props) {
@@ -119,8 +117,9 @@ class NewPlan extends React.Component {
     }
 
     updatePhone = (e) =>{ 
-        if (e.target.value.substring(0,1) == 0) {
-            this.setState({phone: "+32 " + e.target.value.substring(1), phoneDummy: "+32 " + e.target.value.substring(1)});
+        if (e.target.value.substring(0,1) == 0) {  
+            const phone = document.getElementById('phone');
+            phone.maxLength = 12;          
             if (parseInt(e.target.value.substring(1, 2)) === 5) {
                 if (e.target.value.length === 6 || e.target.value.length === 9) e.target.value += ".";
                 if (e.target.value.length === 3) e.target.value += "/";
@@ -129,9 +128,12 @@ class NewPlan extends React.Component {
                 if (e.target.value.length === 8) e.target.value += ".";
                 if (e.target.value.length === 4) e.target.value += "/";
             }
+            this.setState({phone: "+32 " + e.target.value.substring(1), phoneDummy: "+32 " + e.target.value.substring(1)});
         }
 
         if (e.target.value.substring(0,1) != 0){
+            const phone = document.getElementById('phone');
+            phone.maxLength = 11;
             if (parseInt(e.target.value.substring(0, 1)) === 5) {
                 if (e.target.value.length === 5 || e.target.value.length === 8) e.target.value += ".";
                 if (e.target.value.length === 2) e.target.value += "/";
@@ -203,33 +205,7 @@ class NewPlan extends React.Component {
         this.setState({Aard: e.target.value, AardDummy: e.target.value});
     }
 
-    pushForm = (e) => {
-        e.preventDefault();
-        let item = {
-            name: this.state.name,
-            familyName: this.state.familyName,
-            street: this.state.street,
-            city: this.state.city,
-            number: this.state.number,
-            BTW: this.state.BTW,
-            phone: this.state.phone,
-            email: this.state.email,
-            buildingStreet: this.state.buildingStreet,
-            buildingCity: this.state.buildingCity,
-            aard: this.state.Aard
-        }
-        firebase.database().ref('plannen').push(item);
 
-        this.props.history.push('/clients');
-    }
-
-    handleOpen = () => {
-        this.setState({open: true});
-    };
-
-    handleClose = () => {
-        this.setState({open: false});
-    };
     
     componentDidMount () {
         const input = document.getElementById('street');
@@ -294,6 +270,33 @@ class NewPlan extends React.Component {
             this.setState({buildingCityDummy: newCityBuilding});
           })
       }
+    pushForm = (e) => {
+        e.preventDefault();
+        let item = {
+            name: this.state.name,
+            familyName: this.state.familyName,
+            street: this.state.street,
+            city: this.state.city,
+            number: this.state.number,
+            BTW: this.state.BTW,
+            phone: this.state.phone,
+            email: this.state.email,
+            buildingStreet: this.state.buildingStreet,
+            buildingCity: this.state.buildingCity,
+            aard: this.state.Aard
+        }
+        firebase.database().ref('plannen').push(item);
+
+        this.props.history.push('/clients');
+    }
+
+    handleOpen = () => {
+        this.setState({open: true});
+    };
+
+    handleClose = () => {
+        this.setState({open: false});
+    };
 
     render() {
         const actions = [
@@ -309,19 +312,19 @@ class NewPlan extends React.Component {
                 onClick={this.pushForm}
           />,
         ];
-        const { name, familyName, street, city, email, number, buildingStreet, buildingCity, Aard, numberValid } = this.state;
+        const { name, familyName, street, city, email, number, phone, buildingStreet, buildingCity, Aard, numberValid } = this.state;
         const enabled =
-        city.length > 0 &&
-              name.length > 0 &&
-              familyName.length > 0 &&
-              street.length > 0 &&
-              city.length > 0 &&
-              email.length > 0 &&
-              number.length > 0 &&
-              buildingStreet.length > 0 &&
-              buildingCity.length > 0 &&
-              Aard.length > 0 &&
-              numberValid;
+            city.length > 0 &&
+            name.length > 0 &&
+            familyName.length > 0 &&
+            street.length > 0 &&
+            email.length > 0 &&
+            number.length > 0 &&
+            phone.length > 14 &&
+            buildingStreet.length > 0 &&
+            buildingCity.length > 0 &&
+            Aard.length > 0 &&              
+            numberValid;
         return (            
             <section className="form__Container"> 
                 <form className="form" >
@@ -358,9 +361,10 @@ class NewPlan extends React.Component {
                         />
                         <TextField
                             name="phone"
-                            floatingLabelText="Telefoon"
+                            id="phone"
+                            floatingLabelText="Telefoon *"
                             className="form__TextField"
-                            maxLength="13"
+                            maxLength="12"
                             onChange={this.updatePhone}
                         />
                         <TextField
@@ -438,7 +442,12 @@ class NewPlan extends React.Component {
                                         </div>
                                         <div>
                                             <img src={BTWIcon} alt="BTW Icon"/>
-                                            <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>
+                                            {this.state.BTW.length > 0 &&
+                                                <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>
+                                            }
+                                            {this.state.BTW.length == 0 &&
+                                                <div className={ this.state.BTWClasses }>{this.state.BTW}</div>
+                                            }                                           
                                         </div>
                                         <div>
                                             <img src={NumberIcon} alt="Number Icon"/>

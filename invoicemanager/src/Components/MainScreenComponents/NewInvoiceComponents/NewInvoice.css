@@ -1,11 +1,14 @@
 .contactCardInvoice {
     width: 60%;
     max-width: 647px;
-    margin: 0 auto;
     margin-top: 10px;
     position: relative;
     margin-left: 10px;
-    float: left;
+    margin: 0 auto;
+}
+
+.actionButtonsInvoice {
+    margin-top: 25px;
 }
 
 .title, .buttons {
@@ -44,7 +47,7 @@ img {
     position: absolute;
     width: 1px;
     height: 11rem;
-    top: 100px;
+    top: 70px;
     left: 50%;
     display: block;
 }
@@ -93,7 +96,15 @@ img {
     height: 85px !important;
 }
 
-.form__Personal {
+.form__TextField:nth-child(2n+1) input{
+    text-align: left;
+}
+
+.form__TextField:nth-child(2n+1) label{
+    float: left;
+}
+
+.formEditPlan {
     padding-left: 3rem;
     height: 25rem;
 }
