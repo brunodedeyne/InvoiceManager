@@ -86,6 +86,24 @@ img {
     margin-top: 1rem;
 }
 
+.Dropdown {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.Dropdown > div {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+    background-color: white;
+}
+
+button + div {
+    display: none;
+}
+
+div + span {
+    text-align: center;;
+}
+
 .form__TextField {
     display: block;
     float: left;

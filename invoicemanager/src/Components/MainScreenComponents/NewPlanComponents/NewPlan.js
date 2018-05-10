@@ -65,6 +65,9 @@ class NewPlan extends React.Component {
             AardDummy: 'verbouwing bestaande woning',
             Aard: '',
 
+            dossierNrs: [],
+            lastDossierNr: '',
+
             open: false,
 
             numberValid: false,
@@ -77,12 +80,9 @@ class NewPlan extends React.Component {
             emailClassesCard: '',
             BTWClasses: ''
         };
-    }
 
-    onSuggestionSelected(suggestion) {
-        // Add your business logic here. In this case we just log...
-        console.log('Selected suggestion:', suggestion)
-      }
+        this.database = firebase.database().ref('/plannen');
+    }
     
     handleExpandChange = (expanded) => {
         this.setState({expanded: expanded});
@@ -204,8 +204,6 @@ class NewPlan extends React.Component {
     updateAard = (e) =>{ 
         this.setState({Aard: e.target.value, AardDummy: e.target.value});
     }
-
-
     
     componentDidMount () {
         const input = document.getElementById('street');
@@ -270,7 +268,17 @@ class NewPlan extends React.Component {
             this.setState({buildingCityDummy: newCityBuilding});
           })
       }
-    pushForm = (e) => {
+    pushForm = (e) => {        
+        const newArray = [];
+        for (var i = 0;i < this.state.dossierNrs.length; i++){
+            newArray.push(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
+            console.log("test" + parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
+        }
+        var maxDossierNr = Math.max.apply(Math, newArray);
+
+        this.setState({lastDossierNr: maxDossierNr});
+        let now = new Date();
+
         e.preventDefault();
         let item = {
             name: this.state.name,
@@ -283,11 +291,25 @@ class NewPlan extends React.Component {
             email: this.state.email,
             buildingStreet: this.state.buildingStreet,
             buildingCity: this.state.buildingCity,
-            aard: this.state.Aard
+            aard: this.state.Aard,
+            DossierNr: now.getFullYear() + "/" + (maxDossierNr + 1)
         }
         firebase.database().ref('plannen').push(item);
 
-        this.props.history.push('/clients');
+        this.props.history.push('/overview');
+    }
+
+    componentWillMount (){
+        console.log("tpugszdpq");
+        const dossiern = this.state.dossierNrs;
+
+        this.database.on('child_added', snapshot => {
+            dossiern.push({
+                dossierNr: snapshot.val().DossierNr,
+            })
+        })
+
+        this.setState({dossierNrs: dossiern});
     }
 
     handleOpen = () => {

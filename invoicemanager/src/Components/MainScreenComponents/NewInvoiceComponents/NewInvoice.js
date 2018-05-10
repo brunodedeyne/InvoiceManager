@@ -14,6 +14,7 @@ import AardIcon from "../../../assets/img/aard.png";
 import DossierIcon from "../../../assets/img/dossier.png";
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import {withRouter} from 'react-router-dom';
 
 //Import CSS
 import './NewInvoice.css';
@@ -26,7 +27,7 @@ const styles = {
   };
   
 
-export default class NewInvoice extends React.Component {
+class NewInvoice extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -75,6 +76,8 @@ export default class NewInvoice extends React.Component {
 
             AardInvoiceDummy: 'Voorontwerp Gebouw',
             AardInvoice: '',
+
+            key: '',
 
             numberValid: false,
 
@@ -132,7 +135,9 @@ export default class NewInvoice extends React.Component {
                     AardInvoice: this.state.plannen[i].Aard,
 
                     DossierNrDummy: this.state.plannen[i].dossierNr,
-                    DossierNr: this.state.plannen[i].dossierNr
+                    DossierNr: this.state.plannen[i].dossierNr,
+
+                    key: this.state.plannen[i].key
                 })
                 console.log(this.state.plannen[i]);
             }
@@ -163,12 +168,6 @@ export default class NewInvoice extends React.Component {
         this.setState({Aard: e.target.value});
     }
 
-    componentDidMount(){
-        // firebase.database().ref('/plannen').on('value', function(snapshot) {
-        //     this.getData(snapshot.val());
-        // });
-    }
-
     handleOpenNewInvoice = () => {
         this.setState({openInvoice: true});
     };
@@ -185,12 +184,39 @@ export default class NewInvoice extends React.Component {
         this.setState({openPlanEdit: false});
     };
 
-    pushInvoice (){
+    pushInvoice = (e) => {
+        e.preventDefault();
+        let item = {
+            Fee: this.state.Fee,
+            AardInvoice: this.state.AardInvoice,
+            key: this.state.key
+        }
+        firebase.database().ref('invoices').push(item);
 
+        this.props.history.push('/overview');
     }
 
-    editPlan (){
+    handleEditPlan (){
+        var updateData = {
+            key: this.state.key,
+            dossierNr: this.state.DossierNr,
+            name: this.state.name,
+            familyName: this.state.familyName,
+            street: this.state.street,
+            city: this.state.city,
+            email: this.state.email,
+            phone: this.state.phone,
+            number: this.state.number,
+            BTW: this.state.BTW,
+            buildingStreet: this.state.buildingStreet,
+            buildingCity: this.state.buildingCity,
+            Aard: this.state.Aard
+        }
+        var newKey = firebase.database().ref().child('plannen').push().key;
 
+        var updates = {};
+        updates['/plannen/' + newKey] = updateData;
+        return firebase.database().ref().update(updates);
     }
 
     componentWillMount (){
@@ -302,11 +328,11 @@ export default class NewInvoice extends React.Component {
     }
 
     updateBTW = (e) =>{      
-        if (e.target.value.substring(0,1) == 0){
+        if (e.target.value.substring(0,1) === 0){
             if (e.target.value.length ===  4 || e.target.value.length === 8)    e.target.value += ".";       
             this.setState({BTW: "BE " + e.target.value, BTWDummy: "BE " +  e.target.value});
         }
-        if (e.target.value.substring(0,1) != 0){
+        if (e.target.value.substring(0,1) !== 0){
             if (e.target.value.length ===  3 || e.target.value.length === 7)    e.target.value += ".";       
             this.setState({BTW: "BE 0" + e.target.value, BTWDummy: "BE 0" +  e.target.value});
         }
@@ -322,6 +348,10 @@ export default class NewInvoice extends React.Component {
 
     updateAard = (e) =>{ 
         this.setState({Aard: e.target.value, AardDummy: e.target.value});
+    }
+
+    updateAardInvoice = (e) =>{ 
+        this.setState({AardInvoice: e.target.value, AardInvoiceDummy: e.target.value});
     }
     
     componentDidMount () {
@@ -408,7 +438,7 @@ export default class NewInvoice extends React.Component {
               label="Wijzig Plan"
               primary={true}
               onClick={this.handleEditPlan}
-              disabled={!enabledEditPlan}
+              disabled={false}
             />,
             <FlatButton
                 label="Annuleer"
@@ -431,24 +461,28 @@ export default class NewInvoice extends React.Component {
             Aard.length > 0 &&              
             numberValid;
         const enabledNewInvoice =
-            Fee.length > 0 &&             
-            AardInvoice > 0;
+            Fee.length > 0;
+            console.log(Fee.length);
+            console.log(Fee.length > 0)
+
         return (
-        <section className="form__Container">    
-            <DropDownMenu
-            value={this.state.value}
-            onChange={this.handleChange}
-            style={styles.customWidth}
-            autoWidth={false}
-            >
-                {
-                    this.state.plannen.map((plan) => {
-                        return (
-                            <MenuItem value={plan.key} primaryText={plan.dossierNr + ", " + plan.familyName + " " + plan.name}  />
-                        )
-                    })
-                }
-            </DropDownMenu>
+        <section className="form__Container">  
+            <div className="Dropdown">  
+                <DropDownMenu
+                    value={this.state.value}
+                    onChange={this.handleChange}
+                    style={styles.customWidth}
+                    autoWidth={false}
+                >
+                    {
+                        this.state.plannen.map((plan) => {
+                            return (
+                                <MenuItem value={plan.key} primaryText={plan.dossierNr + ", " + plan.familyName + " " + plan.name}  />
+                            )
+                        })
+                    }
+                </DropDownMenu>
+            </div>
             <div className="contactCardInvoice">
             <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
                 <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
@@ -517,119 +551,132 @@ export default class NewInvoice extends React.Component {
             </div>
         </form> */}
         <Dialog
-            title="Factuur voor John Doe - 2017/256"
+            title={"Factuur voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
             actions={actionsNewInvoice}
             modal={false}
             open={this.state.openInvoice}
             onRequestClose={this.handleCloseNewInvoice}
         >
-            <TextField
-                name="Ereloon"
-                floatingLabelText="Ereloon"
-                className="form__TextField"
-                onChange={this.updateFee}
-            />
-            <TextField
-                name="Aard"
-                floatingLabelText="Aard"
-                className="form__TextField"
-                onChange={this.updateAard}
-            />
+            <form>
+                <TextField
+                    name="Ereloon"
+                    floatingLabelText="Ereloon"
+                    className="form__TextField"
+                    onChange={this.updateFee}
+                />
+                <TextField
+                    name="AardInvoice"
+                    floatingLabelText="Aard"
+                    className="form__TextField"
+                    onChange={this.updateAardInvoice}
+                />
+            </form>
         </Dialog>
         <Dialog
-            title="Bewerk Plan voor John Doe - 2017/256"
+            title={"Bewerk Plan voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
             actions={actionsEditPlan}
             modal={false}
             open={this.state.openPlanEdit}
             onRequestClose={this.handleCloseEditPlan}
         >
-            <div className="formEditPlan">
-                <TextField
-                    name="familyName"
-                    floatingLabelText="Naam *"
-                    className="form__TextField"
-                    onChange={this.updateFamilyName}
-                />
-                <TextField
-                    name="name"
-                    floatingLabelText="Voornaam *"
-                    className="form__TextField"
-                    onChange={this.updateName}
-                />
-                <TextField
-                    name="street"
-                    id="street"
-                    floatingLabelText="Straat *"
-                    className="form__TextField"
-                    onChange={this.updateStreet}
-                    type="text"
-                    placeholder=""                    
-                />
-                <TextField
-                    name="city"
-                    floatingLabelText="Gemeente *"
-                    className="form__TextField"
-                    onChange={this.updateCity}
-                    value={this.state.city}
-                />
-                <TextField
-                    name="phone"
-                    id="phone"
-                    floatingLabelText="Telefoon *"
-                    className="form__TextField"
-                    maxLength="12"
-                    onChange={this.updatePhone}
-                />
-                <TextField
-                    name="email"
-                    floatingLabelText="Email *"
-                    className="form__TextField"
-                    onChange={this.updateEmail}
-                    type="email"
-                />
-                <TextField
-                    name="BTW"
-                    floatingLabelText="BTW Numer"
-                    className={"form__TextField " + this.state.BTWClasses }
-                    onChange={this.updateBTW}
-                    maxLength="12"
-                />
-                <TextField
-                    name="number"
-                    floatingLabelText="Rijksregisternummer *"
-                    className={"form__TextField " + this.state.numberClasses }
-                    onChange={this.updateNumber}
-                    maxLength="15"
-                    errorText={this.state.numberError}
-                />
-            </div>
-            <div className="border"></div>
-            <div className="form__Plan">
-                <TextField
-                    name="buildingStreet"
-                    id="buildingStreet"
-                    floatingLabelText="Ligging *"
-                    className="form__TextField"
-                    onChange={this.updateBuildingStreet}
-                    placeholder=""
-                    autoComplete="email"
-                />
-                <TextField
-                    name="buildingCity"
-                    floatingLabelText="Bouwplaats *"
-                    className="form__TextField"
-                    onChange={this.updateBuildingCity}
-                    value={this.state.buildingCity}
-                />
-                <TextField
-                    name="Aard"
-                    floatingLabelText="Aard *"
-                    className="form__TextField"
-                    onChange={this.updateAard}
-                />
+        <div className="formEditPlan">
+            <TextField
+                name="familyName"
+                floatingLabelText="Naam *"
+                className="form__TextField"
+                onChange={this.updateFamilyName}
+                value={this.state.familyName}
+            />
+            <TextField
+                name="name"
+                floatingLabelText="Voornaam *"
+                className="form__TextField"
+                onChange={this.updateName}
+                value={this.state.name}
+            />
+            <TextField
+                name="street"
+                id="street"
+                floatingLabelText="Straat *"
+                className="form__TextField"
+                onChange={this.updateStreet}
+                type="text"
+                placeholder=""
+                value={this.state.street}                            
+            />
+            <TextField
+                name="city"
+                floatingLabelText="Gemeente *"
+                className="form__TextField"
+                onChange={this.updateCity}
+                value={this.state.city}
+            />
+            <TextField
+                name="phone"
+                id="phone"
+                floatingLabelText="Telefoon *"
+                className="form__TextField"
+                maxLength="12"
+                onChange={this.updatePhone}
+                value={this.state.phone}
+            />
+            <TextField
+                name="email"
+                floatingLabelText="Email *"
+                className="form__TextField"
+                onChange={this.updateEmail}
+                type="email"
+                value={this.state.email}
+            />
+            <TextField
+                name="BTW"
+                floatingLabelText="BTW Numer"
+                className={"form__TextField " + this.state.BTWClasses }
+                onChange={this.updateBTW}
+                maxLength="12"
+                value={this.state.BTW}
+            />
+            <TextField
+                name="number"
+                floatingLabelText="Rijksregisternummer *"
+                className={"form__TextField " + this.state.numberClasses }
+                onChange={this.updateNumber}
+                maxLength="15"
+                errorText={this.state.numberError}
+                value={this.state.number}
+            />
+        </div>
+        <div className="border"></div>
+        <div className="form__Plan">
+            <TextField
+                name="buildingStreet"
+                id="buildingStreet"
+                floatingLabelText="Ligging *"
+                className="form__TextField"
+                onChange={this.updateBuildingStreet}
+                placeholder=""
+                autoComplete="email"
+                value={this.state.buildingStreet}
+            />
+            <TextField
+                name="buildingCity"
+                floatingLabelText="Bouwplaats *"
+                className="form__TextField"
+                onChange={this.updateBuildingCity}
+                value={this.state.buildingCity}
+                value={this.state.buildingCity}
+            />
+            <TextField
+                name="Aard"
+                floatingLabelText="Aard *"
+                className="form__TextField"
+                onChange={this.updateAard}
+                value={this.state.Aard}
+            />
             </div>
         </Dialog>
         </section>
       );
     }
   }
+  export default withRouter(NewInvoice)

@@ -1,360 +1,179 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {
+  Table,
+  TableBody,
+  TableFooter,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
+import TextField from 'material-ui/TextField';
+import Toggle from 'material-ui/Toggle';
 
-/*import {
-    SortingState, EditingState, PagingState,
-    IntegratedPaging, IntegratedSorting,
-  } from '@devexpress/dx-react-grid';
-  import {
-    Grid,
-    Table, TableHeaderRow, TableEditRow, TableEditColumn,
-    PagingPanel, DragDropProvider, TableColumnReordering,
-  } from '@devexpress/dx-react-grid-material-ui';
-  import Paper from 'material-ui/Paper';
-  import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-  } from 'material-ui/Dialog';
-  import Button from 'material-ui/Button';
-  import IconButton from 'material-ui/IconButton';
-  import Input from 'material-ui/Input';
-  import Select from 'material-ui/Select';
-  import { MenuItem } from 'material-ui/Menu';
-  import { TableCell } from 'material-ui/Table';
-  
-  import DeleteIcon from '@material-ui/icons/Delete';
-  import EditIcon from '@material-ui/icons/Edit';
-  import SaveIcon from '@material-ui/icons/Save';
-  import CancelIcon from '@material-ui/icons/Cancel';
-  import { withStyles } from 'material-ui/styles';
-  
-  import { ProgressBarCell } from '../../../theme-sources/material-ui/components/progress-bar-cell';
-  import { HighlightedCell } from '../../../theme-sources/material-ui/components/highlighted-cell';
-  import { CurrencyTypeProvider } from '../../../theme-sources/material-ui/components/currency-type-provider';
-  import { PercentTypeProvider } from '../../../theme-sources/material-ui/components/percent-type-provider';
-  
-  import {
-    generateRows,
-    globalSalesValues,
-  } from '../../../generator';
-
-//Import CSS
 import './Clients.css';
+import * as firebase from 'firebase';
 
-const styles = theme => ({
-    lookupEditCell: {
-      paddingTop: theme.spacing.unit * 0.875,
-      paddingRight: theme.spacing.unit,
-      paddingLeft: theme.spacing.unit,
-    },
-    dialog: {
-      width: 'calc(100% - 16px)',
-    },
-    inputRoot: {
-      width: '100%',
-    },
-  });
-  
-  const AddButton = ({ onExecute }) => (
-    <div style={{ textAlign: 'center' }}>
-      <Button
-        color="primary"
-        onClick={onExecute}
-        title="Create new row"
-      >
-        New
-      </Button>
-    </div>
-  );
-  
-  const EditButton = ({ onExecute }) => (
-    <IconButton onClick={onExecute} title="Edit row">
-      <EditIcon />
-    </IconButton>
-  );
-  
-  const DeleteButton = ({ onExecute }) => (
-    <IconButton onClick={onExecute} title="Delete row">
-      <DeleteIcon />
-    </IconButton>
-  );
-  
-  const CommitButton = ({ onExecute }) => (
-    <IconButton onClick={onExecute} title="Save changes">
-      <SaveIcon />
-    </IconButton>
-  );
-  
-  const CancelButton = ({ onExecute }) => (
-    <IconButton color="secondary" onClick={onExecute} title="Cancel changes">
-      <CancelIcon />
-    </IconButton>
-  );
-  
-  const commandComponents = {
-    add: AddButton,
-    edit: EditButton,
-    delete: DeleteButton,
-    commit: CommitButton,
-    cancel: CancelButton,
+const styles = {
+  propContainer: {
+    width: 200,
+    overflow: 'hidden',
+    margin: '20px auto 0',
+  },
+  propToggleHeader: {
+    margin: '20px auto 10px',
+  },
+};
+
+const tableData = [
+  {
+    name: 'John Smith',
+    status: 'Employed',
+  }
+];
+
+/**
+ * A more complex example, allowing the table height to be set, and key boolean properties to be toggled.
+ */
+export default class TableExampleComplex extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        fixedHeader: false,
+        fixedFooter: false,
+        stripedRows: true,
+        showRowHover: true,
+        selectable: true,
+        multiSelectable: false,
+        enableSelectAll: false,
+        deselectOnClickaway: true,
+        showCheckboxes: false,
+        height: '500px',
+        nameDummy : 'John',
+        name: '',
+
+        familyNameDummy: 'Doe',
+        familyName: '',
+
+        streetDummy: '123 Main Street',
+        street: '',
+
+        cityDummy: 'Anytown',
+        city: '',      
+
+        phoneDummy: '+32 498/123.456',
+        phone: '',
+
+        emailDummy: 'Johndoe@gmail.com',
+        email: '', 
+        
+        BTWDummy: 'BE 0999.999.999',
+        BTW: '',
+
+        numerDummy: '97.11.21-275.45',
+        number: '',
+
+        buildingStreetDummy: '124 Main Street',
+        buildingStreet: '', 
+
+        buildingCityDummy: "Anytown",
+        buildingCity: '',
+
+        AardDummy: 'verbouwing bestaande woning',
+        Aard: '',
+
+        plannen: []
+    };
+
+    this.database = firebase.database().ref('/plannen');
+  }
+
+  handleCellClick (rowNumber, columnId) {
+    console.log(rowNumber);
+    console.log(columnId);
+  }
+
+  componentWillMount (){
+    const allPlans = this.state.plannen;
+
+    this.database.on('child_added', snapshot => {
+        allPlans.push({
+            key: snapshot.key,
+            dossierNr: snapshot.val().DossierNr,
+            name: snapshot.val().name,
+            familyName: snapshot.val().familyName,
+            street: snapshot.val().street,
+            city: snapshot.val().city,
+            email: snapshot.val().email,
+            phone: snapshot.val().phone,
+            number: snapshot.val().number,
+            BTW: snapshot.val().BTW,
+            buildingStreet: snapshot.val().buildingStreet,
+            buildingCity: snapshot.val().buildingCity,
+            Aard: snapshot.val().Aard
+        })
+
+        this.setState({plannen: allPlans});
+    })
+}
+
+  handleToggle = (event, toggled) => {
+    this.setState({
+      [event.target.name]: toggled,
+    });
   };
-  
-  const Command = ({ id, onExecute }) => {
-    const CommandButton = commandComponents[id];
+  render() {
     return (
-      <CommandButton
-        onExecute={onExecute}
-      />
+      <div>
+        <Table
+          className="table"
+          height={this.state.height}
+          fixedHeader={this.state.fixedHeader}
+          fixedFooter={this.state.fixedFooter}
+          selectable={this.state.selectable}
+          multiSelectable={this.state.multiSelectable}
+          onCellClick={this.handleCellClick}
+        >
+          <TableHeader
+            displaySelectAll={this.state.showCheckboxes}
+            adjustForCheckbox={this.state.showCheckboxes}
+            enableSelectAll={this.state.enableSelectAll}
+          >
+            <TableRow>
+              <TableHeaderColumn tooltip="Het dossiernummer van deze cliënt">Dossier Nummer</TableHeaderColumn>
+              <TableHeaderColumn tooltip="De naam van deze cliënt">Naam</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Het adres van deze cliënt">Adres</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Het emailadres van deze cliënt">Email</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Het telefoonummer van deze cliënt">Telefoon</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Het rijksregisternummer van deze cliënt">Rijksregisternummer</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Het BTW nummer van deze cliënt">BTW nummer</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Het adres van het gebouw">Adres Gebouw</TableHeaderColumn>
+              <TableHeaderColumn tooltip="De aard van het plan">Aard</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody
+            displayRowCheckbox={this.state.showCheckboxes}
+            deselectOnClickaway={this.state.deselectOnClickaway}
+            showRowHover={this.state.showRowHover}
+            stripedRows={this.state.stripedRows}
+          >
+            {this.state.plannen.map( (row, index) => (
+              <TableRow key={index}>
+                <TableRowColumn>{row.dossierNr}</TableRowColumn>
+                <TableRowColumn>{row.name + " " + row.familyName}</TableRowColumn>
+                <TableRowColumn>{row.street + ", " + row.city}</TableRowColumn>
+                <TableRowColumn>{row.email}</TableRowColumn>
+                <TableRowColumn>{row.phone}</TableRowColumn>
+                <TableRowColumn>{row.number}</TableRowColumn>
+                <TableRowColumn>{row.BTW}</TableRowColumn>
+                <TableRowColumn>{row.buildingStreet + ", " + row.buildingCity}</TableRowColumn>
+                <TableRowColumn>{row.Aard}</TableRowColumn>
+              </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
     );
-  };
-  
-  const availableValues = {
-    product: globalSalesValues.product,
-    region: globalSalesValues.region,
-    customer: globalSalesValues.customer,
-  };
-  
-  const LookupEditCellBase = ({
-    availableColumnValues, value, onValueChange, classes,
-  }) => (
-    <TableCell
-      className={classes.lookupEditCell}
-    >
-      <Select
-        value={value}
-        onChange={event => onValueChange(event.target.value)}
-        input={
-          <Input
-            classes={{ root: classes.inputRoot }}
-          />
-        }
-      >
-        {availableColumnValues.map(item => (
-          <MenuItem key={item} value={item}>{item}</MenuItem>
-        ))}
-      </Select>
-    </TableCell>
-  );
-  export const LookupEditCell = withStyles(styles, { name: 'ControlledModeDemo' })(LookupEditCellBase);
-  
-  const Cell = (props) => {
-    if (props.column.name === 'discount') {
-      return <ProgressBarCell {...props} />;
-    }
-    if (props.column.name === 'amount') {
-      return <HighlightedCell {...props} />;
-    }
-    return <Table.Cell {...props} />;
-  };
-  
-  const EditCell = (props) => {
-    const availableColumnValues = availableValues[props.column.name];
-    if (availableColumnValues) {
-      return <LookupEditCell {...props} availableColumnValues={availableColumnValues} />;
-    }
-    return <TableEditRow.Cell {...props} />;
-  };
-  
-  const getRowId = row => row.id;
-  */
-
-class Clients extends React.Component {
-    /*constructor(props) {
-        super(props);
-    
-        this.state = {
-          columns: [
-            { name: 'product', title: 'Product' },
-            { name: 'region', title: 'Region' },
-            { name: 'amount', title: 'Sale Amount' },
-            { name: 'discount', title: 'Discount' },
-            { name: 'saleDate', title: 'Sale Date' },
-            { name: 'customer', title: 'Customer' },
-          ],
-          tableColumnExtensions: [
-            { columnName: 'amount', align: 'right' },
-          ],
-          rows: generateRows({
-            columnValues: { id: ({ index }) => index, ...globalSalesValues },
-            length: 12,
-          }),
-          sorting: [],
-          editingRowIds: [],
-          addedRows: [],
-          rowChanges: {},
-          currentPage: 0,
-          deletingRows: [],
-          pageSize: 0,
-          pageSizes: [5, 10, 0],
-          columnOrder: ['product', 'region', 'amount', 'discount', 'saleDate', 'customer'],
-          currencyColumns: ['amount'],
-          percentColumns: ['discount'],
-        };
-    
-        this.changeSorting = sorting => this.setState({ sorting });
-        this.changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
-        this.changeAddedRows = addedRows => this.setState({
-          addedRows: addedRows.map(row => (Object.keys(row).length ? row : {
-            amount: 0,
-            discount: 0,
-            saleDate: new Date().toISOString().split('T')[0],
-            product: availableValues.product[0],
-            region: availableValues.region[0],
-            customer: availableValues.customer[0],
-          })),
-        });
-        this.changeRowChanges = rowChanges => this.setState({ rowChanges });
-        this.changeCurrentPage = currentPage => this.setState({ currentPage });
-        this.changePageSize = pageSize => this.setState({ pageSize });
-        this.commitChanges = ({ added, changed, deleted }) => {
-          let { rows } = this.state;
-          if (added) {
-            const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
-            rows = [
-              ...rows,
-              ...added.map((row, index) => ({
-                id: startingAddedId + index,
-                ...row,
-              })),
-            ];
-          }
-          if (changed) {
-            rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-          }
-          this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
-        };
-        this.cancelDelete = () => this.setState({ deletingRows: [] });
-        this.deleteRows = () => {
-          const rows = this.state.rows.slice();
-          this.state.deletingRows.forEach((rowId) => {
-            const index = rows.findIndex(row => row.id === rowId);
-            if (index > -1) {
-              rows.splice(index, 1);
-            }
-          });
-          this.setState({ rows, deletingRows: [] });
-        };
-        this.changeColumnOrder = (order) => {
-          this.setState({ columnOrder: order });
-        };
-      }
-      render() {
-        const {
-          classes,
-        } = this.props;
-        const {
-          rows,
-          columns,
-          tableColumnExtensions,
-          sorting,
-          editingRowIds,
-          addedRows,
-          rowChanges,
-          currentPage,
-          deletingRows,
-          pageSize,
-          pageSizes,
-          columnOrder,
-          currencyColumns,
-          percentColumns,
-        } = this.state;
-    
-        return (
-          <Paper>
-            <Grid
-              rows={rows}
-              columns={columns}
-              getRowId={getRowId}
-            >
-              <SortingState
-                sorting={sorting}
-                onSortingChange={this.changeSorting}
-              />
-              <PagingState
-                currentPage={currentPage}
-                onCurrentPageChange={this.changeCurrentPage}
-                pageSize={pageSize}
-                onPageSizeChange={this.changePageSize}
-              />
-    
-              <IntegratedSorting />
-              <IntegratedPaging />
-    
-              <CurrencyTypeProvider for={currencyColumns} />
-              <PercentTypeProvider for={percentColumns} />
-    
-              <EditingState
-                editingRowIds={editingRowIds}
-                onEditingRowIdsChange={this.changeEditingRowIds}
-                rowChanges={rowChanges}
-                onRowChangesChange={this.changeRowChanges}
-                addedRows={addedRows}
-                onAddedRowsChange={this.changeAddedRows}
-                onCommitChanges={this.commitChanges}
-              />
-    
-              <DragDropProvider />
-    
-              <Table
-                columnExtensions={tableColumnExtensions}
-                cellComponent={Cell}
-              />
-    
-              <TableColumnReordering
-                order={columnOrder}
-                onOrderChange={this.changeColumnOrder}
-              />
-    
-              <TableHeaderRow showSortingControls />
-              <TableEditRow
-                cellComponent={EditCell}
-              />
-              <TableEditColumn
-                width={120}
-                showAddCommand={!addedRows.length}
-                showEditCommand
-                showDeleteCommand
-                commandComponent={Command}
-              />
-              <PagingPanel
-                pageSizes={pageSizes}
-              />
-            </Grid>
-    
-            <Dialog
-              open={!!deletingRows.length}
-              onClose={this.cancelDelete}
-              classes={{ paper: classes.dialog }}
-            >
-              <DialogTitle>Delete Row</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Are you sure to delete the following row?
-                </DialogContentText>
-                <Paper>
-                  <Grid
-                    rows={rows.filter(row => deletingRows.indexOf(row.id) > -1)}
-                    columns={columns}
-                  >
-                    <CurrencyTypeProvider for={currencyColumns} />
-                    <PercentTypeProvider for={percentColumns} />
-                    <Table
-                      columnExtensions={tableColumnExtensions}
-                      cellComponent={Cell}
-                    />
-                    <TableHeaderRow />
-                  </Grid>
-                </Paper>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={this.cancelDelete} color="primary">Cancel</Button>
-                <Button onClick={this.deleteRows} color="secondary">Delete</Button>
-              </DialogActions>
-            </Dialog>
-          </Paper>
-        );
-      }*/
-    }
-    
-    export default Clients;//withStyles(styles, { name: 'ControlledModeDemo' })(Clients);
+  }
+}
