@@ -199,7 +199,7 @@ class NewPlan extends React.Component {
         this.setState({Aard: e.target.value, AardDummy: e.target.value});
     }
     
-    /*componentDidMount () {
+    componentDidMount () {
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
         const options = {
@@ -261,7 +261,7 @@ class NewPlan extends React.Component {
             building.value = this.state.buildingStreet;
             this.setState({buildingCityDummy: newCityBuilding});
           })
-      }*/
+      }
     pushForm = (e) => {        
         const newArray = [];
         for (var i = 0;i < this.state.dossierNrs.length; i++){

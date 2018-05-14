@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import * as routes from '../../constants/routes/routes';
 import Logout from '../LogOutComponents/Logout';
 import AuthUserContext from '../AuthUserContext';
+import FlatButton from 'material-ui/FlatButton';
 
 import Logo from './Logo';
 
@@ -21,7 +22,7 @@ class Header extends Component {
           <Logo text="Dedeyne - Coomans"/>
           <p className="header__Title">{this.props.headerTitle}</p>
           <p className="header__Logout">
-            <Logout className="header__Logout-Link"/>
+            <FlatButton label="Uitloggen" primary={true}/>
           </p>
         </header>
       //</AuthUserContext.Consumer>

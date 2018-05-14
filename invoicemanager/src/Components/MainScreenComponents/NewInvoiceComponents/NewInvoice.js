@@ -95,8 +95,8 @@ class NewInvoice extends React.Component {
             openInvoice: false,
             openPlanEdit: false,
             openConfirmationDialogInvoices: false,
-            enableNewInvoiceContactCard: false,
-            enableEditPlanContactCard:false,
+            enableNewInvoiceContactCard: true,
+            enableEditPlanContactCard:true,
             enabled: false,
         };
 
@@ -146,8 +146,10 @@ class NewInvoice extends React.Component {
 
                     key: this.state.plannen[i].key,
                     value: value,
-                    enableEditPlanContactCard: true,
-                    enableNewInvoiceContactCard: true
+                    enableEditPlanContactCard: false,
+                    enableNewInvoiceContactCard: false, 
+                    numberValid: true,
+                    phoneValid: true
                 })
             }
         }
@@ -362,7 +364,7 @@ class NewInvoice extends React.Component {
 
 
     
-    /*componentDidMount () {
+    componentDidMount () {
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
         const options = {
@@ -424,7 +426,7 @@ class NewInvoice extends React.Component {
             building.value = this.state.buildingStreet;
             this.setState({buildingCityDummy: newCityBuilding});
           })
-      }*/
+      }
 
     render() {
         const { name, familyName, street, city, email, number, phone, phoneValid, buildingStreet, buildingCity, Aard, numberValid, Fee, AardInvoice } = this.state;
@@ -441,6 +443,20 @@ class NewInvoice extends React.Component {
             Aard.length > 0 &&
             number.length > 14 &&
             numberValid;
+            console.log("name: " +name.length);
+            console.log("fname: " +familyName.length);
+            console.log("str: " +street.length);
+            console.log("c: " +city.length);
+            console.log("em : " +email.length);
+            console.log("ph: " +phone.length);
+            console.log("phoneVa: " +phoneValid.length);
+            console.log("buildingstreet: " +buildingStreet.length);
+            console.log("builcity: " +buildingCity.length);
+            console.log("aard: " +Aard.length);
+            console.log("numbr: " +number.length);
+            console.log("nmvrval: " +numberValid.length);
+            console.log("- - - - - - - - - - - -");
+            
         const enabledNewInvoice =
             Fee.length > 0 && 
             AardInvoice.length > 0;
@@ -503,7 +519,7 @@ class NewInvoice extends React.Component {
             <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
                 <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
                 <CardText className="Text" expandable={true}>
-                    <div className="info personalInfo">
+                    <div className="info personalInfoInvoice">
                         <div> 
                             <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
                             <div className="addressContactCard">{this.state.streetDummy}<br/>
@@ -631,7 +647,7 @@ class NewInvoice extends React.Component {
                 maxLength="12"
                 onKeyPress={this.updatePhone}
                 onChange={this.updatePhoneOnChange}
-                value={this.state.strippedPhone}
+                value={this.state.phone}
             />
             <TextField
                 name="email"
@@ -643,11 +659,10 @@ class NewInvoice extends React.Component {
             />
             <TextField
                 name="BTW"
-                floatingLabelText="BTW Numer"
+                floatingLabelText="BTW Nummer"
                 className={"form__TextField " + this.state.BTWClasses }
-                onChange={this.updateBTW}
+                onKeyPress={this.updateBTW}
                 maxLength="12"
-                value={this.state.BTW}
             />
             <TextField
                 name="number"

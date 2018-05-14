@@ -32,7 +32,7 @@ img {
     height: 11rem;
 }
 
-.personalInfo {
+.personalInfoInvoice {
     width: 50%;
     float: left;
 }
@@ -41,7 +41,7 @@ img {
     width: 50%;
 }
 
-.personalInfo:after {
+.personalInfoInvoice:after {
     content: "";
     background-color: #293541;
     position: absolute;
