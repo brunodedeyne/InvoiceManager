@@ -131,16 +131,9 @@ class NewPlan extends React.Component {
         }
     }
 
-    updatePhoneOnChange = (e) => {
-        console.log(this.state.phone.length);
-        if (parseInt(this.state.phone.substring(1, 2)) === 4){
-            if (this.state.phone.length === 12) this.setState({phoneValid: true})
-            else this.setState({phoneValid: false})
-        }
-        else if (parseInt(this.state.phone.substring(1, 2)) !== 4){
-            if (this.state.phone.length === 11) this.setState({phoneValid: true})
-            else this.setState({phoneValid: false})
-        }
+    updatePhoneOnChange = (e) => {               
+        this.setState({phone: e.target.value, phoneDummy: e.target.value});
+        if (this.state.phone.length === 11) this.setState({phoneValid: true})
     }
 
     updateEmail = (e) =>{ 
@@ -165,6 +158,7 @@ class NewPlan extends React.Component {
     }
 
     updateNumberOnChange = (e) => {
+        this.setState({number: e.target.value, numerDummy: e.target.value});
         if(e.target.value.length === 15) {
             var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", "")); 
             if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
@@ -205,7 +199,7 @@ class NewPlan extends React.Component {
         this.setState({Aard: e.target.value, AardDummy: e.target.value});
     }
     
-    componentDidMount () {
+    /*componentDidMount () {
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
         const options = {
@@ -267,7 +261,7 @@ class NewPlan extends React.Component {
             building.value = this.state.buildingStreet;
             this.setState({buildingCityDummy: newCityBuilding});
           })
-      }
+      }*/
     pushForm = (e) => {        
         const newArray = [];
         for (var i = 0;i < this.state.dossierNrs.length; i++){
@@ -334,33 +328,18 @@ class NewPlan extends React.Component {
         ];
         const { name, familyName, street, city, email, number, phone, phoneValid, buildingStreet, buildingCity, Aard, numberValid } = this.state;
         const enabled =
-            city.length > 0 &&
             name.length > 0 &&
             familyName.length > 0 &&
             street.length > 0 &&
-            email.length > 0 &&
-            number.length > 0 &&
-            phone.length > 14 &&
+            city.length > 0 &&
+            email.length > 0 &&   
+            phone.length > 11 &&  
+            phoneValid &&         
             buildingStreet.length > 0 &&
             buildingCity.length > 0 &&
-            Aard.length > 0 &&   
-            phoneValid &&           
+            Aard.length > 0 &&
+            number.length > 14 &&
             numberValid;
-            console.log("city: " + city.length);
-            console.log("name: " + name.length);
-            console.log("fn: " + familyName.length);
-            console.log("street: " + street.length);
-            console.log("email: " + email.length);
-            console.log("phone: " + phone.length);
-            console.log("number: " + number.length);
-         
-            console.log("buildstr: " + buildingStreet.length);
-            console.log("buildc: " + buildingCity.length);
-            console.log("aard: " + Aard.length);
-            console.log("numbervald: " + numberValid);
-            console.log("phonev: " + phoneValid);
-            console.log("en: " + enabled);
-            console.log("--------");
         return (            
             <section className="form__Container"> 
                 <form className="form" >
@@ -378,7 +357,6 @@ class NewPlan extends React.Component {
                             onChange={this.updateName}
                         />
                         <TextField
-                            autoComplete="name"
                             name="street"
                             id="street"
                             floatingLabelText="Straat *"

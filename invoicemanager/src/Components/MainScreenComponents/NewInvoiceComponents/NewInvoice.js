@@ -82,6 +82,7 @@ class NewInvoice extends React.Component {
             key: '',
 
             numberValid: false,
+            phoneValid: false,
 
             numberClasses: '',
             numberClassesCard: '',
@@ -173,7 +174,7 @@ class NewInvoice extends React.Component {
     }
 
     updateFamilyName = (e) =>{ 
-        this.setState({familyName: e.target.value, familyNameDummy: e.target.value});        
+        this.setState({familyName: e.target.value, familyNameDummy: e.target.value});
     }
 
     updateStreet = (e) =>{ 
@@ -185,10 +186,8 @@ class NewInvoice extends React.Component {
     }
 
     updatePhone = (e) =>{ 
-        if (e.target.value.substring(0,1) == 0) {  
-            const phone = document.getElementById('phone');
-            phone.maxLength = 12;          
-            if (parseInt(e.target.value.substring(1, 2)) === 5) {
+        if (e.target.value.substring(0,1) == 0) {           
+            if (parseInt(e.target.value.substring(1, 2)) !== 4) {
                 if (e.target.value.length === 6 || e.target.value.length === 9) e.target.value += ".";
                 if (e.target.value.length === 3) e.target.value += "/";
             }
@@ -196,22 +195,13 @@ class NewInvoice extends React.Component {
                 if (e.target.value.length === 8) e.target.value += ".";
                 if (e.target.value.length === 4) e.target.value += "/";
             }
-            this.setState({phone: "+32 " + e.target.value.substring(1), phoneDummy: "+32 " + e.target.value.substring(1)});
+            this.setState({phone: e.target.value, phoneDummy: e.target.value});
         }
+    }
 
-        if (e.target.value.substring(0,1) != 0){
-            const phone = document.getElementById('phone');
-            phone.maxLength = 11;
-            if (parseInt(e.target.value.substring(0, 1)) === 5) {
-                if (e.target.value.length === 5 || e.target.value.length === 8) e.target.value += ".";
-                if (e.target.value.length === 2) e.target.value += "/";
-            }
-            if (parseInt(e.target.value.substring(0, 1)) === 4) {
-                if (e.target.value.length === 7) e.target.value += ".";
-                if (e.target.value.length === 3) e.target.value += "/";
-            }
-            this.setState({phone: "+32 " + e.target.value, phoneDummy: "+32 " + e.target.value});        
-        }
+    updatePhoneOnChange = (e) => {               
+        this.setState({phone: e.target.value, phoneDummy: e.target.value});
+        if (this.state.phone.length === 11) this.setState({phoneValid: true})
     }
 
     updateEmail = (e) =>{ 
@@ -229,9 +219,14 @@ class NewInvoice extends React.Component {
         this.setState({email: e.target.value, emailDummy: e.target.value});
     }
 
-    updateNumber = (e) =>{ 
+    updateNumber = (e) =>{
         if (e.target.value.length === 2 || e.target.value.length === 5 || e.target.value.length === 12) e.target.value += "."; 
         if (e.target.value.length === 8) e.target.value += "-";
+        this.setState({number: e.target.value, numerDummy: e.target.value});
+    }
+
+    updateNumberOnChange = (e) => {
+        this.setState({number: e.target.value, numerDummy: e.target.value});
         if(e.target.value.length === 15) {
             var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", "")); 
             if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
@@ -247,7 +242,6 @@ class NewInvoice extends React.Component {
                 this.setState({ numberValid: true }); 
             }
         }
-        this.setState({number: e.target.value, numerDummy: e.target.value});
     }
 
     updateBTW = (e) =>{      
@@ -368,7 +362,7 @@ class NewInvoice extends React.Component {
 
 
     
-    componentDidMount () {
+    /*componentDidMount () {
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
         const options = {
@@ -430,37 +424,23 @@ class NewInvoice extends React.Component {
             building.value = this.state.buildingStreet;
             this.setState({buildingCityDummy: newCityBuilding});
           })
-      }
+      }*/
 
     render() {
-        const { name, familyName, street, city, email, number, phone, buildingStreet, buildingCity, Aard, numberValid, Fee, AardInvoice } = this.state;
+        const { name, familyName, street, city, email, number, phone, phoneValid, buildingStreet, buildingCity, Aard, numberValid, Fee, AardInvoice } = this.state;
         const enabledEditPlan =
-            city.length > 0 &&
             name.length > 0 &&
             familyName.length > 0 &&
             street.length > 0 &&
-            email.length > 0 &&
-            number.length > 0 &&
-            phone.length > 14 &&
+            city.length > 0 &&
+            email.length > 0 &&   
+            phone.length > 11 &&  
+            phoneValid &&         
             buildingStreet.length > 0 &&
             buildingCity.length > 0 &&
-            Aard.length > 0               ;
-            
-            console.log("city: " + city.length);
-            console.log("name: " + name.length);
-            console.log("fn: " + familyName.length);
-            console.log("street: " + street.length);
-            console.log("email: " + email.length);
-            console.log("phone: " + phone.length);
-            console.log("number: " + number.length);
-         
-            console.log("buildstr: " + buildingStreet.length);
-            console.log("buildc: " + buildingCity.length);
-            console.log("aard: " + Aard.length);
-            console.log("numbervald: " + numberValid);
-            console.log("--------");
-
-
+            Aard.length > 0 &&
+            number.length > 14 &&
+            numberValid;
         const enabledNewInvoice =
             Fee.length > 0 && 
             AardInvoice.length > 0;
@@ -567,14 +547,14 @@ class NewInvoice extends React.Component {
                             label="Nieuwe Factuur"
                             primary={true}
                             onClick={this.handleOpenNewInvoice}
-                            disabled={!this.state.enableNewInvoiceContactCard}
+                            disabled={this.state.enableNewInvoiceContactCard}
                         />
                         <FlatButton
                             label="Bewerk Plan"
                             primary={true}
                             keyboardFocused={true}
                             onClick={this.handleOpenEditPlan}
-                            disabled={!this.state.enableEditPlanContactCard}
+                            disabled={this.state.enableEditPlanContactCard}
                         />
                     </div>
                 </CardText>
@@ -649,7 +629,8 @@ class NewInvoice extends React.Component {
                 floatingLabelText="Telefoon *"
                 className="form__TextField"
                 maxLength="12"
-                onChange={this.updatePhone}
+                onKeyPress={this.updatePhone}
+                onChange={this.updatePhoneOnChange}
                 value={this.state.strippedPhone}
             />
             <TextField
@@ -672,7 +653,8 @@ class NewInvoice extends React.Component {
                 name="number"
                 floatingLabelText="Rijksregisternummer *"
                 className={"form__TextField " + this.state.numberClasses }
-                onChange={this.updateNumber}
+                onKeyPress={this.updateNumber}
+                onChange={this.updateNumberOnChange}
                 maxLength="15"
                 errorText={this.state.numberError}
                 value={this.state.number}
