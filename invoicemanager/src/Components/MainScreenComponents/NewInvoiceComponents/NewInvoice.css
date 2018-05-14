@@ -89,11 +89,14 @@ img {
 .Dropdown {
     text-align: center;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .Dropdown > div {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
     background-color: white;
+    font-size: 20px !important;
+    height: 55px !important;
 }
 
 button + div {

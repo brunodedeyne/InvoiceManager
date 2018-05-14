@@ -11,12 +11,15 @@ import './Header.css';
 import { auth } from '../../Firebase';
 
 class Header extends Component {
+  constructor (props){
+    super(props);
+  }
   render() {
     return (
       //<AuthUserContext.Consumer>
         <header className="header">
           <Logo text="Dedeyne - Coomans"/>
-          <p className="header__Title">Overzicht</p>
+          <p className="header__Title">{this.props.headerTitle}</p>
           <p className="header__Logout">
             <Logout className="header__Logout-Link"/>
           </p>

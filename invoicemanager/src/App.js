@@ -47,6 +47,8 @@ const App = () =>
             <Route
               exact path={routes.INVOICES}
               component={() => <Invoices />}
+             // render={(props) => ( <Profile headerTitle="Invoices"/> )}
+             render={(props) => <Invoices headerTitle="Invoices" {...props} />}             
             />          
           </div>
         </MuiThemeProvider>

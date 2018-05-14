@@ -91,7 +91,10 @@ class NewInvoice extends React.Component {
 
             openInvoice: false,
             openPlanEdit: false,
-            enabled: false
+            openConfirmationDialogInvoices: false,
+            enableNewInvoiceContactCard: false,
+            enableEditPlanContactCard:false,
+            enabled: false,
         };
 
         this.database = firebase.database().ref('/plannen');
@@ -131,15 +134,17 @@ class NewInvoice extends React.Component {
                     buildingCityDummy: this.state.plannen[i].buildingCity,
                     buildingCity: this.state.plannen[i].buildingCity,
 
-                    AardInvoiceDummy: this.state.plannen[i].Aard,
-                    AardInvoice: this.state.plannen[i].Aard,
+                    AardDummy: this.state.plannen[i].Aard,
+                    Aard: this.state.plannen[i].Aard,
 
                     DossierNrDummy: this.state.plannen[i].dossierNr,
                     DossierNr: this.state.plannen[i].dossierNr,
 
-                    key: this.state.plannen[i].key
+                    key: this.state.plannen[i].key,
+                    value: value,
+                    enableEditPlanContactCard: true,
+                    enableNewInvoiceContactCard: true
                 })
-                console.log(this.state.plannen[i]);
             }
         }
     }
@@ -159,89 +164,6 @@ class NewInvoice extends React.Component {
     handleReduce = () => {
         this.setState({expanded: false});
     };
-
-    updateFee = (e) =>{ 
-        this.setState({Fee: e.target.value});
-    }
-
-    updateAard = (e) =>{ 
-        this.setState({Aard: e.target.value});
-    }
-
-    handleOpenNewInvoice = () => {
-        this.setState({openInvoice: true});
-    };
-
-    handleOpenEditPlan = () => {
-        this.setState({openPlanEdit: true});
-    };
-
-    handleCloseNewInvoice = () => {
-        this.setState({openInvoice: false});
-    };
-
-    handleCloseEditPlan = () => {
-        this.setState({openPlanEdit: false});
-    };
-
-    pushInvoice = (e) => {
-        e.preventDefault();
-        let item = {
-            Fee: this.state.Fee,
-            AardInvoice: this.state.AardInvoice,
-            key: this.state.key
-        }
-        firebase.database().ref('invoices').push(item);
-
-        this.props.history.push('/overview');
-    }
-
-    handleEditPlan (){
-        var updateData = {
-            key: this.state.key,
-            dossierNr: this.state.DossierNr,
-            name: this.state.name,
-            familyName: this.state.familyName,
-            street: this.state.street,
-            city: this.state.city,
-            email: this.state.email,
-            phone: this.state.phone,
-            number: this.state.number,
-            BTW: this.state.BTW,
-            buildingStreet: this.state.buildingStreet,
-            buildingCity: this.state.buildingCity,
-            Aard: this.state.Aard
-        }
-        var newKey = firebase.database().ref().child('plannen').push().key;
-
-        var updates = {};
-        updates['/plannen/' + newKey] = updateData;
-        return firebase.database().ref().update(updates);
-    }
-
-    componentWillMount (){
-        const allPlans = this.state.plannen;
-
-        this.database.on('child_added', snapshot => {
-            allPlans.push({
-                key: snapshot.key,
-                dossierNr: snapshot.val().DossierNr,
-                name: snapshot.val().name,
-                familyName: snapshot.val().familyName,
-                street: snapshot.val().street,
-                city: snapshot.val().city,
-                email: snapshot.val().email,
-                phone: snapshot.val().phone,
-                number: snapshot.val().number,
-                BTW: snapshot.val().BTW,
-                buildingStreet: snapshot.val().buildingStreet,
-                buildingCity: snapshot.val().buildingCity,
-                Aard: snapshot.val().Aard
-            })
-
-            this.setState({plannen: allPlans});
-        })
-    }
 
     updateName = (e) =>{ 
         this.setState({name: e.target.value, nameDummy: e.target.value});
@@ -328,11 +250,11 @@ class NewInvoice extends React.Component {
     }
 
     updateBTW = (e) =>{      
-        if (e.target.value.substring(0,1) === 0){
+        if (e.target.value.substring(0,1) == 0){
             if (e.target.value.length ===  4 || e.target.value.length === 8)    e.target.value += ".";       
             this.setState({BTW: "BE " + e.target.value, BTWDummy: "BE " +  e.target.value});
         }
-        if (e.target.value.substring(0,1) !== 0){
+        if (e.target.value.substring(0,1) != 0){
             if (e.target.value.length ===  3 || e.target.value.length === 7)    e.target.value += ".";       
             this.setState({BTW: "BE 0" + e.target.value, BTWDummy: "BE 0" +  e.target.value});
         }
@@ -352,7 +274,98 @@ class NewInvoice extends React.Component {
 
     updateAardInvoice = (e) =>{ 
         this.setState({AardInvoice: e.target.value, AardInvoiceDummy: e.target.value});
+        console.log()
+        // if (this.state.AardInvoice.length != 0 && this.state.Fee.length != 0) this.setState({enabledNewInvoice: true})
+        // else this.setState({enabledNewInvoice: false})
     }
+
+    updateFee = (e) =>{ 
+        this.setState({Fee: e.target.value});
+        // if (this.state.AardInvoice.length != 0 && this.state.Fee.length != 0) this.setState({enabledNewInvoice: true})
+        // else this.setState({enabledNewInvoice: false})
+    }
+
+    handleOpenNewInvoice = () => {
+        this.setState({openInvoice: true});
+    };
+
+    handleOpenEditPlan = () => {
+        this.setState({openPlanEdit: true});
+    };
+
+    handleCloseNewInvoice = () => {
+        this.setState({openInvoice: false});
+    };
+
+    handleCloseEditPlan = () => {
+        this.setState({openPlanEdit: false});
+    };
+
+    handleCloseConfirmationDialogInvoices = () => {
+        this.setState({openConfirmationDialogInvoices: false, openInvoice: false})
+    }
+
+    pushInvoice = (e) => {
+        e.preventDefault();
+        let item = {
+            Fee: this.state.Fee,
+            AardInvoice: this.state.AardInvoice,
+            key: this.state.key
+        }
+        firebase.database().ref('invoices').push(item);
+
+        this.setState({openConfirmationDialogInvoices: true, handleOpenNewInvoice: false});
+
+        //this.props.history.push('/overview');
+    }
+
+    handleEditPlan (){
+        var updateData = {
+            key: this.state.key,
+            dossierNr: this.state.DossierNr,
+            name: this.state.name,
+            familyName: this.state.familyName,
+            street: this.state.street,
+            city: this.state.city,
+            email: this.state.email,
+            phone: this.state.phone,
+            number: this.state.number,
+            BTW: this.state.BTW,
+            buildingStreet: this.state.buildingStreet,
+            buildingCity: this.state.buildingCity,
+            aard: this.state.Aard
+        }
+        var newKey = firebase.database().ref().child('plannen').push().key;
+
+        var updates = {};
+        updates['/plannen/' + newKey] = updateData;
+        return firebase.database().ref().update()
+    }
+
+    componentWillMount (){
+        const allPlans = this.state.plannen;
+
+        this.database.on('child_added', snapshot => {
+            allPlans.push({
+                key: snapshot.key,
+                dossierNr: snapshot.val().DossierNr,
+                name: snapshot.val().name,
+                familyName: snapshot.val().familyName,
+                street: snapshot.val().street,
+                city: snapshot.val().city,
+                email: snapshot.val().email,
+                phone: snapshot.val().phone,
+                number: snapshot.val().number,
+                BTW: snapshot.val().BTW,
+                buildingStreet: snapshot.val().buildingStreet,
+                buildingCity: snapshot.val().buildingCity,
+                Aard: snapshot.val().aard
+            })
+            this.setState({plannen: allPlans});
+        })
+    }
+
+
     
     componentDidMount () {
         const input = document.getElementById('street');
@@ -419,6 +432,23 @@ class NewInvoice extends React.Component {
       }
 
     render() {
+        const { name, familyName, street, city, email, number, phone, buildingStreet, buildingCity, Aard, numberValid, Fee, AardInvoice } = this.state;
+        const enabledEditPlan =
+            city.length > 0 &&
+            name.length > 0 &&
+            familyName.length > 0 &&
+            street.length > 0 &&
+            email.length > 0 &&
+            number.length > 0 &&
+            phone.length > 14 &&
+            buildingStreet.length > 0 &&
+            buildingCity.length > 0 &&
+            Aard.length > 0 &&              
+            numberValid;
+        const enabledNewInvoice =
+            Fee.length > 0 && 
+            AardInvoice.length > 0;
+            console.log(!enabledNewInvoice);
         const actionsNewInvoice = [
             <FlatButton
                 label="Nieuwe Factuur"
@@ -438,33 +468,24 @@ class NewInvoice extends React.Component {
               label="Wijzig Plan"
               primary={true}
               onClick={this.handleEditPlan}
-              disabled={false}
+              disabled={!enabledEditPlan}
             />,
             <FlatButton
                 label="Annuleer"
-                secondary={true}
+                primary={true}
                 keyboardFocused={true}
                 onClick={this.handleCloseEditPlan}
           />,
         ];
-        const { name, familyName, street, city, email, number, phone, buildingStreet, buildingCity, Aard, numberValid, Fee, AardInvoice } = this.state;
-        const enabledEditPlan =
-            city.length > 0 &&
-            name.length > 0 &&
-            familyName.length > 0 &&
-            street.length > 0 &&
-            email.length > 0 &&
-            number.length > 0 &&
-            phone.length > 14 &&
-            buildingStreet.length > 0 &&
-            buildingCity.length > 0 &&
-            Aard.length > 0 &&              
-            numberValid;
-        const enabledNewInvoice =
-            Fee.length > 0;
-            console.log(Fee.length);
-            console.log(Fee.length > 0)
-
+        const actionsConfirmationDialogInvoices = [
+            <FlatButton
+                label="Ok"
+                secondary={true}
+                keyboardFocused={true}
+                onClick={this.handleCloseConfirmationDialogInvoices}
+          />,
+        ];
+        
         return (
         <section className="form__Container">  
             <div className="Dropdown">  
@@ -523,7 +544,7 @@ class NewInvoice extends React.Component {
                         </div>
                         <div>
                             <img src={AardIcon} alt="Aard Icon"/>
-                            <div className="aardContactCard">{this.state.AardInvoiceDummy}</div>
+                            <div className="aardContactCard">{this.state.AardDummy}</div>
                         </div>
                     </div>
                     <div className="actionButtonsInvoice">
@@ -531,25 +552,19 @@ class NewInvoice extends React.Component {
                             label="Nieuwe Factuur"
                             primary={true}
                             onClick={this.handleOpenNewInvoice}
+                            disabled={!this.state.enableNewInvoiceContactCard}
                         />
                         <FlatButton
                             label="Bewerk Plan"
                             primary={true}
                             keyboardFocused={true}
                             onClick={this.handleOpenEditPlan}
+                            disabled={!this.state.enableEditPlanContactCard}
                         />
                     </div>
                 </CardText>
             </Card>
         </div>
-        {/* <form className="form" autoComplete="off">
-            <div className="form__Plan">
-
-            </div>
-            <div className="SubmitButton">
-                <button enabled="false" className="RaisedButton" onSubmit={(event) => this.auth(event) } ref={(form) => {this.loginForm = form}} href="/NewPlan">NIEUWE FACTUUR</button>
-            </div>
-        </form> */}
         <Dialog
             title={"Factuur voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
             actions={actionsNewInvoice}
@@ -563,6 +578,7 @@ class NewInvoice extends React.Component {
                     floatingLabelText="Ereloon"
                     className="form__TextField"
                     onChange={this.updateFee}
+                    type="number"
                 />
                 <TextField
                     name="AardInvoice"
@@ -674,6 +690,14 @@ class NewInvoice extends React.Component {
                 value={this.state.Aard}
             />
             </div>
+        </Dialog>
+        <Dialog
+          actions={actionsConfirmationDialogInvoices}
+          modal={false}
+          open={this.state.openConfirmationDialogInvoices}
+          onRequestClose={this.handleCloseConfirmationDialogInvoices}
+        >
+          Factuur voor {this.state.name + " " + this.state.familyName + " Is aangemaakt!"}
         </Dialog>
         </section>
       );

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
-import CircularProgress from 'material-ui/CircularProgress';
 
 import {
   Table,
@@ -184,6 +183,7 @@ class Invoices extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
+              {this.props.headerTitle}
               {/* <TableHeaderColumn tooltip="Het dossiernummer van deze cliënt">Dossier Nummer</TableHeaderColumn>
               <TableHeaderColumn tooltip="De naam van deze cliënt">Naam</TableHeaderColumn>
               <TableHeaderColumn tooltip="Het adres van deze cliënt">Adres</TableHeaderColumn>
@@ -224,11 +224,6 @@ class Invoices extends React.Component {
               ))}
           </TableBody>
         </Table>
-        <div>
-    <CircularProgress />
-    <CircularProgress size={60} thickness={7} />
-    <CircularProgress size={80} thickness={5} />
-  </div>
       </div>
     );
   }
