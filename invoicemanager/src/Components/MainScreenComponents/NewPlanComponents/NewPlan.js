@@ -71,6 +71,7 @@ class NewPlan extends React.Component {
             open: false,
 
             numberValid: false,
+            phoneValid: false,
 
             numberClasses: '',
             numberClassesCard: '',
@@ -117,10 +118,8 @@ class NewPlan extends React.Component {
     }
 
     updatePhone = (e) =>{ 
-        if (e.target.value.substring(0,1) == 0) {  
-            const phone = document.getElementById('phone');
-            phone.maxLength = 12;          
-            if (parseInt(e.target.value.substring(1, 2)) === 5) {
+        if (e.target.value.substring(0,1) == 0) {           
+            if (parseInt(e.target.value.substring(1, 2)) !== 4) {
                 if (e.target.value.length === 6 || e.target.value.length === 9) e.target.value += ".";
                 if (e.target.value.length === 3) e.target.value += "/";
             }
@@ -128,21 +127,19 @@ class NewPlan extends React.Component {
                 if (e.target.value.length === 8) e.target.value += ".";
                 if (e.target.value.length === 4) e.target.value += "/";
             }
-            this.setState({phone: "+32 " + e.target.value.substring(1), phoneDummy: "+32 " + e.target.value.substring(1)});
+            this.setState({phone: e.target.value, phoneDummy: e.target.value});
         }
+    }
 
-        if (e.target.value.substring(0,1) != 0){
-            const phone = document.getElementById('phone');
-            phone.maxLength = 11;
-            if (parseInt(e.target.value.substring(0, 1)) === 5) {
-                if (e.target.value.length === 5 || e.target.value.length === 8) e.target.value += ".";
-                if (e.target.value.length === 2) e.target.value += "/";
-            }
-            if (parseInt(e.target.value.substring(0, 1)) === 4) {
-                if (e.target.value.length === 7) e.target.value += ".";
-                if (e.target.value.length === 3) e.target.value += "/";
-            }
-            this.setState({phone: "+32 " + e.target.value, phoneDummy: "+32 " + e.target.value});        
+    updatePhoneOnChange = (e) => {
+        console.log(this.state.phone.length);
+        if (parseInt(this.state.phone.substring(1, 2)) === 4){
+            if (this.state.phone.length === 12) this.setState({phoneValid: true})
+            else this.setState({phoneValid: false})
+        }
+        else if (parseInt(this.state.phone.substring(1, 2)) !== 4){
+            if (this.state.phone.length === 11) this.setState({phoneValid: true})
+            else this.setState({phoneValid: false})
         }
     }
 
@@ -161,9 +158,13 @@ class NewPlan extends React.Component {
         this.setState({email: e.target.value, emailDummy: e.target.value});
     }
 
-    updateNumber = (e) =>{ 
+    updateNumber = (e) =>{
         if (e.target.value.length === 2 || e.target.value.length === 5 || e.target.value.length === 12) e.target.value += "."; 
         if (e.target.value.length === 8) e.target.value += "-";
+        this.setState({number: e.target.value, numerDummy: e.target.value});
+    }
+
+    updateNumberOnChange = (e) => {
         if(e.target.value.length === 15) {
             var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", "")); 
             if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
@@ -179,7 +180,6 @@ class NewPlan extends React.Component {
                 this.setState({ numberValid: true }); 
             }
         }
-        this.setState({number: e.target.value, numerDummy: e.target.value});
     }
 
     updateBTW = (e) =>{      
@@ -272,7 +272,6 @@ class NewPlan extends React.Component {
         const newArray = [];
         for (var i = 0;i < this.state.dossierNrs.length; i++){
             newArray.push(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
-            console.log("test" + parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
         }
         var maxDossierNr = Math.max.apply(Math, newArray);
 
@@ -300,7 +299,6 @@ class NewPlan extends React.Component {
     }
 
     componentWillMount (){
-        console.log("tpugszdpq");
         const dossiern = this.state.dossierNrs;
 
         this.database.on('child_added', snapshot => {
@@ -334,7 +332,7 @@ class NewPlan extends React.Component {
                 onClick={this.pushForm}
           />,
         ];
-        const { name, familyName, street, city, email, number, phone, buildingStreet, buildingCity, Aard, numberValid } = this.state;
+        const { name, familyName, street, city, email, number, phone, phoneValid, buildingStreet, buildingCity, Aard, numberValid } = this.state;
         const enabled =
             city.length > 0 &&
             name.length > 0 &&
@@ -345,8 +343,24 @@ class NewPlan extends React.Component {
             phone.length > 14 &&
             buildingStreet.length > 0 &&
             buildingCity.length > 0 &&
-            Aard.length > 0 &&              
+            Aard.length > 0 &&   
+            phoneValid &&           
             numberValid;
+            console.log("city: " + city.length);
+            console.log("name: " + name.length);
+            console.log("fn: " + familyName.length);
+            console.log("street: " + street.length);
+            console.log("email: " + email.length);
+            console.log("phone: " + phone.length);
+            console.log("number: " + number.length);
+         
+            console.log("buildstr: " + buildingStreet.length);
+            console.log("buildc: " + buildingCity.length);
+            console.log("aard: " + Aard.length);
+            console.log("numbervald: " + numberValid);
+            console.log("phonev: " + phoneValid);
+            console.log("en: " + enabled);
+            console.log("--------");
         return (            
             <section className="form__Container"> 
                 <form className="form" >
@@ -387,7 +401,8 @@ class NewPlan extends React.Component {
                             floatingLabelText="Telefoon *"
                             className="form__TextField"
                             maxLength="12"
-                            onChange={this.updatePhone}
+                            onKeyPress={this.updatePhone}
+                            onChange={this.updatePhoneOnChange}
                         />
                         <TextField
                             name="email"
@@ -398,16 +413,17 @@ class NewPlan extends React.Component {
                         />
                         <TextField
                             name="BTW"
-                            floatingLabelText="BTW Numer"
+                            floatingLabelText="BTW Nummer"
                             className={"form__TextField " + this.state.BTWClasses }
-                            onChange={this.updateBTW}
+                            onKeyPress={this.updateBTW}
                             maxLength="12"
                         />
                         <TextField
                             name="number"
                             floatingLabelText="Rijksregisternummer *"
                             className={"form__TextField " + this.state.numberClasses }
-                            onChange={this.updateNumber}
+                            onKeyPress={this.updateNumber}
+                            onChange={this.updateNumberOnChange}
                             maxLength="15"
                             errorText={this.state.numberError}
                         />

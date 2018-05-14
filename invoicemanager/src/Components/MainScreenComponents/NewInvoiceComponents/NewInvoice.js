@@ -49,12 +49,14 @@ class NewInvoice extends React.Component {
 
             phoneDummy: '+32 498/123.456',
             phone: '',
+            strippedPhone: '',
 
             emailDummy: 'Johndoe@gmail.com',
             email: '', 
             
             BTWDummy: 'BE 0999.999.999',
             BTW: '',
+            strippedBTW: '',
 
             numerDummy: '97.11.21-275.45',
             number: '',
@@ -103,6 +105,7 @@ class NewInvoice extends React.Component {
     handleChange = (event, index, value) => {
         for (var i = 0; i < this.state.plannen.length; i++){
             if (this.state.plannen[i].key === value){
+                this.setState({strippedPhone: "0" + this.state.plannen[i].phone.substring(4).split('.').join("").split('/').join("")});
                 this.setState({
                     nameDummy : this.state.plannen[i].name,
                     name: this.state.plannen[i].name,
@@ -170,9 +173,7 @@ class NewInvoice extends React.Component {
     }
 
     updateFamilyName = (e) =>{ 
-        this.setState({familyName: e.target.value, familyNameDummy: e.target.value});
-        console.log("FMMMMMM" +this.state.familyName);
-        console.log("FMMMMMM" +this.state.familyName.length == 0);
+        this.setState({familyName: e.target.value, familyNameDummy: e.target.value});        
     }
 
     updateStreet = (e) =>{ 
@@ -443,12 +444,26 @@ class NewInvoice extends React.Component {
             phone.length > 14 &&
             buildingStreet.length > 0 &&
             buildingCity.length > 0 &&
-            Aard.length > 0 &&              
-            numberValid;
+            Aard.length > 0               ;
+            
+            console.log("city: " + city.length);
+            console.log("name: " + name.length);
+            console.log("fn: " + familyName.length);
+            console.log("street: " + street.length);
+            console.log("email: " + email.length);
+            console.log("phone: " + phone.length);
+            console.log("number: " + number.length);
+         
+            console.log("buildstr: " + buildingStreet.length);
+            console.log("buildc: " + buildingCity.length);
+            console.log("aard: " + Aard.length);
+            console.log("numbervald: " + numberValid);
+            console.log("--------");
+
+
         const enabledNewInvoice =
             Fee.length > 0 && 
             AardInvoice.length > 0;
-            console.log(!enabledNewInvoice);
         const actionsNewInvoice = [
             <FlatButton
                 label="Nieuwe Factuur"
@@ -594,6 +609,7 @@ class NewInvoice extends React.Component {
             modal={false}
             open={this.state.openPlanEdit}
             onRequestClose={this.handleCloseEditPlan}
+            autoScrollBodyContent={true}
         >
         <div className="formEditPlan">
             <TextField
@@ -634,7 +650,7 @@ class NewInvoice extends React.Component {
                 className="form__TextField"
                 maxLength="12"
                 onChange={this.updatePhone}
-                value={this.state.phone}
+                value={this.state.strippedPhone}
             />
             <TextField
                 name="email"
