@@ -1,0 +1,32 @@
+.ContainerClients > div{
+    background-color: #dcdcdc;
+}
+
+.DossierNrColumn {
+    width: 50px;
+}
+
+.NaamColumn {
+    width: 97px;       
+}
+
+.AdresColumn {
+    width: 150px;
+    padding: 0 !important;
+}
+
+.GebouwAdresColumn {
+    padding: 0 !important;   
+}
+
+.AardColumn {
+    padding: 0 !important;   
+}
+
+.PhoneColumn {
+    width: 95px;
+}
+
+.table {
+    border-top: 1px solid rgb(158, 158, 158);
+}

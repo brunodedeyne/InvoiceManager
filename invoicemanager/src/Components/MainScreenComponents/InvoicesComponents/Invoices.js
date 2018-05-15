@@ -27,15 +27,6 @@ const styles = {
   },
 };
 
-const tableData = [
-  {
-    name: 'John Smith',
-    status: 'Employed',
-  }
-];
-
-
-
 class Invoices extends React.Component {
   constructor(props) {
     super(props);
@@ -50,7 +41,7 @@ class Invoices extends React.Component {
         enableSelectAll: false,
         deselectOnClickaway: true,
         showCheckboxes: false,
-        height: '500px',
+        height: '100%',
         nameDummy : 'John',
         name: '',
 
@@ -89,6 +80,8 @@ class Invoices extends React.Component {
         
         feeDummy: '',
         fee: '',
+
+        planKey: '',
 
         invoices: [],
         plannen: []
@@ -140,12 +133,13 @@ class Invoices extends React.Component {
             buildingCity: snapshot.val().buildingCity,
             Aard: snapshot.val().Aard,*/
             AardInvoices: snapshot.val().AardInvoice,
-            fee: snapshot.val().Fee
+            fee: snapshot.val().Fee,
+            planKey: snapshot.val().key
         })
-
         this.setState({invoices: allInvoices});
     })
-    console.log(" + " + this.state.plannen.length);
+    console.log(" + " + allPlans.length);
+    
     for (var i; i < this.state.invoices.length + 1; i++){
       console.log("invies" + this.state.invoices[i]);
           
@@ -167,7 +161,7 @@ class Invoices extends React.Component {
   };
   render() {
     return (
-      <div>
+      <div className="ContainerInvoices">
         <Table
           className="table"
           height={this.state.height}
@@ -219,7 +213,7 @@ class Invoices extends React.Component {
                 <TableRowColumn>{row.key}</TableRowColumn>
                 <TableRowColumn>{row.AardInvoices}</TableRowColumn>
                 <TableRowColumn>€{row.fee}</TableRowColumn>
-                <TableRowColumn>€{row.name}</TableRowColumn>
+                <TableRowColumn>{row.planKey}</TableRowColumn>
               </TableRow>
               ))}
           </TableBody>

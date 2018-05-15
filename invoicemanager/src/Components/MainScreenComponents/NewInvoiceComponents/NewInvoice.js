@@ -15,26 +15,27 @@ import DossierIcon from "../../../assets/img/dossier.png";
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import {withRouter} from 'react-router-dom';
+import AutoComplete from 'material-ui/AutoComplete';
 
 //Import CSS
 import './NewInvoice.css';
-import * as firebase from 'firebase';
-
-const styles = {
-    customWidth: {
-      width: 500,
-    },
-  };
-  
+import * as firebase from 'firebase';  
+const dataSourceConfig = {
+    text: 'street',
+    value: 'street',
+};
+const dataSourceConfig2 = {
+    text: 'familyName',
+    value: 'familyName',
+};
 
 class NewInvoice extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             expanded: true,
-            value: 10,
             plannen: [],
-            value: 1,
+            value: "Default",
             nameDummy : 'John',
             name: '',
 
@@ -97,6 +98,7 @@ class NewInvoice extends React.Component {
             openConfirmationDialogInvoices: false,
             enableNewInvoiceContactCard: true,
             enableEditPlanContactCard:true,
+            openSuccessInvoice: false,
             enabled: false,
         };
 
@@ -286,6 +288,10 @@ class NewInvoice extends React.Component {
         this.setState({openInvoice: true});
     };
 
+    handleOpenConfirmationDialogInvoices = () => {
+        this.setState({openConfirmationDialogInvoices: true});
+    };
+
     handleOpenEditPlan = () => {
         this.setState({openPlanEdit: true});
     };
@@ -299,7 +305,11 @@ class NewInvoice extends React.Component {
     };
 
     handleCloseConfirmationDialogInvoices = () => {
-        this.setState({openConfirmationDialogInvoices: false, openInvoice: false})
+        this.setState({openConfirmationDialogInvoices: false})
+    }
+
+    handleCloseSuccessInvoice = () => {
+        this.setState({openSuccessInvoice: false})
     }
 
     pushInvoice = (e) => {
@@ -311,15 +321,14 @@ class NewInvoice extends React.Component {
         }
         firebase.database().ref('invoices').push(item);
 
-        this.setState({openConfirmationDialogInvoices: true, handleOpenNewInvoice: false});
+        this.setState({openConfirmationDialogInvoices: false, openInvoice: false, openSuccessInvoice: true});
 
         //this.props.history.push('/overview');
     }
 
-    handleEditPlan (){
-        var updateData = {
-            key: this.state.key,
-            dossierNr: this.state.DossierNr,
+    handleEditPlan = () => {
+        firebase.database().ref().child('/plannen/' + this.state.key)
+        .set({ dossierNr: this.state.DossierNr,
             name: this.state.name,
             familyName: this.state.familyName,
             street: this.state.street,
@@ -330,18 +339,13 @@ class NewInvoice extends React.Component {
             BTW: this.state.BTW,
             buildingStreet: this.state.buildingStreet,
             buildingCity: this.state.buildingCity,
-            aard: this.state.Aard
-        }
-        var newKey = firebase.database().ref().child('plannen').push().key;
-
-        var updates = {};
-        updates['/plannen/' + newKey] = updateData;
-        return firebase.database().ref().update()
+            aard: this.state.Aard, 
+            DossierNr: this.state.DossierNr    });
+        this.setState({openPlanEdit: false});
     }
 
     componentWillMount (){
         const allPlans = this.state.plannen;
-
         this.database.on('child_added', snapshot => {
             allPlans.push({
                 key: snapshot.key,
@@ -442,20 +446,7 @@ class NewInvoice extends React.Component {
             buildingCity.length > 0 &&
             Aard.length > 0 &&
             number.length > 14 &&
-            numberValid;
-            console.log("name: " +name.length);
-            console.log("fname: " +familyName.length);
-            console.log("str: " +street.length);
-            console.log("c: " +city.length);
-            console.log("em : " +email.length);
-            console.log("ph: " +phone.length);
-            console.log("phoneVa: " +phoneValid.length);
-            console.log("buildingstreet: " +buildingStreet.length);
-            console.log("builcity: " +buildingCity.length);
-            console.log("aard: " +Aard.length);
-            console.log("numbr: " +number.length);
-            console.log("nmvrval: " +numberValid.length);
-            console.log("- - - - - - - - - - - -");
+            numberValid;   
             
         const enabledNewInvoice =
             Fee.length > 0 && 
@@ -464,7 +455,7 @@ class NewInvoice extends React.Component {
             <FlatButton
                 label="Nieuwe Factuur"
                 primary={true}
-                onClick={this.pushInvoice}
+                onClick={this.handleOpenConfirmationDialogInvoices}
                 disabled={!enabledNewInvoice}
             />,
             <FlatButton
@@ -490,30 +481,54 @@ class NewInvoice extends React.Component {
         ];
         const actionsConfirmationDialogInvoices = [
             <FlatButton
-                label="Ok"
+                label="Bevestigen"
                 secondary={true}
                 keyboardFocused={true}
+                onClick={this.pushInvoice}
+            />,
+            <FlatButton
+                label="Annuleer"
+                primary={true}
+                keyboardFocused={true}
                 onClick={this.handleCloseConfirmationDialogInvoices}
-          />,
+            />
         ];
+
+        const actionsSuccessInvoices = [
+            <FlatButton
+                label="OK"
+                primary={true}
+                keyboardFocused={true}
+                onClick={this.handleCloseSuccessInvoice}
+            />
+        ]
         
         return (
         <section className="form__Container">  
+        <div className="labelDropDown">Kies Uw Cliënt: </div>
             <div className="Dropdown">  
-                <DropDownMenu
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    style={styles.customWidth}
-                    autoWidth={false}
-                >
-                    {
-                        this.state.plannen.map((plan) => {
-                            return (
-                                <MenuItem value={plan.key} primaryText={plan.dossierNr + ", " + plan.familyName + " " + plan.name}  />
-                            )
-                        })
-                    }
-                </DropDownMenu>
+                    <DropDownMenu
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        autoWidth={false}
+                    >
+                        {
+                            this.state.plannen.map((plan) => {
+                                return (
+                                    <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.familyName + " " + plan.name}  />
+                                )
+                            })
+                        }
+                    </DropDownMenu>
+            </div>
+            <div className="labelSearchName">
+                <AutoComplete
+                    floatingLabelText="Zoek op Naam of Dossier"
+                    dataSourceConfig={dataSourceConfig}
+                    dataSource={this.state.plannen}
+                    filter={AutoComplete.caseInsensitiveFilter}
+                    className="form__TextFieldSearchName"
+                />
             </div>
             <div className="contactCardInvoice">
             <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
@@ -705,12 +720,22 @@ class NewInvoice extends React.Component {
             </div>
         </Dialog>
         <Dialog
-          actions={actionsConfirmationDialogInvoices}
-          modal={false}
-          open={this.state.openConfirmationDialogInvoices}
-          onRequestClose={this.handleCloseConfirmationDialogInvoices}
-        >
-          Factuur voor {this.state.name + " " + this.state.familyName + " Is aangemaakt!"}
+            title={"Factuur Bevestiging voor " + this.state.name + " " + this.state.familyName}
+            actions={actionsConfirmationDialogInvoices}
+            modal={false}
+            open={this.state.openConfirmationDialogInvoices}
+            onRequestClose={this.handleCloseConfirmationDialogInvoices}
+        >   
+          <strong>Ereloon:   </strong>€{this.state.Fee} <br />
+          <strong>Aard:      </strong>{this.state.AardInvoice} <br />
+        </Dialog>
+        <Dialog
+            actions={actionsSuccessInvoices}
+            modal={false}
+            open={this.state.openSuccessInvoice}
+            onRequestClose={this.handleSuccessInvoice}
+        >   
+          <strong>Factuur van {this.state.name + " " + this.state.familyName + " - " + this.state.Fee + " Is aangemaakt!"}</strong>
         </Dialog>
         </section>
       );

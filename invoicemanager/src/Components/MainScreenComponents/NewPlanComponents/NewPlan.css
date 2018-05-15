@@ -68,10 +68,9 @@ input:-webkit-autofill {
     margin-top: 4px;
 }
 
-.form {
+.formNewPlan {
     display: inline-block;
     width: 100%;
-    margin-top: 1rem;
     min-width: 380px;
     margin-bottom: 25px;
 }
@@ -85,33 +84,25 @@ input:-webkit-autofill {
     height: 85px !important;
 }
 
-.buildingStreet {
+.buildingStreetNewPlan {
     border-top: 1px solid #293541;
 }
 
-.number {
+.numberNewPlan {
     margin-bottom: 35px;
 }
 
-/* .form__TextField__NewPlan:nth-child(2n+1) input{
-    text-align: right;
-}
-
-.form__TextField__NewPlan:nth-child(2n+1) label{
-    float: right;
-} */
-
-.form__Personal {
+.form__PersonalNewPlan {
     padding-left: 3rem;
     height: 25rem;
 }
 
-.form__Plan {
+.form__PlanNewPlan {
     padding-left: 3rem;
     height: 14rem;
 }
 
-.form__Container {
+.form__ContainerNewPlan {
     margin-left: 14rem;
     background-color: #dcdcdc;
 }
@@ -133,7 +124,7 @@ input:-webkit-autofill {
     -o-transition-duration: 0.2s;
     transition-duration: 0.2s;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 55px;
 }
 
 .RaisedButton:hover {
@@ -193,15 +184,19 @@ label {
         width: 45% !important;
     }
 
-    .buildingStreet {
+    .buildingStreetNewPlan {
         border-top: 0;
     }
 
-    .form__Plan:after {
+    .form__PlanNewPlan:after {
         content: "";
         background-color: #293541;
         width: 95%;
         height: 1px;
         display: block;
+    }
+
+    .RaisedButton {
+        margin-top: 0;
     }
 }

@@ -289,7 +289,7 @@ class NewPlan extends React.Component {
         }
         firebase.database().ref('plannen').push(item);
 
-        this.props.history.push('/overview');
+        this.props.history.push('/clients');
     }
 
     componentWillMount (){
@@ -341,9 +341,9 @@ class NewPlan extends React.Component {
             number.length > 14 &&
             numberValid;
         return (            
-            <section className="form__Container"> 
-                <form className="form" >
-                    <div className="form__Personal">
+            <section className="form__ContainerNewPlan"> 
+                <form className="formNewPlan" >
+                    <div className="form__PersonalNewPlan">
                         <TextField
                             name="familyName"
                             floatingLabelText="Naam *"
@@ -399,7 +399,7 @@ class NewPlan extends React.Component {
                         <TextField
                             name="number"
                             floatingLabelText="Rijksregisternummer *"
-                            className={"form__TextField__NewPlan number " + this.state.numberClasses }
+                            className={"form__TextField__NewPlan numberNewPlan " + this.state.numberClasses }
                             onKeyPress={this.updateNumber}
                             onChange={this.updateNumberOnChange}
                             maxLength="15"
@@ -407,12 +407,12 @@ class NewPlan extends React.Component {
                         />
                     </div>
                     <div className="border"></div>
-                    <div className="form__Plan">
+                    <div className="form__PlanNewPlan">
                         <TextField
                             name="buildingStreet"
                             id="buildingStreet"
                             floatingLabelText="Ligging *"
-                            className="form__TextField__NewPlan buildingStreet"
+                            className="form__TextField__NewPlan buildingStreetNewPlan"
                             onChange={this.updateBuildingStreet}
                             placeholder=""
                             autoComplete="email"

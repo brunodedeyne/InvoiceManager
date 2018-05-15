@@ -49,7 +49,7 @@ export default class TableExampleComplex extends Component {
         enableSelectAll: false,
         deselectOnClickaway: true,
         showCheckboxes: false,
-        height: '500px',
+        height: '100%',
         nameDummy : 'John',
         name: '',
 
@@ -111,7 +111,7 @@ export default class TableExampleComplex extends Component {
             BTW: snapshot.val().BTW,
             buildingStreet: snapshot.val().buildingStreet,
             buildingCity: snapshot.val().buildingCity,
-            Aard: snapshot.val().Aard
+            Aard: snapshot.val().aard
         })
 
         this.setState({plannen: allPlans});
@@ -125,7 +125,7 @@ export default class TableExampleComplex extends Component {
   };
   render() {
     return (
-      <div>
+      <div className="ContainerClients">
         <Table
           className="table"
           height={this.state.height}
@@ -141,15 +141,12 @@ export default class TableExampleComplex extends Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn tooltip="Het dossiernummer van deze cliënt">Dossier Nummer</TableHeaderColumn>
-              <TableHeaderColumn tooltip="De naam van deze cliënt">Naam</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Het adres van deze cliënt">Adres</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Het emailadres van deze cliënt">Email</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Het telefoonummer van deze cliënt">Telefoon</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Het rijksregisternummer van deze cliënt">Rijksregisternummer</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Het BTW nummer van deze cliënt">BTW nummer</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Het adres van het gebouw">Adres Gebouw</TableHeaderColumn>
-              <TableHeaderColumn tooltip="De aard van het plan">Aard</TableHeaderColumn>
+              <TableHeaderColumn className="DossierNrColumn" tooltip="Het dossiernummer van deze cliënt">Dossier <br/>Nummer</TableHeaderColumn>
+              <TableHeaderColumn className="NaamColumn" tooltip="De naam van deze cliënt">Naam</TableHeaderColumn>
+              <TableHeaderColumn className="AdresColumn" tooltip="Het adres van deze cliënt">Adres</TableHeaderColumn>
+              <TableHeaderColumn className="PhoneColumn" tooltip="Het Telefoonnummer van deze cliënt">Telefoon</TableHeaderColumn>
+              <TableHeaderColumn className="GebouwAdresColumn" tooltip="Het adres van het gebouw">Adres Gebouw</TableHeaderColumn>
+              <TableHeaderColumn className="AardColumn" tooltip="De aard van het plan">Aard</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -160,15 +157,14 @@ export default class TableExampleComplex extends Component {
           >
             {this.state.plannen.map( (row, index) => (
               <TableRow key={index}>
-                <TableRowColumn>{row.dossierNr}</TableRowColumn>
-                <TableRowColumn>{row.name + " " + row.familyName}</TableRowColumn>
-                <TableRowColumn>{row.street + ", " + row.city}</TableRowColumn>
-                <TableRowColumn>{row.email}</TableRowColumn>
-                <TableRowColumn>{row.phone}</TableRowColumn>
-                <TableRowColumn>{row.number}</TableRowColumn>
-                <TableRowColumn>{row.BTW}</TableRowColumn>
-                <TableRowColumn>{row.buildingStreet + ", " + row.buildingCity}</TableRowColumn>
-                <TableRowColumn>{row.Aard}</TableRowColumn>
+                <TableRowColumn className="DossierNrColumn">{row.dossierNr}</TableRowColumn>
+                <TableRowColumn className="NaamColumn">{row.name + " " + row.familyName}</TableRowColumn>
+                <TableRowColumn className="AdresColumn">{row.street}<br/>
+                  {row.city}</TableRowColumn>
+                <TableRowColumn className="PhoneColumn">{row.phone}</TableRowColumn>
+                <TableRowColumn className="GebouwAdresColumn">{row.buildingStreet}<br/>
+                  {row.buildingCity}</TableRowColumn>
+                <TableRowColumn className="AardColumn">{row.Aard}</TableRowColumn>
               </TableRow>
               ))}
           </TableBody>
