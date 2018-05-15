@@ -347,20 +347,20 @@ class NewPlan extends React.Component {
                         <TextField
                             name="familyName"
                             floatingLabelText="Naam *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             onChange={this.updateFamilyName}
                         />
                         <TextField
                             name="name"
                             floatingLabelText="Voornaam *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             onChange={this.updateName}
                         />
                         <TextField
                             name="street"
                             id="street"
                             floatingLabelText="Straat *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             onChange={this.updateStreet}
                             type="text"
                             placeholder=""
@@ -369,7 +369,7 @@ class NewPlan extends React.Component {
                         <TextField
                             name="city"
                             floatingLabelText="Gemeente *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             onChange={this.updateCity}
                             value={this.state.city}
                         />
@@ -377,7 +377,7 @@ class NewPlan extends React.Component {
                             name="phone"
                             id="phone"
                             floatingLabelText="Telefoon *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             maxLength="12"
                             onKeyPress={this.updatePhone}
                             onChange={this.updatePhoneOnChange}
@@ -385,21 +385,21 @@ class NewPlan extends React.Component {
                         <TextField
                             name="email"
                             floatingLabelText="Email *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             onChange={this.updateEmail}
                             type="email"
                         />
                         <TextField
                             name="BTW"
                             floatingLabelText="BTW Nummer"
-                            className={"form__TextField " + this.state.BTWClasses }
+                            className={"form__TextField__NewPlan " + this.state.BTWClasses }
                             onKeyPress={this.updateBTW}
                             maxLength="12"
                         />
                         <TextField
                             name="number"
                             floatingLabelText="Rijksregisternummer *"
-                            className={"form__TextField " + this.state.numberClasses }
+                            className={"form__TextField__NewPlan number " + this.state.numberClasses }
                             onKeyPress={this.updateNumber}
                             onChange={this.updateNumberOnChange}
                             maxLength="15"
@@ -412,7 +412,7 @@ class NewPlan extends React.Component {
                             name="buildingStreet"
                             id="buildingStreet"
                             floatingLabelText="Ligging *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan buildingStreet"
                             onChange={this.updateBuildingStreet}
                             placeholder=""
                             autoComplete="email"
@@ -420,29 +420,30 @@ class NewPlan extends React.Component {
                         <TextField
                             name="buildingCity"
                             floatingLabelText="Bouwplaats *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             onChange={this.updateBuildingCity}
                             value={this.state.buildingCity}
                         />
                         <TextField
                             name="Aard"
                             floatingLabelText="Aard *"
-                            className="form__TextField"
+                            className="form__TextField__NewPlan"
                             onChange={this.updateAard}
                         />
                     </div>
-                    <div>
+                    <div >
                         <Dialog
                             actions={actions}
                             modal={true}
                             open={this.state.open}
                             onRequestClose={this.handleClose}
+                            className="parent"
                         >
                         <div>
-                            <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
+                            <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} className="contactCard">
                                 <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
                                 <CardText className="Text" expandable={true}>
-                                    <div className="info personalInfo">
+                                    <div className="infoNewPlan personalInfoNewPlan">
                                         <div> 
                                             <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
                                             <div className="addressContactCard">{this.state.streetDummy}<br/>
@@ -471,7 +472,7 @@ class NewPlan extends React.Component {
                                         </div>
                                     </div>
                                     <div></div>
-                                    <div className="info buildingInfo">
+                                    <div className="infoNewPlan buildingInfoNewPlan">
                                         <div> 
                                             <img src={BuildingIcon} alt="Building Icon" className="addressContactCardImg"/>
                                             <div className="addressContactCard">{this.state.buildingStreetDummy}<br/>

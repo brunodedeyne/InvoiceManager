@@ -11,7 +11,7 @@ import './Menu.css';
 class Menu extends Component {
   render() {
     return (
-        <div>
+       
             <section className="div__Sidebar">
                 <section>
                     <Link to={routes.NEW_PLAN}><AddButton buttontext="Nieuw Plan"/></Link>    
@@ -24,7 +24,7 @@ class Menu extends Component {
                     <p className="div__Sidebar-Copyright">&copy; Bruno Dedeyne</p>
                 </section>
             </section>
-        </div>
+        
     );
   }
 }

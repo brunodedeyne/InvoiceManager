@@ -21,10 +21,12 @@ class Main extends Component {
       //<Router>
         <div>
           <MuiThemeProvider>
-            <div>
-                <Menu />
-                <Header />
-            </div>
+              <Header />
+              <Menu /> 
+              <div>
+              
+              </div>
+            
           </MuiThemeProvider>
         </div>
       //</Router>

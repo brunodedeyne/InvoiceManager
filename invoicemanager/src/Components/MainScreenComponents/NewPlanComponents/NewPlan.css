@@ -1,9 +1,5 @@
 .contactCard {
-    width: 60%;
-    max-width: 647px;    
-    position: relative;
-    margin: 0 auto;
-    margin-top: 10px;
+    height: auto;
 }
 
 .title, .buttons {
@@ -21,30 +17,23 @@ img {
     margin-bottom: 10px;
 }
 
-.info {
-    font-size: 14px;
-    display: inline-block;
-    height: 11rem;
+.parent {
+    min-width: 621px;
 }
 
-.personalInfo {
-    width: 50%;
+.infoNewPlan {
+    font-size: 14px;
+    display: inline-block;
+}
+
+.personalInfoNewPlan {
+    width: 100%;
     float: left;
 }
 
-.buildingInfo {
-    width: 50%;
-}
-
-.personalInfo:after {
-    content: "";
-    background-color: #293541;
-    position: absolute;
-    width: 1px;
-    height: 11rem;
-    top: 100px;
-    left: 50%;
-    display: block;
+.buildingInfoNewPlan {
+    width: 90%;
+    padding-left: 0;
 }
 
 .errorFillIn > input {
@@ -53,6 +42,10 @@ img {
 
 .errorFillInCard {
     color: red !important;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 50px #dcdcdc inset;
 }
 
 .addressContactCard {
@@ -67,11 +60,11 @@ img {
     margin-top: 7px;
 }
 
-.info div {
+.infoNewPlan div {
     display: -webkit-box;
 }
 
-.info div div {
+.infoNewPlan div div {
     margin-top: 4px;
 }
 
@@ -79,33 +72,38 @@ img {
     display: inline-block;
     width: 100%;
     margin-top: 1rem;
+    min-width: 380px;
+    margin-bottom: 25px;
 }
 
-.form__TextField {
+.form__TextField__NewPlan {
     display: block;
     float: left;
-    width: 45% !important;
+    width: 90% !important;
     font-size: 20px !important;
     margin-right: 5%;
     height: 85px !important;
 }
 
-.form__TextField:nth-child(2n+1) input{
+.buildingStreet {
+    border-top: 1px solid #293541;
+}
+
+.number {
+    margin-bottom: 35px;
+}
+
+/* .form__TextField__NewPlan:nth-child(2n+1) input{
     text-align: right;
 }
 
-.form__TextField:nth-child(2n+1) label{
+.form__TextField__NewPlan:nth-child(2n+1) label{
     float: right;
-}
+} */
 
 .form__Personal {
     padding-left: 3rem;
     height: 25rem;
-}
-
-.border {
-    border: #293541 1px solid;
-    margin: 0 2rem 2rem 2rem;
 }
 
 .form__Plan {
@@ -115,6 +113,7 @@ img {
 
 .form__Container {
     margin-left: 14rem;
+    background-color: #dcdcdc;
 }
 
 .SubmitButton {
@@ -134,6 +133,7 @@ img {
     -o-transition-duration: 0.2s;
     transition-duration: 0.2s;
     text-align: center;
+    margin-top: 20px;
 }
 
 .RaisedButton:hover {
@@ -158,4 +158,50 @@ img {
 
 label {
     color: #293541 !important;
+}
+
+@media screen and (min-width: 780px) {
+    .buildingInfoNewPlan {
+        width: 47%;
+        padding-left: 25px;
+    }
+
+    .personalInfoNewPlan {
+        width: 47%;
+        float: left;
+    }
+
+    .contactCard {
+        height: 18rem;
+        max-width: 900px;
+    }
+
+    .personalInfoNewPlan::after {
+        content: "";
+        background-color: #293541;
+        position: absolute;
+        width: 1px;
+        height: 11rem;
+        top: 100px;
+        left: 50%;
+        display: block;
+    }
+}   
+
+@media screen and (min-width: 800px) {
+    .form__TextField__NewPlan {
+        width: 45% !important;
+    }
+
+    .buildingStreet {
+        border-top: 0;
+    }
+
+    .form__Plan:after {
+        content: "";
+        background-color: #293541;
+        width: 95%;
+        height: 1px;
+        display: block;
+    }
 }
