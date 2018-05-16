@@ -16,6 +16,9 @@ import * as firebase from 'firebase';
 import {withRouter} from 'react-router-dom';
 import Dialog from 'material-ui/Dialog';
 
+import Header from '../../HeaderComponents/Header';
+import Menu from '../../MenuComponents/Menu';
+
 var config = {
     apiKey: "AIzaSyDiYwctQZs8cq4LwrUJ0JZvs0ne2f9Bjbg",
     authDomain: "invoicemanager-1525702104034.firebaseapp.com",
@@ -341,163 +344,167 @@ class NewPlan extends React.Component {
             number.length > 14 &&
             numberValid;
         return (            
-            <section className="form__ContainerNewPlan"> 
-                <form className="formNewPlan" >
-                    <div className="form__PersonalNewPlan">
-                        <TextField
-                            name="familyName"
-                            floatingLabelText="Naam *"
-                            className="form__TextField__NewPlan"
-                            onChange={this.updateFamilyName}
-                        />
-                        <TextField
-                            name="name"
-                            floatingLabelText="Voornaam *"
-                            className="form__TextField__NewPlan"
-                            onChange={this.updateName}
-                        />
-                        <TextField
-                            name="street"
-                            id="street"
-                            floatingLabelText="Straat *"
-                            className="form__TextField__NewPlan"
-                            onChange={this.updateStreet}
-                            type="text"
-                            placeholder=""
-                            
-                        />
-                        <TextField
-                            name="city"
-                            floatingLabelText="Gemeente *"
-                            className="form__TextField__NewPlan"
-                            onChange={this.updateCity}
-                            value={this.state.city}
-                        />
-                        <TextField
-                            name="phone"
-                            id="phone"
-                            floatingLabelText="Telefoon *"
-                            className="form__TextField__NewPlan"
-                            maxLength="12"
-                            onKeyPress={this.updatePhone}
-                            onChange={this.updatePhoneOnChange}
-                        />
-                        <TextField
-                            name="email"
-                            floatingLabelText="Email *"
-                            className="form__TextField__NewPlan"
-                            onChange={this.updateEmail}
-                            type="email"
-                        />
-                        <TextField
-                            name="BTW"
-                            floatingLabelText="BTW Nummer"
-                            className={"form__TextField__NewPlan " + this.state.BTWClasses }
-                            onKeyPress={this.updateBTW}
-                            maxLength="12"
-                        />
-                        <TextField
-                            name="number"
-                            floatingLabelText="Rijksregisternummer *"
-                            className={"form__TextField__NewPlan numberNewPlan " + this.state.numberClasses }
-                            onKeyPress={this.updateNumber}
-                            onChange={this.updateNumberOnChange}
-                            maxLength="15"
-                            errorText={this.state.numberError}
-                        />
-                    </div>
-                    <div className="border"></div>
-                    <div className="form__PlanNewPlan">
-                        <TextField
-                            name="buildingStreet"
-                            id="buildingStreet"
-                            floatingLabelText="Ligging *"
-                            className="form__TextField__NewPlan buildingStreetNewPlan"
-                            onChange={this.updateBuildingStreet}
-                            placeholder=""
-                            autoComplete="email"
-                        />
-                        <TextField
-                            name="buildingCity"
-                            floatingLabelText="Bouwplaats *"
-                            className="form__TextField__NewPlan"
-                            onChange={this.updateBuildingCity}
-                            value={this.state.buildingCity}
-                        />
-                        <TextField
-                            name="Aard"
-                            floatingLabelText="Aard *"
-                            className="form__TextField__NewPlan"
-                            onChange={this.updateAard}
-                        />
-                    </div>
-                    <div >
-                        <Dialog
-                            actions={actions}
-                            modal={true}
-                            open={this.state.open}
-                            onRequestClose={this.handleClose}
-                            className="parent"
-                        >
-                        <div>
-                            <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} className="contactCard">
-                                <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
-                                <CardText className="Text" expandable={true}>
-                                    <div className="infoNewPlan personalInfoNewPlan">
-                                        <div> 
-                                            <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
-                                            <div className="addressContactCard">{this.state.streetDummy}<br/>
-                                            {this.state.cityDummy}</div>
-                                        </div>
-                                        <div>
-                                            <img src={PhoneIcon} alt="Phone Icon"/>
-                                            <div>{this.state.phoneDummy}</div>
-                                        </div>
-                                        <div>
-                                            <img src={EmailIcon} alt="Email Icon"/>
-                                            <div>{this.state.emailDummy}</div>
-                                        </div>
-                                        <div>
-                                            <img src={BTWIcon} alt="BTW Icon"/>
-                                            {this.state.BTW.length > 0 &&
-                                                <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>
-                                            }
-                                            {this.state.BTW.length == 0 &&
-                                                <div className={ this.state.BTWClasses }>{this.state.BTW}</div>
-                                            }                                           
-                                        </div>
-                                        <div>
-                                            <img src={NumberIcon} alt="Number Icon"/>
-                                            <div className={ this.state.numberClassesCard }>{this.state.numerDummy}</div>
-                                        </div>
-                                    </div>
-                                    <div></div>
-                                    <div className="infoNewPlan buildingInfoNewPlan">
-                                        <div> 
-                                            <img src={BuildingIcon} alt="Building Icon" className="addressContactCardImg"/>
-                                            <div className="addressContactCard">{this.state.buildingStreetDummy}<br/>
-                                            {this.state.buildingCityDummy}</div>
-                                        </div>
-                                        <div>
-                                            <img src={AardIcon} alt="Aard Icon"/>
-                                            <div className="aardContactCard">{this.state.AardDummy}</div>
-                                        </div>
-                                    </div>
-                                </CardText>
-                                {/* <CardActions className="buttons">
-                                    <FlatButton label="Voorbeeld Contact" onClick={this.handleExpand} />
-                                    <FlatButton label="Verberg"  onClick={this.handleReduce}/>
-                                </CardActions> */}
-                            </Card>
+            <div>
+                <Header />
+                <Menu /> 
+                <section className="form__ContainerNewPlan"> 
+                    <form className="formNewPlan" >
+                        <div className="form__PersonalNewPlan">
+                            <TextField
+                                name="familyName"
+                                floatingLabelText="Naam *"
+                                className="form__TextField__NewPlan"
+                                onChange={this.updateFamilyName}
+                            />
+                            <TextField
+                                name="name"
+                                floatingLabelText="Voornaam *"
+                                className="form__TextField__NewPlan"
+                                onChange={this.updateName}
+                            />
+                            <TextField
+                                name="street"
+                                id="street"
+                                floatingLabelText="Straat *"
+                                className="form__TextField__NewPlan"
+                                onChange={this.updateStreet}
+                                type="text"
+                                placeholder=""
+                                
+                            />
+                            <TextField
+                                name="city"
+                                floatingLabelText="Gemeente *"
+                                className="form__TextField__NewPlan"
+                                onChange={this.updateCity}
+                                value={this.state.city}
+                            />
+                            <TextField
+                                name="phone"
+                                id="phone"
+                                floatingLabelText="Telefoon *"
+                                className="form__TextField__NewPlan"
+                                maxLength="12"
+                                onKeyPress={this.updatePhone}
+                                onChange={this.updatePhoneOnChange}
+                            />
+                            <TextField
+                                name="email"
+                                floatingLabelText="Email *"
+                                className="form__TextField__NewPlan"
+                                onChange={this.updateEmail}
+                                type="email"
+                            />
+                            <TextField
+                                name="BTW"
+                                floatingLabelText="BTW Nummer"
+                                className={"form__TextField__NewPlan " + this.state.BTWClasses }
+                                onKeyPress={this.updateBTW}
+                                maxLength="12"
+                            />
+                            <TextField
+                                name="number"
+                                floatingLabelText="Rijksregisternummer *"
+                                className={"form__TextField__NewPlan numberNewPlan " + this.state.numberClasses }
+                                onKeyPress={this.updateNumber}
+                                onChange={this.updateNumberOnChange}
+                                maxLength="15"
+                                errorText={this.state.numberError}
+                            />
                         </div>
-                        </Dialog>
-                    </div>
+                        <div className="border"></div>
+                        <div className="form__PlanNewPlan">
+                            <TextField
+                                name="buildingStreet"
+                                id="buildingStreet"
+                                floatingLabelText="Ligging *"
+                                className="form__TextField__NewPlan buildingStreetNewPlan"
+                                onChange={this.updateBuildingStreet}
+                                placeholder=""
+                                autoComplete="email"
+                            />
+                            <TextField
+                                name="buildingCity"
+                                floatingLabelText="Bouwplaats *"
+                                className="form__TextField__NewPlan"
+                                onChange={this.updateBuildingCity}
+                                value={this.state.buildingCity}
+                            />
+                            <TextField
+                                name="Aard"
+                                floatingLabelText="Aard *"
+                                className="form__TextField__NewPlan"
+                                onChange={this.updateAard}
+                            />
+                        </div>
+                        <div >
+                            <Dialog
+                                actions={actions}
+                                modal={true}
+                                open={this.state.open}
+                                onRequestClose={this.handleClose}
+                                className="parent"
+                            >
+                            <div>
+                                <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} className="contactCard">
+                                    <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
+                                    <CardText className="Text" expandable={true}>
+                                        <div className="infoNewPlan personalInfoNewPlan">
+                                            <div> 
+                                                <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
+                                                <div className="addressContactCard">{this.state.streetDummy}<br/>
+                                                {this.state.cityDummy}</div>
+                                            </div>
+                                            <div>
+                                                <img src={PhoneIcon} alt="Phone Icon"/>
+                                                <div>{this.state.phoneDummy}</div>
+                                            </div>
+                                            <div>
+                                                <img src={EmailIcon} alt="Email Icon"/>
+                                                <div>{this.state.emailDummy}</div>
+                                            </div>
+                                            <div>
+                                                <img src={BTWIcon} alt="BTW Icon"/>
+                                                {this.state.BTW.length > 0 &&
+                                                    <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>
+                                                }
+                                                {this.state.BTW.length == 0 &&
+                                                    <div className={ this.state.BTWClasses }>{this.state.BTW}</div>
+                                                }                                           
+                                            </div>
+                                            <div>
+                                                <img src={NumberIcon} alt="Number Icon"/>
+                                                <div className={ this.state.numberClassesCard }>{this.state.numerDummy}</div>
+                                            </div>
+                                        </div>
+                                        <div></div>
+                                        <div className="infoNewPlan buildingInfoNewPlan">
+                                            <div> 
+                                                <img src={BuildingIcon} alt="Building Icon" className="addressContactCardImg"/>
+                                                <div className="addressContactCard">{this.state.buildingStreetDummy}<br/>
+                                                {this.state.buildingCityDummy}</div>
+                                            </div>
+                                            <div>
+                                                <img src={AardIcon} alt="Aard Icon"/>
+                                                <div className="aardContactCard">{this.state.AardDummy}</div>
+                                            </div>
+                                        </div>
+                                    </CardText>
+                                    {/* <CardActions className="buttons">
+                                        <FlatButton label="Voorbeeld Contact" onClick={this.handleExpand} />
+                                        <FlatButton label="Verberg"  onClick={this.handleReduce}/>
+                                    </CardActions> */}
+                                </Card>
+                            </div>
+                            </Dialog>
+                        </div>
 
-                    <div className="SubmitButton">                        
-                        <input value="NIEUW PLAN" onClick={this.handleOpen} disabled={!enabled} className="RaisedButton"/>
-                    </div>
-                </form>
-            </section>
+                        <div className="SubmitButton">                        
+                            <input value="NIEUW PLAN" onClick={this.handleOpen} disabled={!enabled} className="RaisedButton"/>
+                        </div>
+                    </form>
+                </section>
+            </div>
         );
     }
   }

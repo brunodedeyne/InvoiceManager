@@ -8,4 +8,12 @@ var config = {
     storageBucket: "invoicemanager-1525702104034.appspot.com",
     messagingSenderId: "908003589667"
   };
-firebase.initializeApp(config);
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+}
+
+const auth = firebase.auth();
+
+export {
+  auth,
+};

@@ -16,13 +16,15 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import {withRouter} from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
+import Header from '../../HeaderComponents/Header';
+import Menu from '../../MenuComponents/Menu';
 
 //Import CSS
 import './NewInvoice.css';
 import * as firebase from 'firebase';  
 const dataSourceConfig = {
-    text: 'street',
-    value: 'street',
+    text: 'familyName',
+    value: 'familyName',
 };
 const dataSourceConfig2 = {
     text: 'familyName',
@@ -313,11 +315,16 @@ class NewInvoice extends React.Component {
     }
 
     pushInvoice = (e) => {
+        let now = new Date();
+        let val = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+
         e.preventDefault();
         let item = {
             Fee: this.state.Fee,
             AardInvoice: this.state.AardInvoice,
-            key: this.state.key
+            key: this.state.key,
+            DateCreated: val,
+            DatePaid: ''
         }
         firebase.database().ref('invoices').push(item);
 
@@ -344,6 +351,52 @@ class NewInvoice extends React.Component {
         this.setState({openPlanEdit: false});
     }
 
+    selectClient = (val) => {
+        this.setState({
+            nameDummy : val.name,
+            name: val.name,
+
+            familyNameDummy: val.familyName,
+            familyName: val.familyName,
+
+            streetDummy: val.street,
+            street: val.street,
+
+            cityDummy: val.city,
+            city: val.city,      
+
+            phoneDummy: val.phone,
+            phone: val.phone,
+
+            emailDummy: val.email,
+            email: val.email, 
+            
+            BTWDummy: val.BTW,
+            BTW: val.BTW,
+
+            numerDummy: val.number,
+            number: val.number,
+
+            buildingStreetDummy: val.buildingStreet,
+            buildingStreet: val.buildingStreet, 
+
+            buildingCityDummy: val.buildingCity,
+            buildingCity: val.buildingCity,
+
+            AardDummy: val.Aard,
+            Aard: val.Aard,
+
+            DossierNrDummy: val.dossierNr,
+            DossierNr: val.dossierNr,
+
+            key: val.key,
+            enableEditPlanContactCard: false,
+            enableNewInvoiceContactCard: false, 
+            numberValid: true,
+            phoneValid: true
+        })
+    };
+
     componentWillMount (){
         const allPlans = this.state.plannen;
         this.database.on('child_added', snapshot => {
@@ -365,8 +418,6 @@ class NewInvoice extends React.Component {
             this.setState({plannen: allPlans});
         })
     }
-
-
     
     componentDidMount () {
         const input = document.getElementById('street');
@@ -504,241 +555,246 @@ class NewInvoice extends React.Component {
         ]
         
         return (
-        <section className="form__Container">  
-        <div className="labelDropDown">Kies Uw Cliënt: </div>
-            <div className="Dropdown">  
-                    <DropDownMenu
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                        autoWidth={false}
+            <div>
+                <Header />
+                <Menu /> 
+                <section className="form__Container">  
+                    <div className="labelDropDown">Kies Uw Cliënt: </div>
+                        <div className="Dropdown">  
+                                <DropDownMenu
+                                    value={this.state.value}
+                                    onChange={this.handleChange}
+                                    autoWidth={false}
+                                >
+                                    {
+                                        this.state.plannen.map((plan) => {
+                                            return (
+                                                <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.familyName + " " + plan.name}  />
+                                            )
+                                        })
+                                    }
+                                </DropDownMenu>
+                        </div>
+                        <div className="labelSearchName">
+                            <AutoComplete
+                                floatingLabelText="Zoek op Naam of Dossier"
+                                dataSourceConfig={dataSourceConfig}
+                                dataSource={this.state.plannen}
+                                filter={AutoComplete.caseInsensitiveFilter}
+                                className="form__TextFieldSearchName"
+                                onNewRequest={this.selectClient}
+                            />
+                        </div>
+                        <div className="contactCardInvoice">
+                        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
+                            <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
+                            <CardText className="Text" expandable={true}>
+                                <div className="info personalInfoInvoice">
+                                    <div> 
+                                        <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
+                                        <div className="addressContactCard">{this.state.streetDummy}<br/>
+                                        {this.state.cityDummy}</div>
+                                    </div>
+                                    <div>
+                                        <img src={PhoneIcon} alt="Phone Icon"/>
+                                        <div>{this.state.phoneDummy}</div>
+                                    </div>
+                                    <div>
+                                        <img src={EmailIcon} alt="Email Icon"/>
+                                        <div>{this.state.emailDummy}</div>
+                                    </div>
+                                    <div>
+                                        <img src={BTWIcon} alt="BTW Icon"/>
+                                            <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>                              
+                                    </div>
+                                    <div>
+                                        <img src={NumberIcon} alt="Number Icon"/>
+                                        <div className={ this.state.numberClassesCard }>{this.state.numerDummy}</div>
+                                    </div>
+                                </div>
+                                <div></div>
+                                <div className="info buildingInfo">
+                                    <div> 
+                                        <img src={DossierIcon} alt="Dossier Icon"/>
+                                        <div>{this.state.DossierNrDummy}</div>
+                                    </div>
+                                    <div> 
+                                        <img src={BuildingIcon} alt="Building Icon" className="addressContactCardImg"/>
+                                        <div className="addressContactCard">{this.state.buildingStreetDummy}<br/>
+                                        {this.state.buildingCityDummy}</div>
+                                    </div>
+                                    <div>
+                                        <img src={AardIcon} alt="Aard Icon"/>
+                                        <div className="aardContactCard">{this.state.AardDummy}</div>
+                                    </div>
+                                </div>
+                                <div className="actionButtonsInvoice">
+                                    <FlatButton
+                                        label="Nieuwe Factuur"
+                                        primary={true}
+                                        onClick={this.handleOpenNewInvoice}
+                                        disabled={this.state.enableNewInvoiceContactCard}
+                                    />
+                                    <FlatButton
+                                        label="Bewerk Plan"
+                                        primary={true}
+                                        keyboardFocused={true}
+                                        onClick={this.handleOpenEditPlan}
+                                        disabled={this.state.enableEditPlanContactCard}
+                                    />
+                                </div>
+                            </CardText>
+                        </Card>
+                    </div>
+                    <Dialog
+                        title={"Factuur voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
+                        actions={actionsNewInvoice}
+                        modal={false}
+                        open={this.state.openInvoice}
+                        onRequestClose={this.handleCloseNewInvoice}
                     >
-                        {
-                            this.state.plannen.map((plan) => {
-                                return (
-                                    <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.familyName + " " + plan.name}  />
-                                )
-                            })
-                        }
-                    </DropDownMenu>
-            </div>
-            <div className="labelSearchName">
-                <AutoComplete
-                    floatingLabelText="Zoek op Naam of Dossier"
-                    dataSourceConfig={dataSourceConfig}
-                    dataSource={this.state.plannen}
-                    filter={AutoComplete.caseInsensitiveFilter}
-                    className="form__TextFieldSearchName"
-                />
-            </div>
-            <div className="contactCardInvoice">
-            <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
-                <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
-                <CardText className="Text" expandable={true}>
-                    <div className="info personalInfoInvoice">
-                        <div> 
-                            <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
-                            <div className="addressContactCard">{this.state.streetDummy}<br/>
-                            {this.state.cityDummy}</div>
-                        </div>
-                        <div>
-                            <img src={PhoneIcon} alt="Phone Icon"/>
-                            <div>{this.state.phoneDummy}</div>
-                        </div>
-                        <div>
-                            <img src={EmailIcon} alt="Email Icon"/>
-                            <div>{this.state.emailDummy}</div>
-                        </div>
-                        <div>
-                            <img src={BTWIcon} alt="BTW Icon"/>
-                                <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>                              
-                        </div>
-                        <div>
-                            <img src={NumberIcon} alt="Number Icon"/>
-                            <div className={ this.state.numberClassesCard }>{this.state.numerDummy}</div>
-                        </div>
-                    </div>
-                    <div></div>
-                    <div className="info buildingInfo">
-                        <div> 
-                            <img src={DossierIcon} alt="Dossier Icon"/>
-                            <div>{this.state.DossierNrDummy}</div>
-                        </div>
-                        <div> 
-                            <img src={BuildingIcon} alt="Building Icon" className="addressContactCardImg"/>
-                            <div className="addressContactCard">{this.state.buildingStreetDummy}<br/>
-                            {this.state.buildingCityDummy}</div>
-                        </div>
-                        <div>
-                            <img src={AardIcon} alt="Aard Icon"/>
-                            <div className="aardContactCard">{this.state.AardDummy}</div>
-                        </div>
-                    </div>
-                    <div className="actionButtonsInvoice">
-                        <FlatButton
-                            label="Nieuwe Factuur"
-                            primary={true}
-                            onClick={this.handleOpenNewInvoice}
-                            disabled={this.state.enableNewInvoiceContactCard}
+                        <form>
+                            <TextField
+                                name="Ereloon"
+                                floatingLabelText="Ereloon"
+                                className="form__TextField"
+                                onChange={this.updateFee}
+                                type="number"
+                            />
+                            <TextField
+                                name="AardInvoice"
+                                floatingLabelText="Aard"
+                                className="form__TextField"
+                                onChange={this.updateAardInvoice}
+                            />
+                        </form>
+                    </Dialog>
+                    <Dialog
+                        title={"Bewerk Plan voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
+                        actions={actionsEditPlan}
+                        modal={false}
+                        open={this.state.openPlanEdit}
+                        onRequestClose={this.handleCloseEditPlan}
+                        autoScrollBodyContent={true}
+                    >
+                    <div className="formEditPlan">
+                        <TextField
+                            name="familyName"
+                            floatingLabelText="Naam *"
+                            className="form__TextField"
+                            onChange={this.updateFamilyName}
+                            value={this.state.familyName}
                         />
-                        <FlatButton
-                            label="Bewerk Plan"
-                            primary={true}
-                            keyboardFocused={true}
-                            onClick={this.handleOpenEditPlan}
-                            disabled={this.state.enableEditPlanContactCard}
+                        <TextField
+                            name="name"
+                            floatingLabelText="Voornaam *"
+                            className="form__TextField"
+                            onChange={this.updateName}
+                            value={this.state.name}
+                        />
+                        <TextField
+                            name="street"
+                            id="street"
+                            floatingLabelText="Straat *"
+                            className="form__TextField"
+                            onChange={this.updateStreet}
+                            type="text"
+                            placeholder=""
+                            value={this.state.street}                            
+                        />
+                        <TextField
+                            name="city"
+                            floatingLabelText="Gemeente *"
+                            className="form__TextField"
+                            onChange={this.updateCity}
+                            value={this.state.city}
+                        />
+                        <TextField
+                            name="phone"
+                            id="phone"
+                            floatingLabelText="Telefoon *"
+                            className="form__TextField"
+                            maxLength="12"
+                            onKeyPress={this.updatePhone}
+                            onChange={this.updatePhoneOnChange}
+                            value={this.state.phone}
+                        />
+                        <TextField
+                            name="email"
+                            floatingLabelText="Email *"
+                            className="form__TextField"
+                            onChange={this.updateEmail}
+                            type="email"
+                            value={this.state.email}
+                        />
+                        <TextField
+                            name="BTW"
+                            floatingLabelText="BTW Nummer"
+                            className={"form__TextField " + this.state.BTWClasses }
+                            onKeyPress={this.updateBTW}
+                            maxLength="12"
+                        />
+                        <TextField
+                            name="number"
+                            floatingLabelText="Rijksregisternummer *"
+                            className={"form__TextField " + this.state.numberClasses }
+                            onKeyPress={this.updateNumber}
+                            onChange={this.updateNumberOnChange}
+                            maxLength="15"
+                            errorText={this.state.numberError}
+                            value={this.state.number}
                         />
                     </div>
-                </CardText>
-            </Card>
-        </div>
-        <Dialog
-            title={"Factuur voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
-            actions={actionsNewInvoice}
-            modal={false}
-            open={this.state.openInvoice}
-            onRequestClose={this.handleCloseNewInvoice}
-        >
-            <form>
-                <TextField
-                    name="Ereloon"
-                    floatingLabelText="Ereloon"
-                    className="form__TextField"
-                    onChange={this.updateFee}
-                    type="number"
-                />
-                <TextField
-                    name="AardInvoice"
-                    floatingLabelText="Aard"
-                    className="form__TextField"
-                    onChange={this.updateAardInvoice}
-                />
-            </form>
-        </Dialog>
-        <Dialog
-            title={"Bewerk Plan voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
-            actions={actionsEditPlan}
-            modal={false}
-            open={this.state.openPlanEdit}
-            onRequestClose={this.handleCloseEditPlan}
-            autoScrollBodyContent={true}
-        >
-        <div className="formEditPlan">
-            <TextField
-                name="familyName"
-                floatingLabelText="Naam *"
-                className="form__TextField"
-                onChange={this.updateFamilyName}
-                value={this.state.familyName}
-            />
-            <TextField
-                name="name"
-                floatingLabelText="Voornaam *"
-                className="form__TextField"
-                onChange={this.updateName}
-                value={this.state.name}
-            />
-            <TextField
-                name="street"
-                id="street"
-                floatingLabelText="Straat *"
-                className="form__TextField"
-                onChange={this.updateStreet}
-                type="text"
-                placeholder=""
-                value={this.state.street}                            
-            />
-            <TextField
-                name="city"
-                floatingLabelText="Gemeente *"
-                className="form__TextField"
-                onChange={this.updateCity}
-                value={this.state.city}
-            />
-            <TextField
-                name="phone"
-                id="phone"
-                floatingLabelText="Telefoon *"
-                className="form__TextField"
-                maxLength="12"
-                onKeyPress={this.updatePhone}
-                onChange={this.updatePhoneOnChange}
-                value={this.state.phone}
-            />
-            <TextField
-                name="email"
-                floatingLabelText="Email *"
-                className="form__TextField"
-                onChange={this.updateEmail}
-                type="email"
-                value={this.state.email}
-            />
-            <TextField
-                name="BTW"
-                floatingLabelText="BTW Nummer"
-                className={"form__TextField " + this.state.BTWClasses }
-                onKeyPress={this.updateBTW}
-                maxLength="12"
-            />
-            <TextField
-                name="number"
-                floatingLabelText="Rijksregisternummer *"
-                className={"form__TextField " + this.state.numberClasses }
-                onKeyPress={this.updateNumber}
-                onChange={this.updateNumberOnChange}
-                maxLength="15"
-                errorText={this.state.numberError}
-                value={this.state.number}
-            />
-        </div>
-        <div className="border"></div>
-        <div className="form__Plan">
-            <TextField
-                name="buildingStreet"
-                id="buildingStreet"
-                floatingLabelText="Ligging *"
-                className="form__TextField"
-                onChange={this.updateBuildingStreet}
-                placeholder=""
-                autoComplete="email"
-                value={this.state.buildingStreet}
-            />
-            <TextField
-                name="buildingCity"
-                floatingLabelText="Bouwplaats *"
-                className="form__TextField"
-                onChange={this.updateBuildingCity}
-                value={this.state.buildingCity}
-                value={this.state.buildingCity}
-            />
-            <TextField
-                name="Aard"
-                floatingLabelText="Aard *"
-                className="form__TextField"
-                onChange={this.updateAard}
-                value={this.state.Aard}
-            />
+                    <div className="border"></div>
+                    <div className="form__Plan">
+                        <TextField
+                            name="buildingStreet"
+                            id="buildingStreet"
+                            floatingLabelText="Ligging *"
+                            className="form__TextField"
+                            onChange={this.updateBuildingStreet}
+                            placeholder=""
+                            autoComplete="email"
+                            value={this.state.buildingStreet}
+                        />
+                        <TextField
+                            name="buildingCity"
+                            floatingLabelText="Bouwplaats *"
+                            className="form__TextField"
+                            onChange={this.updateBuildingCity}
+                            value={this.state.buildingCity}
+                            value={this.state.buildingCity}
+                        />
+                        <TextField
+                            name="Aard"
+                            floatingLabelText="Aard *"
+                            className="form__TextField"
+                            onChange={this.updateAard}
+                            value={this.state.Aard}
+                        />
+                        </div>
+                    </Dialog>
+                    <Dialog
+                        title={"Factuur Bevestiging voor " + this.state.name + " " + this.state.familyName}
+                        actions={actionsConfirmationDialogInvoices}
+                        modal={false}
+                        open={this.state.openConfirmationDialogInvoices}
+                        onRequestClose={this.handleCloseConfirmationDialogInvoices}
+                    >   
+                    <strong>Ereloon:   </strong>€{this.state.Fee} <br />
+                    <strong>Aard:      </strong>{this.state.AardInvoice} <br />
+                    </Dialog>
+                    <Dialog
+                        actions={actionsSuccessInvoices}
+                        modal={false}
+                        open={this.state.openSuccessInvoice}
+                        onRequestClose={this.handleSuccessInvoice}
+                    >   
+                    <strong>Factuur van {this.state.name + " " + this.state.familyName + " - " + this.state.Fee + " Is aangemaakt!"}</strong>
+                    </Dialog>
+                </section>
             </div>
-        </Dialog>
-        <Dialog
-            title={"Factuur Bevestiging voor " + this.state.name + " " + this.state.familyName}
-            actions={actionsConfirmationDialogInvoices}
-            modal={false}
-            open={this.state.openConfirmationDialogInvoices}
-            onRequestClose={this.handleCloseConfirmationDialogInvoices}
-        >   
-          <strong>Ereloon:   </strong>€{this.state.Fee} <br />
-          <strong>Aard:      </strong>{this.state.AardInvoice} <br />
-        </Dialog>
-        <Dialog
-            actions={actionsSuccessInvoices}
-            modal={false}
-            open={this.state.openSuccessInvoice}
-            onRequestClose={this.handleSuccessInvoice}
-        >   
-          <strong>Factuur van {this.state.name + " " + this.state.familyName + " - " + this.state.Fee + " Is aangemaakt!"}</strong>
-        </Dialog>
-        </section>
-      );
+        );
     }
-  }
-  export default withRouter(NewInvoice)
+}
+export default withRouter(NewInvoice)

@@ -1,18 +1,30 @@
 .ContainerClients > div{
+    margin-top: 0 !important;
+}
+
+.ContainerClients {
+    margin-left: 14rem;
+}
+
+.Header {
+    margin-left: 10px;
+}
+
+.Head {
     background-color: #dcdcdc;
 }
 
 .DossierNrColumn {
-    width: 50px;
+    width: 10px;
 }
 
 .NaamColumn {
-    width: 97px;       
+    width: 80px;       
 }
 
 .AdresColumn {
     width: 150px;
-    padding: 0 !important;
+    padding-left: 0 !important;
 }
 
 .GebouwAdresColumn {
@@ -24,9 +36,13 @@
 }
 
 .PhoneColumn {
-    width: 95px;
+    width: 80px;
 }
 
 .table {
     border-top: 1px solid rgb(158, 158, 158);
+}
+
+.MuiTableCell-paddingNone-178 {
+    padding: 4px 56px 4px 24px !important;
 }

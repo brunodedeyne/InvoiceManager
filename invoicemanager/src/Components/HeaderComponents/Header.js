@@ -2,32 +2,39 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as routes from '../../constants/routes/routes';
 import Logout from '../LogOutComponents/Logout';
-import AuthUserContext from '../AuthUserContext';
 import FlatButton from 'material-ui/FlatButton';
+import * as firebase from 'firebase';
+import {withRouter} from 'react-router-dom';
 
 import Logo from './Logo';
 
 //Import CSS
 import './Header.css';
-import { auth } from '../../Firebase';
 
 class Header extends Component {
   constructor (props){
     super(props);
   }
+
+  handleSignOut = () => {
+    firebase.auth().signOut().then(function() {
+        this.props.history.push('/Login'); 
+    }).catch(function(error) {
+      console.log(error);
+    });
+  }
+
   render() {
     return (
-      //<AuthUserContext.Consumer>
         <header className="header">
           <Logo text="Dedeyne - Coomans"/>
           <p className="header__Title">{this.props.headerTitle}</p>
           <p className="header__Logout">
-            <FlatButton label="Uitloggen" primary={true}/>
+            <FlatButton label="uitloggen" onClick={this.handleSignOut} primary={true}/>
           </p>
         </header>
-      //</AuthUserContext.Consumer>
     );
   }
 }
 
-export default Header;
+export default withRouter(Header);

@@ -16,69 +16,30 @@ import * as routes from '../../../constants/routes/routes';
 //Import CSS
 import './LoginForm.css';
 
-/*const SignInPage = ({ history }) =>
-  <div>
-    <LoginForm history={history} />
-  </div>
-
-const byPropKey = (propertyName, value) => () => ({
-  [propertyName]: value,
-});
-
-const INITIAL_STATE = {
-  email: '',
-  password: '',
-  error: null,
-};*/
-
 class LoginForm extends React.Component { 
   constructor(props) {
-    super();
-    //this.state = { ...INITIAL_STATE };
+    super();    
+    this.state =  {
+      email: '',
+      password: '',
+      error: ''
+    }
   }
-
-  /*onSubmit = (event) => {
-    const {
-      email,
-      password,
-    } = this.state;
-
-    const {
-      history,
-    } = this.props;
-
-    auth.doSignInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.HOME);
-      })
-      .catch(error => {
-        this.setState(byPropKey('error', error));
-      });
-
-    event.preventDefault();
-  }*/
-    render() {
-      const {
-        email,
-        password,
-        error,
-      } = this.state;
-  
+  render() {
       const isInvalid =
-        password === '' ||
-        email === '';
+        this.state.password === '' ||
+        this.state.email === '';
 
       return (
           <form onSubmit={this.onSubmit}>
               <TextField
-                value={email}
+                value={this.state.email}
                 //onChange={event => this.setState(byPropKey('email', event.target.value))}
                 name="email"
                 floatingLabelText="Email"
               /><br />
               <TextField
-                value={password}
+                value={this.state.password}
                 //onChange={event => this.setState(byPropKey('password', event.target.value))}
                 name="password"
                 floatingLabelText="Wachtwoord"
@@ -89,7 +50,7 @@ class LoginForm extends React.Component {
                {/* <Link to={routes.HOME}>Inloggen</Link> */}
               </RaisedButton>
               <br /><br />
-              { error && <p>{error.message}</p> }
+              { this.state.error && <p>{this.state.error.message}</p> }
           </form>
       );
     }

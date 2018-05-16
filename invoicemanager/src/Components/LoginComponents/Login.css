@@ -1,35 +1,15 @@
-.section {
+.section__Box {
     text-align: center;
 }
 
+.section__Modal {
+    padding-top: 50px !important;
+}
+
 .section__Img {
-    width: 15rem;
+    width: 250px;
 }
 
-.section__Box{
-    background-color: white;
-    width: 20rem;
-    margin: 0 auto;
-    padding: 10px 20px 20px 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.header {
-    background-color: white;
-    height:  4rem;
-}
-
-.header__Title {
-    font-size: 35px;
-    margin-left: 2rem;
-    float: left;
-    margin-top: 8px;
-}
-
-.section__Background {
-    -webkit-filter: blur(5px);
-    -moz-filter: blur(5px);
-    -o-filter: blur(5px);
-    -ms-filter: blur(5px);
-    filter: blur(5px);
-}
+.section__Textfields {
+    text-align: center;
+} 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import GridLayout from 'react-grid-layout';
+import Header from '../../HeaderComponents/Header';
+import Menu from '../../MenuComponents/Menu';
 
 //Import CSS
 import './Overview.css';
@@ -17,11 +19,15 @@ class Overview extends React.Component {
       {i: 'c', x: 4, y: 0, w: 1, h: 2}
     ];
     return (
-      <GridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
-        <div key="a">a</div>
-        <div key="b">b</div>
-        <div key="c">c</div>
-      </GridLayout>
+      <div>
+        <Header />
+        <Menu /> 
+        <GridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
+          <div key="a">a</div>
+          <div key="b">b</div>
+          <div key="c">c</div>
+        </GridLayout>
+      </div>
     )
   }
 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import withAuthorization from './withAuthorization';
 import Header from './HeaderComponents/Header';
 import Menu from './MenuComponents/Menu';
 
@@ -14,7 +13,6 @@ class Home extends React.Component {
     return (
       <MuiThemeProvider>
         <div>
-
         </div>
       </MuiThemeProvider>
     );

@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-//import { firebase } from './Firebase';
-import withAuthentication from './withAuthentication';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-//import Login from './Components/LoginComponents/Login';
 import Main from './Components/Main';
-//import Home from './Components/Home';
 import NewPlan from './Components/MainScreenComponents/NewPlanComponents/NewPlan';
 import NewInvoice from './Components/MainScreenComponents/NewInvoiceComponents/NewInvoice';
 import Overview from './Components/MainScreenComponents/OverviewComponents/Overview';
 import Clients from './Components/MainScreenComponents/ClientsComponents/Clients';
 import Invoices from './Components/MainScreenComponents/InvoicesComponents/Invoices';
+import Login from './Components/LoginComponents/Login';
 
 import * as routes from './constants/routes/routes';
 
@@ -27,7 +24,6 @@ const App = () =>
         <MuiThemeProvider>
           <div className="App">
             <Main />
-
             <Route
               exact path={routes.NEW_PLAN}
               component={() => <NewPlan />}
@@ -46,13 +42,15 @@ const App = () =>
             />
             <Route
               exact path={routes.INVOICES}
-              component={() => <Invoices />}
-             // render={(props) => ( <Profile headerTitle="Invoices"/> )}
-             render={(props) => <Invoices headerTitle="Invoices" {...props} />}             
-            />          
+              component={() => <Invoices />}         
+            />    
+            <Route
+              exact path={routes.LOGIN}
+              component={() => <Login />}         
+            />       
           </div>
         </MuiThemeProvider>
       </Router>
 
 
-export default withAuthentication(App);
+export default App;

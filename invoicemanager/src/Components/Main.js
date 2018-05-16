@@ -3,31 +3,42 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-
-import Header from './HeaderComponents/Header';
-import Menu from './MenuComponents/Menu';
 import Login from './LoginComponents/Login';
-import Home from './Home';
-//import Overview from './OverviewComponents/Overview';
 import * as routes from '../constants/routes/routes';
-//Import CSS
-//import '../assets/css/styles.min.css';
 import './Main.css';
+import NewPlan from './MainScreenComponents/NewPlanComponents/NewPlan';
+import * as firebase from 'firebase';
+import {withRouter} from 'react-router-dom';
 
 
 class Main extends Component {
+  constructor(props) {
+    super (props);
+    this.state = {
+      renderedComponent: ''
+    };
+  }
+
+  componentWillMount (){
+
+    var user = firebase.auth().currentUser;
+
+    if (user) {
+      this.props.history.push('/clients'); 
+    } else {
+      this.props.history.push('/Login'); 
+    }
+  }
+
   render() {
     return (
-      //<Router>
-        <div>
-          <MuiThemeProvider>
-              <Header />
-              <Menu /> 
-          </MuiThemeProvider>
-        </div>
-      //</Router>
+      <div>
+        <MuiThemeProvider>
+            {this.state.renderedComponent}
+        </MuiThemeProvider>
+      </div>
     );
   }
 }
 
-export default Main;
+export default withRouter(Main);
