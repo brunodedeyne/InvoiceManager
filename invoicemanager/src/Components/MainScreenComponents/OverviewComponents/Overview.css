@@ -1,8 +1,21 @@
-.react-grid-Container {
+.container {
     margin-left: 14rem;
+    background-color: #dcdcdc
+}
+
+.container > div {
+    margin: 0;
     width: 100%;
 }
 
-.layout {
-    margin-left: 14rem;
+.paddingClass {
+    padding: 10px;
+}
+
+.shadowClass {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px !important;
+}
+
+.unPaid {
+    text-align: center;
 }

@@ -19,6 +19,10 @@ import Dialog from 'material-ui/Dialog';
 import Header from '../../HeaderComponents/Header';
 import Menu from '../../MenuComponents/Menu';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 var config = {
     apiKey: "AIzaSyDiYwctQZs8cq4LwrUJ0JZvs0ne2f9Bjbg",
     authDomain: "invoicemanager-1525702104034.firebaseapp.com",
@@ -71,7 +75,7 @@ class NewPlan extends React.Component {
             dossierNrs: [],
             lastDossierNr: '',
 
-            open: false,
+            openPreview: false,
 
             numberValid: false,
             phoneValid: false,
@@ -82,7 +86,8 @@ class NewPlan extends React.Component {
             emailError: '',
             emailClasses: '',
             emailClassesCard: '',
-            BTWClasses: ''
+            BTWClasses: '',
+            openSnackbar: false
         };
 
         this.database = firebase.database().ref('/plannen');
@@ -270,10 +275,11 @@ class NewPlan extends React.Component {
         for (var i = 0;i < this.state.dossierNrs.length; i++){
             newArray.push(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
         }
-        var maxDossierNr = Math.max.apply(Math, newArray);
-
-        this.setState({lastDossierNr: maxDossierNr});
+        var maxDossierNr = (parseInt(Math.max.apply(Math, newArray))) + 1;
+        
         let now = new Date();
+        let newDossierNr = now.getFullYear() + "/" + maxDossierNr;
+        this.setState({lastDossierNr: newDossierNr});  
 
         e.preventDefault();
         let item = {
@@ -288,11 +294,10 @@ class NewPlan extends React.Component {
             buildingStreet: this.state.buildingStreet,
             buildingCity: this.state.buildingCity,
             aard: this.state.Aard,
-            DossierNr: now.getFullYear() + "/" + (maxDossierNr + 1)
+            DossierNr: newDossierNr
         }
         firebase.database().ref('plannen').push(item);
-
-        this.props.history.push('/clients');
+        this.setState({openSnackbar: true, openPreview: false});
     }
 
     componentWillMount (){
@@ -307,12 +312,24 @@ class NewPlan extends React.Component {
         this.setState({dossierNrs: dossiern});
     }
 
-    handleOpen = () => {
-        this.setState({open: true});
+    handleOpenPreview = () => {
+        this.setState({openPreview: true});
     };
 
-    handleClose = () => {
-        this.setState({open: false});
+    handleClosePreview = () => {
+        this.setState({openPreview: false});
+    };
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+      };
+    
+    handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        this.setState({ openSnackbar: false });
     };
 
     render() {
@@ -320,7 +337,7 @@ class NewPlan extends React.Component {
             <FlatButton
               label="Annuleer"
               secondary={true}
-              onClick={this.handleClose}
+              onClick={this.handleClosePreview}
             />,
             <FlatButton
                 label="Opslaan"
@@ -441,8 +458,8 @@ class NewPlan extends React.Component {
                             <Dialog
                                 actions={actions}
                                 modal={true}
-                                open={this.state.open}
-                                onRequestClose={this.handleClose}
+                                open={this.state.openPreview}
+                                onRequestClose={this.handleClosePreview}
                                 className="parent"
                             >
                             <div>
@@ -490,19 +507,39 @@ class NewPlan extends React.Component {
                                             </div>
                                         </div>
                                     </CardText>
-                                    {/* <CardActions className="buttons">
-                                        <FlatButton label="Voorbeeld Contact" onClick={this.handleExpand} />
-                                        <FlatButton label="Verberg"  onClick={this.handleReduce}/>
-                                    </CardActions> */}
                                 </Card>
                             </div>
                             </Dialog>
                         </div>
 
                         <div className="SubmitButton">                        
-                            <input value="NIEUW PLAN" onClick={this.handleOpen} disabled={!enabled} className="RaisedButton"/>
+                            <input value="NIEUW PLAN" onClick={this.handleOpenPreview} disabled={!enabled} className="RaisedButton"/>
                         </div>
                     </form>
+
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        open={this.state.openSnackbar}
+                        autoHideDuration={6000}
+                        onClose={this.handleCloseSnackBar}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">{this.state.name + " " + this.state.familyName + "  -  " + this.state.lastDossierNr +  " Aangemaakt!"}</span>}
+                        action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color="inherit"
+                                onClick={this.handleCloseSnackBar}
+                            >
+                                <CloseIcon />
+                            </IconButton>,
+                        ]}
+                    />
                 </section>
             </div>
         );

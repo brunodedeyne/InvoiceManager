@@ -21,13 +21,13 @@ class Main extends Component {
 
   componentWillMount (){
 
-    var user = firebase.auth().currentUser;
+    // var user = firebase.auth().currentUser;
 
-    if (user) {
-      this.props.history.push('/clients'); 
-    } else {
-      this.props.history.push('/Login'); 
-    }
+    // if (user) {
+    //   this.props.history.push('/clients'); 
+    // } else {
+    //   this.props.history.push('/Login'); 
+    // }
   }
 
   render() {

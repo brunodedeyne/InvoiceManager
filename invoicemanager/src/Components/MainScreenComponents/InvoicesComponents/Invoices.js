@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import Parser from 'html-react-parser';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -13,6 +13,8 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
 
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -23,100 +25,17 @@ import Menu from '../../MenuComponents/Menu';
 import Header from '../../HeaderComponents/Header';
 import './Invoices.css';
 import * as firebase from 'firebase';  
+import RaisedButton from 'material-ui/RaisedButton/RaisedButton';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
+import EnhancedTableHead from '../EnhancedTableHead';
 
 let counter = 0;
-function createData(dossierNr, fullName, address, phone, buildingAddress, Aard) {
+function createData(dossierNr, fullName, AardInvoice, Fee, DateCreated, DatePaid) {
   counter += 1;
-  return { id: counter, dossierNr, fullName, address, phone, buildingAddress, Aard };
+  return { id: counter, dossierNr, fullName, AardInvoice, Fee, DateCreated, DatePaid };
 }
-
-const columnData = [
-  { id: 'dossierNr', label: 'Dossier' },
-  { id: 'fullName', label: 'Naam' },
-  { id: 'AardInvoice', label: 'Aard Factuur' },
-  { id: 'Fee', label: 'Ereloon' },
-  { id: 'DateCreated', label: 'Opgesteld op' },
-  { id: 'DatePaid', label: 'Betaald op' },
-];
-
-class EnhancedTableHead extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
-  };
-
-  render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
-
-    return (
-      <TableHead className="Head">
-        <TableRow className="Header">
-          {columnData.map(column => {
-            return (
-              <TableCell
-                key={column.id}
-                numeric={column.numeric}
-                padding={column.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === column.id ? order : false}
-                className={column.id + "Column"}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === column.id}
-                    direction={order}
-                    onClick={this.createSortHandler(column.id)}
-                  >
-                    {column.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            );
-          }, this)}
-        </TableRow>
-      </TableHead>
-    );
-  }
-}
-
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-});
-
-
 
 const styles = theme => ({
   root: {
@@ -136,13 +55,13 @@ const styles = theme => ({
   },
 });
 
-class EnhancedTable extends React.Component {
+class EnhancedTable extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
       order: 'asc',
-      orderBy: 'dossierNr',
+      orderBy: 'DateCreated',
       selected: [],
       plannen: [],
       invoices: [],
@@ -150,6 +69,12 @@ class EnhancedTable extends React.Component {
       ].sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
+      openConfirmationDialogPaid: false,
+      openSuccessPaid: false,
+      paimentId: '',
+      paimentInvoice: [],
+      openSnackbar: false,
+      snackBarContent: ''
     };
     this.database = firebase.database().ref('/invoices');
   }
@@ -163,13 +88,13 @@ class EnhancedTable extends React.Component {
             key: snapshot.key,
             AardInvoice: snapshot.val().AardInvoice,
             Fee: snapshot.val().Fee,
-            PlanKey: snapshot.val().key,
+            PlanKey: snapshot.val().PlanKey,
             DateCreated: snapshot.val().DateCreated,
             DatePaid: snapshot.val().DatePaid
         })
-
         this.setState({invoices: allInvoices});
     })
+    console.log("on length" + this.state.invoices.length);
 
     firebase.database().ref('/plannen').on('child_added', snapshot => {
       allPlans.push({
@@ -185,15 +110,15 @@ class EnhancedTable extends React.Component {
         BTW: snapshot.val().BTW,
         buildingStreet: snapshot.val().buildingStreet,
         buildingCity: snapshot.val().buildingCity,
-        Aard: snapshot.val().Aard
+        aard: snapshot.val().aard
       })
 
       this.setState({plannen: allPlans});
     })
+
     for (var i = 0; i < this.state.invoices.length; i++){
       for (var j = 0; j < this.state.plannen.length; j++){
-        
-        if (this.state.plannen[j].key == this.state.invoices[i].PlanKey) {
+        if (this.state.plannen[j].key === this.state.invoices[i].PlanKey) {
           this.state.data.push({
             dossierNr: this.state.plannen[j].dossierNr,
             name: this.state.plannen[j].name,
@@ -206,7 +131,7 @@ class EnhancedTable extends React.Component {
             BTW: this.state.plannen[j].BTW,
             buildingStreet: this.state.plannen[j].buildingStreet,
             buildingCity: this.state.plannen[j].buildingAddress,
-            Aard: this.state.plannen[j].Aard,
+            aard: this.state.plannen[j].aard,
             key: this.state.invoices[i].key,
             AardInvoice: this.state.invoices[i].AardInvoice,
             Fee: this.state.invoices[i].Fee,
@@ -219,7 +144,9 @@ class EnhancedTable extends React.Component {
           })
         }
       }
+      
     }
+    console.log("dt length" + this.state.data.length);
   }
 
   handleRequestSort = (event, property) => {
@@ -267,12 +194,82 @@ class EnhancedTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
+  pushPaiment = () => {    
+    const paidInvoice = this.state.paimentInvoice;
+
+    let now = new Date();
+    let val = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+
+    for (var i = 0; i < this.state.data.length; i++){
+      if (this.state.data[i].key === this.state.paimentId) {        
+        paidInvoice.push({
+          AardInvoice: this.state.data[i].AardInvoice,
+          DateCreated: this.state.data[i].DateCreated,
+          DatePaid: val,
+          Fee: this.state.data[i].Fee,
+          PlanKey: this.state.data[i].PlanKey,
+          fullName: this.state.data[i].name + " " + this.state.data[i].familyName,
+          paimentId: this.state.paimentId
+        });
+        this.setState({paimentInvoice: paidInvoice});   
+      }
+    }
+
+    firebase.database().ref().child('/invoices/' + this.state.paimentInvoice[0].paimentId)
+      .set({ 
+        AardInvoice: this.state.paimentInvoice[0].AardInvoice,
+        DateCreated: this.state.paimentInvoice[0].DateCreated,
+        DatePaid: this.state.paimentInvoice[0].DatePaid,
+        Fee: this.state.paimentInvoice[0].Fee,
+        PlanKey: this.state.paimentInvoice[0].PlanKey
+    });
+    this.setState({
+      openConfirmationDialogPaid: false, 
+      openSnackbar: true, 
+      paimentInvoice: [], 
+      snackBarContent: "Factuur van " + this.state.paimentInvoice[0].fullName + "  -  €" +  this.state.paimentInvoice[0].Fee + " Is betaald!"
+    });
+  }
+
+  handleCloseConfirmationDialogPaid = () => {
+    this.setState({openConfirmationDialogPaid: false});
+  }
+  handleOpenConfirmationDialogPaid = (event, id) => {
+    this.setState({openConfirmationDialogPaid: true, paimentId: id});
+  }
+  
+  handleOpenSnackbar = () => {
+    this.setState({ openSnackbar: true });
+  };
+
+  handleCloseSnackBar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ openSnackbar: false });
+  };
+
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+
+    const actionsConfirmationDialogPaid = [
+      <FlatButton
+          label="Bevestigen"
+          primary={true}
+          keyboardFocused={true}
+          onClick={this.pushPaiment}
+      />,
+      <FlatButton
+          label="Annuleer"
+          secondary={true}
+          keyboardFocused={true}
+          onClick={this.handleCloseConfirmationDialogPaid}
+      />
+    ];
 
     return (
       <div>
@@ -303,12 +300,20 @@ class EnhancedTable extends React.Component {
                       key={n.id}
                       selected={isSelected}
                     >
-                      <TableCell className="DossierNrColumn">{n.dossierNr}</TableCell>
-                      <TableCell className="NaamColumn">{n.fullName}</TableCell>
-                      <TableCell className="AdresColumn">{n.AardInvoice}</TableCell>
-                      <TableCell className="AdresColumn">€{n.Fee}</TableCell>
-                      <TableCell className="AdresColumn">{n.DateCreated}</TableCell>
-                      <TableCell className="AdresColumn">{n.DatePaid}</TableCell>
+                      <TableCell className="PaidColumn">
+                        <FlatButton 
+                          label="Betalen" 
+                          secondary={true} 
+                          onClick={event => this.handleOpenConfirmationDialogPaid(event, n.key)}
+                          disabled={n.DatePaid}
+                        />
+                      </TableCell>
+                      <TableCell className="dossierNrColumn">{n.dossierNr}</TableCell>
+                      <TableCell className="fullNameColumn">{n.fullName}</TableCell>
+                      <TableCell className="AardInvoiceColumn">{n.AardInvoice}</TableCell>
+                      <TableCell className="FeeColumn">€{n.Fee}</TableCell>
+                      <TableCell className="DateCreatedColumn">{n.DateCreated}</TableCell>
+                      <TableCell className="DatePaidColumn">{n.DatePaid}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -336,6 +341,38 @@ class EnhancedTable extends React.Component {
           />
         </Paper>
         </div>
+        
+        <Dialog
+            title={"Betalingsbevestiging " + this.state.paimentInvoice.fullName + " - €" + this.state.paimentInvoice.Fee}
+            actions={actionsConfirmationDialogPaid}
+            modal={false}
+            open={this.state.openConfirmationDialogPaid}
+            onRequestClose={this.handleCloseConfirmationDialogPaid}
+        >   
+        </Dialog>
+        <Snackbar
+          anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+          }}
+          open={this.state.openSnackbar}
+          autoHideDuration={6000}
+          onClose={this.handleCloseSnackBar}
+          ContentProps={{
+              'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{this.state.snackBarContent}</span>}
+          action={[
+              <IconButton
+                  key="close"
+                  aria-label="Close"
+                  color="inherit"
+                  onClick={this.handleCloseSnackBar}
+              >
+                  <CloseIcon />
+              </IconButton>,
+          ]}
+      />
       </div>
     );
   }

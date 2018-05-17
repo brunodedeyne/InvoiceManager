@@ -26,14 +26,11 @@ const styles = theme => ({
 class Overview extends React.Component {
   constructor (props) {
     super(props);
-    this.state = {
-      unPaid: '1100, 20'
-    };
   }
 
   customgrid(props) {
     const { classes } = props;
-    return props;
+    return classes;
   }
 
   render () {
@@ -44,20 +41,16 @@ class Overview extends React.Component {
         <Menu /> 
         <div>
         <div>
-          <div className="container paddingClass">
+          <div className={classes.root + " container"}>
             <Grid container spacing={24}>
               <Grid item xs={12}>
-                <Paper className="unPaid paddingClass shadowClass">Bedrag bij Cliënten: <strong>€{this.state.unPaid}</strong></Paper>
+                <Paper className={classes.paper}>Bedrag bij Cliënten: €</Paper>
               </Grid>
               <Grid item xs={6}>
-                <Paper className="paddingClass shadowClass">
-                  TEst
-                  <br/>
-                  test
-                </Paper>
+                <Paper className={classes.paper}>xs=6</Paper>
               </Grid>
               <Grid item xs={6}>
-                <Paper className="paddingClass shadowClass">xs=6</Paper>
+                <Paper className={classes.paper}>xs=6</Paper>
               </Grid>
             </Grid>
           </div>

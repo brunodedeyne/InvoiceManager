@@ -18,6 +18,12 @@ import {withRouter} from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
 import Header from '../../HeaderComponents/Header';
 import Menu from '../../MenuComponents/Menu';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 //Import CSS
 import './NewInvoice.css';
@@ -26,10 +32,13 @@ const dataSourceConfig = {
     text: 'familyName',
     value: 'familyName',
 };
-const dataSourceConfig2 = {
-    text: 'familyName',
-    value: 'familyName',
-};
+
+const styles = theme => ({
+    close: {
+        width: theme.spacing.unit * 4,
+        height: theme.spacing.unit * 4,
+    },
+});
 
 class NewInvoice extends React.Component {
     constructor(props) {
@@ -102,6 +111,9 @@ class NewInvoice extends React.Component {
             enableEditPlanContactCard:true,
             openSuccessInvoice: false,
             enabled: false,
+            openSnackbar: false,
+            snackBarType: '',
+            snackBarContent: ''
         };
 
         this.database = firebase.database().ref('/plannen');
@@ -322,15 +334,17 @@ class NewInvoice extends React.Component {
         let item = {
             Fee: this.state.Fee,
             AardInvoice: this.state.AardInvoice,
-            key: this.state.key,
+            PlanKey: this.state.key,
             DateCreated: val,
             DatePaid: ''
         }
         firebase.database().ref('invoices').push(item);
 
-        this.setState({openConfirmationDialogInvoices: false, openInvoice: false, openSuccessInvoice: true});
-
-        //this.props.history.push('/overview');
+        this.setState({
+            openConfirmationDialogInvoices: false, 
+            openInvoice: false, openSnackbar: true, 
+            snackBarContent: "factuur voor " + this.state.name + " " + this.state.familyName + "   -  €" + this.state.Fee + " Aangemaakt!"
+        });
     }
 
     handleEditPlan = () => {
@@ -348,7 +362,10 @@ class NewInvoice extends React.Component {
             buildingCity: this.state.buildingCity,
             aard: this.state.Aard, 
             DossierNr: this.state.DossierNr    });
-        this.setState({openPlanEdit: false});
+        this.setState({
+            openPlanEdit: false, 
+            snackBarContent: "Plan van " + this.state.name + " " + this.state.familyName + " is aangepast!"
+        });
     }
 
     selectClient = (val) => {
@@ -419,6 +436,17 @@ class NewInvoice extends React.Component {
         })
     }
     
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+      };
+    
+    handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }    
+        this.setState({ openSnackbar: false });
+    };
+
     componentDidMount () {
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
@@ -525,7 +553,7 @@ class NewInvoice extends React.Component {
             />,
             <FlatButton
                 label="Annuleer"
-                primary={true}
+                secondary={true}
                 keyboardFocused={true}
                 onClick={this.handleCloseEditPlan}
           />,
@@ -533,27 +561,17 @@ class NewInvoice extends React.Component {
         const actionsConfirmationDialogInvoices = [
             <FlatButton
                 label="Bevestigen"
-                secondary={true}
+                primary={true}
                 keyboardFocused={true}
                 onClick={this.pushInvoice}
             />,
             <FlatButton
                 label="Annuleer"
-                primary={true}
+                secondary={true}
                 keyboardFocused={true}
                 onClick={this.handleCloseConfirmationDialogInvoices}
             />
         ];
-
-        const actionsSuccessInvoices = [
-            <FlatButton
-                label="OK"
-                primary={true}
-                keyboardFocused={true}
-                onClick={this.handleCloseSuccessInvoice}
-            />
-        ]
-        
         return (
             <div>
                 <Header />
@@ -784,14 +802,29 @@ class NewInvoice extends React.Component {
                     <strong>Ereloon:   </strong>€{this.state.Fee} <br />
                     <strong>Aard:      </strong>{this.state.AardInvoice} <br />
                     </Dialog>
-                    <Dialog
-                        actions={actionsSuccessInvoices}
-                        modal={false}
-                        open={this.state.openSuccessInvoice}
-                        onRequestClose={this.handleSuccessInvoice}
-                    >   
-                    <strong>Factuur van {this.state.name + " " + this.state.familyName + " - " + this.state.Fee + " Is aangemaakt!"}</strong>
-                    </Dialog>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        open={this.state.openSnackbar}
+                        autoHideDuration={6000}
+                        onClose={this.handleCloseSnackBar}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">{this.state.snackBarContent}</span>}
+                        action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color="inherit"
+                                onClick={this.handleCloseSnackBar}
+                            >
+                                <CloseIcon />
+                            </IconButton>,
+                        ]}
+                    />
                 </section>
             </div>
         );

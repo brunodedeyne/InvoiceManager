@@ -14,20 +14,20 @@
     background-color: #dcdcdc;
 }
 
-.DossierNrColumn {
+.dossierNrColumn {
     width: 10px;
 }
 
-.NaamColumn {
+.fullNameColumn {
     width: 80px;       
 }
 
-.AdresColumn {
+.addressColumn {
     width: 150px;
     padding-left: 0 !important;
 }
 
-.GebouwAdresColumn {
+.buildingAddressColumn {
     padding: 0 !important;   
 }
 
@@ -35,7 +35,7 @@
     padding: 0 !important;   
 }
 
-.PhoneColumn {
+.phoneColumn {
     width: 80px;
 }
 
