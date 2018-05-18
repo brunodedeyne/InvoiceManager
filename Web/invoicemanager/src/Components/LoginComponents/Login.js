@@ -34,13 +34,21 @@ class Login extends Component {
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
             var errorCode = error.code;
             var errorMessage = error.message;
-            if (errorCode === "auth/invalid-email") this.setState({emailErrorText: "Controleer Emailadres!"});
-            if (errorCode === "auth/wrong-password") this.setState({emailErrorText: "Controleer Wachtwoord!"});
+            if (errorCode === "auth/invalid-email") {
+                this.setState({email: ""});
+            } 
+            if (errorCode === "auth/wrong-password") this.setState({passwordErrorText: "Controleer Wachtwoord!"});
             console.log(errorCode);
             console.log(errorMessage);
         });
         var user = firebase.auth().currentUser;
     }
+
+    _handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+          this.handleSignIn;
+        }
+      }
     
     render () {
         const { email, password } = this.state;
@@ -60,6 +68,7 @@ class Login extends Component {
                                 floatingLabelText="Email"
                                 onChange={this.updateEmail}
                                 errorText={this.state.emailErrorText}
+                                onKeyPress={this._handleKeyPress}
                             /><br/>
                             <TextField
                                 name="password"
@@ -67,6 +76,7 @@ class Login extends Component {
                                 type="password"
                                 onChange={this.updatePassword}
                                 errorText={this.state.passwordErrorText}
+                                onKeyPress={this._handleKeyPress}
                             /><br/><br/>
                             <RaisedButton 
                                 onClick={this.handleSignIn}  

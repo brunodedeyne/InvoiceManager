@@ -94,7 +94,6 @@ class EnhancedTable extends Component {
         })
         this.setState({invoices: allInvoices});
     })
-    console.log("on length" + this.state.invoices.length);
 
     firebase.database().ref('/plannen').on('child_added', snapshot => {
       allPlans.push({

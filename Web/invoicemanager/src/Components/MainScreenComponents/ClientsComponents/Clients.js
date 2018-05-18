@@ -225,7 +225,7 @@ class EnhancedTable extends React.Component {
 
   handleClientInfo (event, id) {
     console.log(event);
-    console.og("--");
+    console.log("--");
     console.log(id);
   }
 
@@ -264,7 +264,7 @@ class EnhancedTable extends React.Component {
                       selected={isSelected}
                     >
 
-                      <TableCell className="DossierNrColumn"><a href="#" onclick={event => this.handleClientInfo(event, n.key)}>{n.dossierNr}</a></TableCell>
+                      <TableCell className="DossierNrColumn"><a href="#" onClick={event => this.handleClientInfo(event, n.key)}>{n.dossierNr}</a></TableCell>
                       <TableCell className="NaamColumn">{n.fullName}</TableCell>
                       <TableCell className="AdresColumn">{Parser(n.address)}</TableCell>
                       <TableCell className="PhoneColumn">{n.phone}</TableCell>

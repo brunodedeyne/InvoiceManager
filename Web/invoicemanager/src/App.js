@@ -18,9 +18,11 @@ import Loading from './Components/Loading';
 import * as routes from './constants/routes/routes';
 import * as firebase from 'firebase';
 
+
 //Import CSS
 import './assets/css/styles.min.css';
 import './App.css';
+require("firebase/firestore");
 
 injectTapEventPlugin();
 
@@ -68,6 +70,7 @@ render () {
     <Loading />
   );
   if (this.state.user) return (
+    <div className="AppDiv">
       <Router>
         <MuiThemeProvider>
           <div className="App">
@@ -98,11 +101,14 @@ render () {
           </div>
         </MuiThemeProvider>
       </Router>
+      </div>
     );
   return (
+    <div className="AppDiv">
     <MuiThemeProvider>
       <Login />
     </MuiThemeProvider>
+    </div>
   )}
 }
 

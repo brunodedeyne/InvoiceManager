@@ -19,3 +19,7 @@
 .section__Textfields {
     text-align: center;
 } 
+
+.section__Textfields input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 50px white inset;
+}
