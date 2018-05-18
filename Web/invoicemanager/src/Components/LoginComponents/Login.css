@@ -1,0 +1,21 @@
+.section__Container {
+    margin: 0 auto;
+    width: 350px;
+    margin-top: 150px;
+}
+
+.section__Box {
+    text-align: center;
+}
+
+.section__Modal {
+    padding-top: 50px !important;
+}
+
+.section__Img {
+    width: 250px;
+}
+
+.section__Textfields {
+    text-align: center;
+} 

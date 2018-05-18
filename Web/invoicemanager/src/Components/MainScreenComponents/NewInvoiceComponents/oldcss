@@ -1,0 +1,174 @@
+.contactCardInvoice {
+    width: 60%;
+    max-width: 647px;
+    margin-top: 10px;
+    position: relative;
+    margin-left: 10px;
+    margin: 0 auto;
+}
+
+.actionButtonsInvoice {
+    margin-top: 25px;
+}
+
+.title, .buttons {
+    text-align: center;
+}
+
+.Text {
+    padding: 0 0 16px 16px !important;
+}
+
+img {
+    width: 25px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+.info {
+    font-size: 14px;
+    display: inline-block;
+    height: 11rem;
+}
+
+.personalInfoInvoice {
+    width: 50%;
+    float: left;
+}
+
+.buildingInfo {
+    width: 50%;
+}
+
+.personalInfoInvoice:after {
+    content: "";
+    background-color: #293541;
+    position: absolute;
+    width: 1px;
+    height: 11rem;
+    top: 70px;
+    left: 50%;
+    display: block;
+}
+
+.errorFillIn > input {
+    color: red !important;
+}
+
+.errorFillInCard {
+    color: red !important;
+}
+
+.addressContactCard {
+    margin-bottom: 10px;
+}
+
+.aardContactCard {
+    padding-right: 4rem;
+}
+
+.addressContactCardImg {
+    margin-top: 7px;
+}
+
+.info p {
+    display: -webkit-box;
+}
+
+.info p div {
+    margin-top: 4px;
+}
+
+.form {
+    display: inline-block;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.Dropdown {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.Dropdown > div {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+    background-color: white;
+    font-size: 20px !important;
+    height: 55px !important;
+}
+
+button + div {
+    display: none;
+}
+
+div + span {
+    text-align: center;;
+}
+
+.form__TextField {
+    display: block;
+    float: left;
+    width: 45% !important;
+    font-size: 20px !important;
+    color: crimson;
+    margin-right: 5%;
+    height: 85px !important;
+}
+
+.form__TextField:nth-child(2n+1) input{
+    text-align: left;
+}
+
+.form__TextField:nth-child(2n+1) label{
+    float: left;
+}
+
+.formEditPlan {
+    padding-left: 3rem;
+    height: 25rem;
+}
+
+.form__TextField {
+    background-color: red;
+}
+
+.form__Plan {
+    padding-left: 3rem;
+    height: 14rem;
+}
+
+.form__Container {
+    margin-left: 14rem;
+}
+
+.SubmitButton {
+    text-align: center
+}
+
+.RaisedButton {
+    width: 15rem;
+    background-color: #2e8b57;
+    color: white;
+    border: none;
+    font-size: 30px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 3px;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.1), 0 2px 10px 0 rgba(0,0,0,0.1);
+    webkit-transition-duration: 0.2s;
+    -o-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+}
+
+.RaisedButton:hover {
+    background-color: #16683C;
+}
+
+.RaisedButton span {
+    font-size: 25px;
+}
+
+label {
+    color: #293541 !important;
+}

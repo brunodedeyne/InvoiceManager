@@ -1,0 +1,67 @@
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
+import Header from '../../HeaderComponents/Header';
+import Menu from '../../MenuComponents/Menu';
+import * as firebase from 'firebase';
+import {withRouter} from 'react-router-dom';
+
+//Import CSS
+import './Overview.css';
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
+class Overview extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  customgrid(props) {
+    const { classes } = props;
+    return classes;
+  }
+
+  render () {
+    const classes = this.customgrid;
+    return  (
+      <div>
+        <Header />
+        <Menu /> 
+        <div>
+        <div>
+          <div className={classes.root + " container"}>
+            <Grid container spacing={24}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>Bedrag bij Cliënten: €</Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>xs=6</Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>xs=6</Paper>
+              </Grid>
+            </Grid>
+          </div>
+        </div>
+        </div>
+      </div>
+    )
+  }
+}
+Overview.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Overview);

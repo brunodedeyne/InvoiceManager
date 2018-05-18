@@ -1,0 +1,9 @@
+.Loading__DivContainer {
+    text-align: center;
+    margin-top: 150px;
+    background-color: #dcdcdc;
+}
+
+.Loading__PText {
+    margin-bottom: 20px;
+}

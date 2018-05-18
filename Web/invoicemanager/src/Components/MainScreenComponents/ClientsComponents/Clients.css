@@ -1,0 +1,48 @@
+.ContainerClients > div{
+    margin-top: 0 !important;
+}
+
+.ContainerClients {
+    margin-left: 14rem;
+}
+
+.Header {
+    margin-left: 10px;
+}
+
+.Head {
+    background-color: #dcdcdc;
+}
+
+.dossierNrColumn {
+    width: 10px;
+}
+
+.fullNameColumn {
+    width: 80px;       
+}
+
+.addressColumn {
+    width: 150px;
+    padding-left: 0 !important;
+}
+
+.buildingAddressColumn {
+    padding: 0 !important;   
+}
+
+.AardColumn {
+    padding: 0 !important;   
+}
+
+.phoneColumn {
+    width: 80px;
+}
+
+.table {
+    border-top: 1px solid rgb(158, 158, 158);
+}
+
+.MuiTableCell-paddingNone-178 {
+    padding: 4px 56px 4px 24px !important;
+}
