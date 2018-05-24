@@ -234,9 +234,24 @@ class NewPlan extends React.Component {
     
     componentDidMount () {
         this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-            console.log(user.uid);
-            this.setState({userUid: user.uid});        
-        });
+            if (user) this.setState({userUid: user.uid});        
+        }); 
+
+        this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+            if (user) this.setState({userUid: user.uid});    
+            let dossierNrs = [];
+            this.database.on('value', (snapshot) => {
+                dossierNrs = Object.values(snapshot.val()).map((item, i) => { 
+                    if (user) {
+                        if (item.userUid == user.uid) {
+                            return item.dossierNr
+                        }
+                    }
+                });
+                dossierNrs = dossierNrs.filter(Boolean);
+                this.setState({dossierNrs: dossierNrs});
+            });
+        });  
 
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
@@ -301,15 +316,16 @@ class NewPlan extends React.Component {
           })
       }
     pushForm = (e) => {                
-        const newArray = [];
-        for (var i = 0;i < this.state.dossierNrs.length; i++){
-            newArray.push(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
-            console.log(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
-        }
-        var maxDossierNr = (parseInt(Math.max.apply(Math, newArray))) + 1;
-        if (this.state.dossierNrs.length === 0) maxDossierNr = 1;
-        console.log(maxDossierNr);
+        // const newArray = [];
+        // console.log(this.state.dossierNrs.length);
+        // for (var i = 0;i < this.state.dossierNrs.length; i++){
+        //     newArray.push(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
+        // }
+        // var maxDossierNr = (parseInt(Math.max.apply(Math, newArray))) + 1;
+        // if (this.state.dossierNrs.length === 0) maxDossierNr = 1;
+        // console.log("LOL" + maxDossierNr);
         
+        var maxDossierNr = 1;
         let now = new Date();
         let newDossierNr = now.getFullYear() + "/" + maxDossierNr;
         this.setState({lastDossierNr: newDossierNr});  
@@ -332,19 +348,6 @@ class NewPlan extends React.Component {
         }
         firebase.database().ref('plannen').push(item);
         this.setState({openSnackbar: true, openPreview: false});
-    }
-
-    componentWillMount (){
-        const dossiern = this.state.dossierNrs;
-
-        this.database.on('child_added', snapshot => {
-            if (snapshot.val().userUid === this.state.userUid){
-                dossiern.push({
-                    dossierNr: snapshot.val().dossierNr,
-                })
-            }
-        })
-        this.setState({dossierNrs: dossiern});
     }
 
     handleOpenPreview () {

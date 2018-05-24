@@ -165,7 +165,7 @@ class EnhancedTable extends React.Component {
   fillData () {
     let items = [];
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      this.setState({userUid: user.uid});    
+      if (user) this.setState({userUid: user.uid});    
       let items = [];
       this.database.on('value', (snapshot) => {
           items = Object.values(snapshot.val()).map((item, i) => { 

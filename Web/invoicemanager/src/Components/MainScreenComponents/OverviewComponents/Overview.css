@@ -1,20 +1,20 @@
-.container {
+.containerOverview {
     background-color: #dcdcdc
 }
 
-.container > div {
+.containerOverview > div {
     margin: 0;
     width: 100%;
 }
 
-.paddingClass {
+.paddingClassOverview {
     padding: 10px;
 }
 
-.shadowClass {
+.shadowClassOverview {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px !important;
 }
 
-.unPaid {
+.unPaidOverview {
     text-align: center;
 }

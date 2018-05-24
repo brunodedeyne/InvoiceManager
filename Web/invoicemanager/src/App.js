@@ -209,27 +209,6 @@ class App extends React.Component {
         }        
       });
     });
-    // getNumberOfUnPaidInvoices () {   
-    //   let itemsInvoices = [];
-    //   let tempNumber = 0;
-    //   this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-    //     firebase.database().ref('/invoices').on('value', (snapshotInvoices) => {
-    //       itemsInvoices = Object.values(snapshotInvoices.val()).map((itemInvoices) => { 
-    //         if (itemInvoices.userUid == this.state.user.uid) {     
-    //           return itemInvoices; 
-    //         }
-    //       });     
-    //       itemsInvoices = itemsInvoices.filter(Boolean);
-    //       this.setState({dataInvoices: itemsInvoices});      
-    //       let number = 0;
-    //       for (var i = 0; i < itemsInvoices.length; i++){
-    //         if (!itemsInvoices[i].datePaid) number++;
-    //       }
-    //       tempNumber = number;
-    //       this.setState({numberOfUnpaidInvoices: tempNumber}); 
-    //     });
-    //   });
-    // }
   }
 
   componentDidMount() {

@@ -216,7 +216,8 @@ class NewInvoice extends React.Component {
 
         this.setState({
             openConfirmationDialogInvoices: false, 
-            openInvoice: false, openSnackbar: true, 
+            openInvoice: false, openSnackbar: true,
+            openSnackbar: true, 
             snackBarContent: "factuur voor " + this.state.name + " " + this.state.familyName + "   -  €" + this.state.fee + " Aangemaakt!"
         });
     }
@@ -517,7 +518,7 @@ class NewInvoice extends React.Component {
                                 floatingLabelText="Ereloon"
                                 className="form__TextField"
                                 onChange={this.updateFee}
-                                type="RRN"
+                                type="number"
                             />
                             <TextField
                                 name="AardInvoice"
