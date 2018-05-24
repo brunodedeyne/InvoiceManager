@@ -45,6 +45,10 @@ img {
     width: 90%;
 }
 
+.form__ContainerNewInvoice input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 50px white inset;
+}
+
 .errorFillIn > input {
     color: red !important;
 }
@@ -150,9 +154,7 @@ div + span {
 }
 
 .form__Container {
-    margin-left: 14rem;
-    padding-top: 10px;
-    background-color: #dcdcdc;
+    margin-top: 15px;
 }
 
 .SubmitButton {

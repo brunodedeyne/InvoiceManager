@@ -1,13 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+// import RaisedButton from "material-ui/RaisedButton";
+import {
+    Card, 
+    //CardActions, 
+    //CardHeader, 
+    //CardMedia, 
+    CardTitle, 
+    CardText
+} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import HomeIcon from "../../../assets/img/house.png";
 import PhoneIcon from "../../../assets/img/phone.png";
 import EmailIcon from "../../../assets/img/email.png";
 import BTWIcon from "../../../assets/img/btw.png";
-import NumberIcon from "../../../assets/img/number.png";
+import RRNIcon from "../../../assets/img/rrn.png";
 import BuildingIcon from "../../../assets/img/building.png";
 import AardIcon from "../../../assets/img/aard.png";
 //Import CSS
@@ -16,8 +23,8 @@ import * as firebase from 'firebase';
 import {withRouter} from 'react-router-dom';
 import Dialog from 'material-ui/Dialog';
 
-import Header from '../../HeaderComponents/Header';
-import Menu from '../../MenuComponents/Menu';
+// import Header from '../../HeaderComponents/Header';
+// import Menu from '../../MenuComponents/Menu';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -29,58 +36,68 @@ class NewPlan extends React.Component {
 
         this.state = {
             expanded: true,
-            nameDummy : 'John',
+            //nameDummy : 'John',
             name: '',
 
-            familyNameDummy: 'Doe',
+            //familyNameDummy: 'Doe',
             familyName: '',
 
-            streetDummy: '123 Main Street',
+            //streetDummy: '123 Main Street',
             street: '',
 
-            cityDummy: 'Anytown',
+            //cityDummy: 'Anytown',
             city: '',      
 
-            phoneDummy: '+32 498/123.456',
+            //phoneDummy: '+32 498/123.456',
             phone: '',
 
-            emailDummy: 'Johndoe@gmail.com',
+            //emailDummy: 'Johndoe@gmail.com',
             email: '', 
             
-            BTWDummy: 'BE 0999.999.999',
+            //BTWDummy: 'BE 0999.999.999',
             BTW: '',
 
-            numerDummy: '97.11.21-275.45',
-            number: '',
+            //RRNDummy: '97.11.21-275.45',
+            RRN: '',
 
-            buildingStreetDummy: '124 Main Street',
+            //buildingStreetDummy: '124 Main Street',
             buildingStreet: '', 
 
-            buildingCityDummy: "Anytown",
+            //buildingCityDummy: "Anytown",
             buildingCity: '',
 
-            AardDummy: 'verbouwing bestaande woning',
-            Aard: '',
+            //aardDummy: 'verbouwing bestaande woning',
+            aard: '',
 
             dossierNrs: [],
             lastDossierNr: '',
 
             openPreview: false,
 
-            numberValid: false,
+            RRNValid: false,
             phoneValid: false,
 
-            numberClasses: '',
-            numberClassesCard: '',
-            numberError: '',
-            emailError: '',
+            RRNClasses: '',
+            RRNClassesCard: '',
             emailClasses: '',
             emailClassesCard: '',
             BTWClasses: '',
-            openSnackbar: false
+            openSnackbar: false,
+            userUid: '',
+            nameErrorText: "",
+            familyNameErrorText: '',
+            streetErrorText: '',
+            cityErrorText : '',
+            phoneErrorText: '',
+            emailErrorText : '',
+            RRNErrorText: '',
+            buildingStreetErrorText: '',
+            buildingCityErrorText: '',
+            aardErrorText: '',
         };
 
         this.database = firebase.database().ref('/plannen');
+        this.handleOpenPreview = this.handleOpenPreview.bind(this);
     }
     
     handleExpandChange = (expanded) => {
@@ -100,23 +117,28 @@ class NewPlan extends React.Component {
     };
 
     updateName = (e) =>{ 
-        this.setState({name: e.target.value, nameDummy: e.target.value});
+        if (e.target.value.length <= 0) this.setState({nameErrorText: "Naam mag niet leeg zijn!", name: e.target.value});
+        else this.setState({nameErrorText: "", name: e.target.value});
     }
 
     updateFamilyName = (e) =>{ 
-        this.setState({familyName: e.target.value, familyNameDummy: e.target.value});
+        if (e.target.value.length <= 0) this.setState({familyNameErrorText: "Familienaam mag niet leeg zijn!"});
+        else this.setState({familyNameErrorText: "", familyName: e.target.value, familyNameDummy: e.target.value});
     }
 
     updateStreet = (e) =>{ 
-        this.setState({street: e.target.value, streetDummy: e.target.value});
+        if (e.target.value.length <= 0) this.setState({streetErrorText: "Straat mag niet leeg zijn!"});
+        else this.setState({streetErrorText: "", street: e.target.value, streetDummy: e.target.value});
     }
 
     updateCity = (e) =>{ 
-        this.setState({city: e.target.value, cityDummy: e.target.value});
+        if (e.target.value.length <= 0) this.setState({cityErrorText: "Stad mag niet leeg zijn!", city: e.target.value, cityDummy: e.target.value});
+        else this.setState({cityErrorText: "", city: e.target.value, cityDummy: e.target.value});
     }
 
     updatePhone = (e) =>{ 
-        if (e.target.value.substring(0,1) == 0) {           
+        if (e.target.value.substring(0,1) == 0) {   
+            this.setState({phoneErrorText: ""});        
             if (parseInt(e.target.value.substring(1, 2)) !== 4) {
                 if (e.target.value.length === 6 || e.target.value.length === 9) e.target.value += ".";
                 if (e.target.value.length === 3) e.target.value += "/";
@@ -129,52 +151,62 @@ class NewPlan extends React.Component {
         }
     }
 
-    updatePhoneOnChange = (e) => {               
-        this.setState({phone: e.target.value, phoneDummy: e.target.value});
-        if (this.state.phone.length === 11) this.setState({phoneValid: true})
+    updatePhoneOnChange = (e) => {   
+        if (e.target.value.length <= 0) this.setState({phoneErrorText: "Telefoonnummer mag niet leeg zijn!"});       
+        else if (e.target.value.substring(0, 1) != 0) this.setState({phoneErrorText: "Telefoonnummer moet met 0 beginnen!"});
+        else {
+            this.setState({phone: e.target.value, phoneDummy: e.target.value, phoneErrorText: ""});
+            if (this.state.phone.length === 11) this.setState({phoneValid: true})
+        }
     }
 
     updateEmail = (e) =>{ 
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        var valid =  re.test(String(e.target.value).toLowerCase());
-        if (!valid) {
-            this.setState({ emailClasses: "errorFillIn" });
-            this.setState({ emailClassesCard: "errorFillInCard" });
-            this.setState({ emailError: "Ongeldig Emailadres!" }); 
-        } else {
-            this.setState({ emailClasses: "" });
-            this.setState({ emailClassesCard: "" });
-            this.setState({ emailError: "" }); 
+        if (e.target.value.length <= 0) this.setState({emailErrorText: "Email mag niet leeg zijn!"});       
+        else { 
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            var valid =  re.test(String(e.target.value).toLowerCase());
+            if (!valid) {
+                this.setState({ emailClasses: "errorFillIn" });
+                this.setState({ emailClassesCard: "errorFillInCard" });
+                this.setState({ emailErrorText: "Ongeldig Emailadres!" }); 
+            } else {
+                this.setState({ emailClasses: "" });
+                this.setState({ emailClassesCard: "" });
+                this.setState({ emailErrorText: "" }); 
+            }
+            this.setState({email: e.target.value, emailDummy: e.target.value});
         }
-        this.setState({email: e.target.value, emailDummy: e.target.value});
     }
 
-    updateNumber = (e) =>{
+    updateRRN = (e) =>{
         if (e.target.value.length === 2 || e.target.value.length === 5 || e.target.value.length === 12) e.target.value += "."; 
-        if (e.target.value.length === 8) e.target.value += "-";
-        this.setState({number: e.target.value, numerDummy: e.target.value});
+        else if (e.target.value.length === 8) e.target.value += "-";
+        this.setState({RRN: e.target.value, RRNDummy: e.target.value});
     }
 
-    updateNumberOnChange = (e) => {
-        this.setState({number: e.target.value, numerDummy: e.target.value});
-        if(e.target.value.length === 15) {
-            var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", "")); 
-            if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
-                this.setState({ numberClasses: "errorFillIn" });
-                this.setState({ numberClassesCard: "errorFillInCard" });
-                this.setState({ numberError: "Ongeldig Rijksregisternummer!" }); 
-                this.setState({ numberValid: false }); 
-            }       
-            else {
-                this.setState({ numberClasses: "" });
-                this.setState({ numberClassesCard: "" });
-                this.setState({ numberError: "" }); 
-                this.setState({ numberValid: true }); 
+    updateRRNOnChange = (e) => {
+        if (e.target.value.length <= 0) this.setState({RRNErrorText: "Rijksregisternummer mag niet leeg zijn!"});     
+        else {
+            this.setState({RRNErrorText: "", RRN: e.target.value, RRNDummy: e.target.value});
+            if(e.target.value.length === 15) {
+                var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", "")); 
+                if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
+                    this.setState({ RRNClasses: "errorFillIn" });
+                    this.setState({ RRNClassesCard: "errorFillInCard" });
+                    this.setState({ RRNErrorText: "Ongeldig Rijksregisternummer!" }); 
+                    this.setState({ RRNValid: false }); 
+                }       
+                else {
+                    this.setState({ RRNClasses: "" });
+                    this.setState({ RRNClassesCard: "" });
+                    this.setState({ RRNErrorText: "" }); 
+                    this.setState({ RRNValid: true }); 
+                }
             }
         }
     }
 
-    updateBTW = (e) =>{      
+    updateBTW = (e) =>{             
         if (e.target.value.substring(0,1) == 0){
             if (e.target.value.length ===  4 || e.target.value.length === 8)    e.target.value += ".";       
             this.setState({BTW: "BE " + e.target.value, BTWDummy: "BE " +  e.target.value});
@@ -186,18 +218,26 @@ class NewPlan extends React.Component {
     }
 
     updateBuildingStreet = (e) =>{ 
-        this.setState({buildingStreet: e.target.value, buildingStreetDummy: e.target.value});
+        if (e.target.value.length <= 0) this.setState({buildingStreetErrorText: "Straat mag niet leeg zijn!"});
+        else this.setState({buildingStreetErrorText: "", buildingStreet: e.target.value, buildingStreetDummy: e.target.value});
     }
 
     updateBuildingCity = (e) =>{ 
-        this.setState({buildingCity: e.target.value, buildingCityDummy: e.target.value});
+        if (e.target.value.length <= 0) this.setState({buildingCityErrorText: "Stad mag niet leeg zijn!", buildingCity: e.target.value, buildingCityDummy: e.target.value});
+        else this.setState({buildingCityErrorText: "", buildingCity: e.target.value, buildingCityDummy: e.target.value});
     }
 
     updateAard = (e) =>{ 
-        this.setState({Aard: e.target.value, AardDummy: e.target.value});
+        if (e.target.value.length <= 0) this.setState({aardErrorText: "Aard mag niet leeg zijn!"});
+        else this.setState({aardErrorText: "", aard: e.target.value, aardDummy: e.target.value});
     }
     
     componentDidMount () {
+        this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+            console.log(user.uid);
+            this.setState({userUid: user.uid});        
+        });
+
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
         const options = {
@@ -260,12 +300,15 @@ class NewPlan extends React.Component {
             this.setState({buildingCityDummy: newCityBuilding});
           })
       }
-    pushForm = (e) => {        
+    pushForm = (e) => {                
         const newArray = [];
         for (var i = 0;i < this.state.dossierNrs.length; i++){
             newArray.push(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
+            console.log(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
         }
         var maxDossierNr = (parseInt(Math.max.apply(Math, newArray))) + 1;
+        if (this.state.dossierNrs.length === 0) maxDossierNr = 1;
+        console.log(maxDossierNr);
         
         let now = new Date();
         let newDossierNr = now.getFullYear() + "/" + maxDossierNr;
@@ -273,18 +316,19 @@ class NewPlan extends React.Component {
 
         e.preventDefault();
         let item = {
+            userUid: this.state.userUid,
             name: this.state.name,
             familyName: this.state.familyName,
             street: this.state.street,
             city: this.state.city,
-            number: this.state.number,
+            RRN: this.state.RRN,
             BTW: this.state.BTW,
             phone: this.state.phone,
             email: this.state.email,
             buildingStreet: this.state.buildingStreet,
             buildingCity: this.state.buildingCity,
-            aard: this.state.Aard,
-            DossierNr: newDossierNr
+            aard: this.state.aard,
+            dossierNr: newDossierNr,
         }
         firebase.database().ref('plannen').push(item);
         this.setState({openSnackbar: true, openPreview: false});
@@ -294,16 +338,52 @@ class NewPlan extends React.Component {
         const dossiern = this.state.dossierNrs;
 
         this.database.on('child_added', snapshot => {
-            dossiern.push({
-                dossierNr: snapshot.val().DossierNr,
-            })
+            if (snapshot.val().userUid === this.state.userUid){
+                dossiern.push({
+                    dossierNr: snapshot.val().dossierNr,
+                })
+            }
         })
-
         this.setState({dossierNrs: dossiern});
     }
 
-    handleOpenPreview = () => {
-        this.setState({openPreview: true});
+    handleOpenPreview () {
+        if (!/\d/.test(this.state.street)) this.setState({streetErrorText: "Deze straat bevat geen huisnummer!"});
+        else this.state.streetErrorText = "";
+
+        if (!/\d/.test(this.state.buildingStreet)) this.state.buildingStreetErrorText = "Deze straat bevat geen huisnummer!";
+        else this.state.buildingStreetErrorText = "";
+
+        if (!/\d/.test(this.state.city)){this.state.cityErrorText = "Deze Stad bevat geen Postcode!";}
+        else this.state.cityErrorText = "";
+
+        if (!/\d/.test(this.state.buildingCity)) this.state.buildingCityErrorText = "Deze Stad bevat geen Postcode!";
+        else this.state.buildingCityErrorText = "";
+        
+        if (this.state.name.length === 0) this.state.nameErrorText = "Naam mag niet leeg zijn!";
+        if (this.state.familyName.length === 0) this.state.familyNameErrorText = "Familienaam mag niet leeg zijn!";
+        if (this.state.email.length === 0) this.state.emailErrorText = "Email mag niet leeg zijn!";
+        if (this.state.phone.length === 0) this.state.phoneErrorText = "Telefoonnummer mag niet leeg zijn!";
+        if (this.state.phone.length < 11) this.state.phoneErrorText = "Telefoonnummer moet min. 9 lang zijn!";
+        if (this.state.street.length === 0) this.state.streetErrorText = "Straat mag niet leeg zijn!";
+        if (this.state.city.length === 0) this.state.cityErrorText = "Stad mag niet leeg zijn!";
+        if (this.state.RRN.length === 0) this.state.RRNErrorText = "Rijksregisternummer mag niet leeg zijn!";
+        if (this.state.RRN.length < 15) this.state.RRNErrorText = "Rijksregisternummer moet min. 11 lang zijn!";
+        if (this.state.buildingStreet.length === 0) this.state.buildingStreetErrorText = "Straat mag niet leeg zijn!";
+        if (this.state.buildingCity.length === 0) this.state.buildingCityErrorText = "Stad mag niet leeg zijn!";
+        if (this.state.aard.length === 0) this.state.aardErrorText = "Aard mag niet leeg zijn!";
+        if(
+            this.state.nameErrorText == "" &&
+            this.state.familyNameErrorText == "" &&
+            this.state.streetErrorText == "" &&
+            this.state.cityErrorText == "" &&
+            this.state.phoneErrorText == "" &&
+            this.state.emailErrorText == "" &&
+            this.state.RRNErrorText == "" &&
+            this.state.buildingStreetErrorText == "" &&
+            this.state.buildingCityErrorText == "" &&
+            this.state.aardErrorText == ""
+        ) { this.setState({openPreview: true});}
     };
 
     handleClosePreview = () => {
@@ -336,24 +416,9 @@ class NewPlan extends React.Component {
                 onClick={this.pushForm}
           />,
         ];
-        const { name, familyName, street, city, email, number, phone, phoneValid, buildingStreet, buildingCity, Aard, numberValid } = this.state;
-        const enabled =
-            name.length > 0 &&
-            familyName.length > 0 &&
-            street.length > 0 &&
-            city.length > 0 &&
-            email.length > 0 &&   
-            phone.length > 11 &&  
-            phoneValid &&         
-            buildingStreet.length > 0 &&
-            buildingCity.length > 0 &&
-            Aard.length > 0 &&
-            number.length > 14 &&
-            numberValid;
+
         return (            
             <div>
-                <Header headerTitle="Nieuw Plan"/>
-                <Menu /> 
                 <section className="form__ContainerNewPlan"> 
                     <form className="formNewPlan" >
                         <div className="form__PersonalNewPlan">
@@ -361,30 +426,33 @@ class NewPlan extends React.Component {
                                 name="familyName"
                                 floatingLabelText="Naam *"
                                 className="form__TextField__NewPlan"
-                                onChange={this.updateFamilyName}
+                                onChange={this.updateFamilyName}    
+                                errorText={this.state.familyNameErrorText}
                             />
                             <TextField
                                 name="name"
                                 floatingLabelText="Voornaam *"
                                 className="form__TextField__NewPlan"
                                 onChange={this.updateName}
+                                errorText={this.state.nameErrorText}
                             />
                             <TextField
                                 name="street"
                                 id="street"
-                                floatingLabelText="Straat *"
+                                floatingLabelText="Straat + Nummer *"
                                 className="form__TextField__NewPlan"
                                 onChange={this.updateStreet}
                                 type="text"
                                 placeholder=""
-                                
+                                errorText={this.state.streetErrorText}
                             />
                             <TextField
                                 name="city"
-                                floatingLabelText="Gemeente *"
+                                floatingLabelText="Postcode + Stad *"
                                 className="form__TextField__NewPlan"
                                 onChange={this.updateCity}
                                 value={this.state.city}
+                                errorText={this.state.cityErrorText}
                             />
                             <TextField
                                 name="phone"
@@ -394,6 +462,7 @@ class NewPlan extends React.Component {
                                 maxLength="12"
                                 onKeyPress={this.updatePhone}
                                 onChange={this.updatePhoneOnChange}
+                                errorText={this.state.phoneErrorText}
                             />
                             <TextField
                                 name="email"
@@ -401,6 +470,8 @@ class NewPlan extends React.Component {
                                 className="form__TextField__NewPlan"
                                 onChange={this.updateEmail}
                                 type="email"
+                                errorText={this.state.emailErrorText}
+                                Autocomplete="off"
                             />
                             <TextField
                                 name="BTW"
@@ -408,15 +479,16 @@ class NewPlan extends React.Component {
                                 className={"form__TextField__NewPlan " + this.state.BTWClasses }
                                 onKeyPress={this.updateBTW}
                                 maxLength="12"
+                                errorText={this.state.BTWErrorText}
                             />
                             <TextField
-                                name="number"
+                                name="RRN"
                                 floatingLabelText="Rijksregisternummer *"
-                                className={"form__TextField__NewPlan numberNewPlan " + this.state.numberClasses }
-                                onKeyPress={this.updateNumber}
-                                onChange={this.updateNumberOnChange}
+                                className={"form__TextField__NewPlan RRNNewPlan " + this.state.RRNClasses }
+                                onKeyPress={this.updateRRN}
+                                onChange={this.updateRRNOnChange}
                                 maxLength="15"
-                                errorText={this.state.numberError}
+                                errorText={this.state.RRNErrorText}
                             />
                         </div>
                         <div className="border"></div>
@@ -428,7 +500,7 @@ class NewPlan extends React.Component {
                                 className="form__TextField__NewPlan buildingStreetNewPlan"
                                 onChange={this.updateBuildingStreet}
                                 placeholder=""
-                                autoComplete="email"
+                                errorText={this.state.buildingStreetErrorText}
                             />
                             <TextField
                                 name="buildingCity"
@@ -436,31 +508,33 @@ class NewPlan extends React.Component {
                                 className="form__TextField__NewPlan"
                                 onChange={this.updateBuildingCity}
                                 value={this.state.buildingCity}
+                                errorText={this.state.buildingCityErrorText}
                             />
                             <TextField
                                 name="Aard"
                                 floatingLabelText="Aard *"
                                 className="form__TextField__NewPlan"
                                 onChange={this.updateAard}
+                                errorText={this.state.aardErrorText}
                             />
                         </div>
                         <div >
                             <Dialog
                                 actions={actions}
-                                modal={true}
+                                modal={false}
                                 open={this.state.openPreview}
                                 onRequestClose={this.handleClosePreview}
                                 className="parent"
                             >
                             <div>
                                 <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange} className="contactCard">
-                                    <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
+                                    <CardTitle className="title" title={this.state.name + " " + this.state.familyName} expandable={true}/>
                                     <CardText className="Text" expandable={true}>
                                         <div className="infoNewPlan personalInfoNewPlan">
                                             <div> 
                                                 <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
-                                                <div className="addressContactCard">{this.state.streetDummy}<br/>
-                                                {this.state.cityDummy}</div>
+                                                <div className="addressContactCard">{this.state.street}<br/>
+                                                {this.state.city}</div>
                                             </div>
                                             <div>
                                                 <img src={PhoneIcon} alt="Phone Icon"/>
@@ -480,8 +554,8 @@ class NewPlan extends React.Component {
                                                 }                                           
                                             </div>
                                             <div>
-                                                <img src={NumberIcon} alt="Number Icon"/>
-                                                <div className={ this.state.numberClassesCard }>{this.state.numerDummy}</div>
+                                                <img src={RRNIcon} alt="RRN Icon"/>
+                                                <div className={ this.state.RRNClassesCard }>{this.state.RRNDummy}</div>
                                             </div>
                                         </div>
                                         <div></div>
@@ -493,7 +567,7 @@ class NewPlan extends React.Component {
                                             </div>
                                             <div>
                                                 <img src={AardIcon} alt="Aard Icon"/>
-                                                <div className="aardContactCard">{this.state.AardDummy}</div>
+                                                <div className="aardContactCard">{this.state.aardDummy}</div>
                                             </div>
                                         </div>
                                     </CardText>
@@ -503,7 +577,7 @@ class NewPlan extends React.Component {
                         </div>
 
                         <div className="SubmitButton">                        
-                            <input value="NIEUW PLAN" onClick={this.handleOpenPreview} disabled={!enabled} className="RaisedButton"/>
+                            <input value="NIEUW PLAN" onClick={this.handleOpenPreview} className="RaisedButton"/>
                         </div>
                     </form>
 

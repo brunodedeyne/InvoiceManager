@@ -26,3 +26,14 @@
 .AardInvoiceColumn {
     padding: 0 !important;   
 }
+
+.form {
+    margin-left: 30px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.formControl {
+    width: 175px;
+    margin-left: 20px !important;
+}

@@ -1,0 +1,14 @@
+.listItems > h3, .listItems {
+    color: white !important;
+}
+.newStuffDivider {
+    background-color: #2e8b57 ;
+}
+
+.badge {
+    padding: 0 !important;
+}
+
+.badge > span {
+    top: -17px !important;
+}

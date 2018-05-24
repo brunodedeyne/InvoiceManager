@@ -1,9 +1,8 @@
-export const LOGIN = '/Login';
+export const LOGIN = '/Inloggen';
 export const LANDING = '/';
-// export const ACCOUNT = '/account';
-// export const PASSWORD_FORGET = '/pw-forget';
-export const NEW_PLAN = '/NewPlan';
-export const NEW_INVOICE = '/NewInvoice';
-export const OVERVIEW = '/Overview';
-export const INVOICES = '/Invoices';
-export const CLIENTS = '/Clients';
+export const My_ACCOUNT = '/Mijn_Account';
+export const NEW_PLAN = '/Nieuw_Plan';
+export const NEW_INVOICE = '/Nieuwe_Factuur';
+export const OVERVIEW = '/Overzicht';
+export const INVOICES = '/Facturatie';
+export const CLIENTS = '/Cliënten';

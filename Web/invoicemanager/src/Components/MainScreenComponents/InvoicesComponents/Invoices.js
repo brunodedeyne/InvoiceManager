@@ -1,41 +1,30 @@
 import React, {Component} from 'react';
-// import Parser from 'html-react-parser';
-// import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-// import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-// import TableSortLabel from '@material-ui/core/TableSortLabel';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
 import IconButton from '@material-ui/core/IconButton';
-// import Tooltip from '@material-ui/core/Tooltip';
-// import DeleteIcon from '@material-ui/icons/Delete';
-// import FilterListIcon from '@material-ui/icons/FilterList';
-// import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Menu from '../../MenuComponents/Menu';
 import Header from '../../HeaderComponents/Header';
 import './Invoices.css';
 import * as firebase from 'firebase';  
-// import RaisedButton from 'material-ui/RaisedButton/RaisedButton';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
 import EnhancedTableHead from '../EnhancedTableHead';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import { SnackbarContent } from '@material-ui/core';
 
-// let counter = 0;
-// function createData(dossierNr, fullName, AardInvoice, Fee, DateCreated, DatePaid) {
-//   counter += 1;
-//   return { id: counter, dossierNr, fullName, AardInvoice, Fee, DateCreated, DatePaid };
-// }
 
 const styles = theme => ({
   root: {
@@ -60,90 +49,98 @@ class EnhancedTable extends Component {
     super(props, context);
 
     this.state = {
+      userUid: '',
       order: 'asc',
       orderBy: 'DateCreated',
       selected: [],
       plannen: [],
       invoices: [],
-      data: [
-      ].sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      dataPlannen: [],
+      dataInvoices: [],
+      data: [],
       page: 0,
       rowsPerPage: 10,
       openConfirmationDialogPaid: false,
-      //openSuccessPaid: false,
       paimentId: '',
       paimentInvoice: [],
       openSnackbar: false,
-      snackBarContent: ''
+      snackBarContent: '',
+      kwartaal: '',
+      paid: '',
+      initialDataCall: false
     };
     this.database = firebase.database().ref('/invoices');
+    this.getInvoice = this.getInvoice.bind(this);
+    this.filterData = this.filterData.bind(this);
+    this.getData = this.getData.bind(this);
   }
 
   componentWillMount (){
-    const allInvoices = this.state.invoices;
-    const allPlans = this.state.plannen;
+    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+      if (user) this.setState({userUid: user.uid});        
+    });    
+  }
 
-    this.database.on('child_added', snapshot => {
-      allInvoices.push({
-            key: snapshot.key,
-            AardInvoice: snapshot.val().AardInvoice,
-            Fee: snapshot.val().Fee,
-            PlanKey: snapshot.val().PlanKey,
-            DateCreated: snapshot.val().DateCreated,
-            DatePaid: snapshot.val().DatePaid
-        })
-        this.setState({invoices: allInvoices});
-    })
+  async componentDidMount (){
+    await this.getData(); 
+  }
 
-    firebase.database().ref('/plannen').on('child_added', snapshot => {
-      allPlans.push({
-        key: snapshot.key,
-        dossierNr: snapshot.val().DossierNr,
-        name: snapshot.val().name,
-        familyName: snapshot.val().familyName,
-        street: snapshot.val().street,
-        city: snapshot.val().city,
-        email: snapshot.val().email,
-        phone: snapshot.val().phone,
-        number: snapshot.val().number,
-        BTW: snapshot.val().BTW,
-        buildingStreet: snapshot.val().buildingStreet,
-        buildingCity: snapshot.val().buildingCity,
-        aard: snapshot.val().aard
-      })
-
-      this.setState({plannen: allPlans});
-    })
-
-    for (var i = 0; i < this.state.invoices.length; i++){
-      for (var j = 0; j < this.state.plannen.length; j++){
-        if (this.state.plannen[j].key === this.state.invoices[i].PlanKey) {
-          this.state.data.push({
-            dossierNr: this.state.plannen[j].dossierNr,
-            name: this.state.plannen[j].name,
-            familyName: this.state.plannen[j].familyName,
-            street: this.state.plannen[j].street,
-            city: this.state.plannen[j].city,
-            email: this.state.plannen[j].email,
-            phone: this.state.plannen[j].phone,
-            number: this.state.plannen[j].number,
-            BTW: this.state.plannen[j].BTW,
-            buildingStreet: this.state.plannen[j].buildingStreet,
-            buildingCity: this.state.plannen[j].buildingAddress,
-            aard: this.state.plannen[j].aard,
-            key: this.state.invoices[i].key,
-            AardInvoice: this.state.invoices[i].AardInvoice,
-            Fee: this.state.invoices[i].Fee,
-            PlanKey: this.state.invoices[i].PlanKey,
-            DateCreated: this.state.invoices[i].DateCreated,
-            DatePaid: this.state.invoices[i].DatePaid,
-            fullName: this.state.plannen[j].name + " " + this.state.plannen[j].familyName,
-            address: this.state.plannen[j].street + `<br />` + this.state.plannen[j].city,
-            buildingAddress: this.state.plannen[j].buildingStreet + '<br />' + this.state.plannen[j].buildingCity
-          })
+  async getData () {   
+    let itemsInvoices = [];
+    let itemsPlannen = [];
+    let tempData = [];
+    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+      firebase.database().ref('/invoices').on('value', (snapshotInvoices) => {
+        itemsInvoices = Object.entries(snapshotInvoices.val()).map((itemInvoices, iInvoices) => { 
+          if (user){
+            if (user.uid == itemInvoices[1].userUid){
+              var invoiceKey = itemInvoices[0];
+              itemInvoices = itemInvoices[1];
+              itemInvoices.key = invoiceKey;
+              return itemInvoices; 
+            }
         }
-      } 
-    }
+        });     
+        itemsInvoices = itemsInvoices.filter(Boolean);
+        this.setState({dataInvoices: itemsInvoices});
+        
+        firebase.database().ref('/plannen').on('value', (snapshotPlannen) => {
+          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {     
+            if (user){     
+              if (user.uid == itemPlannen[1].userUid){ 
+                itemPlannen = itemPlannen[1];
+                itemPlannen.key = iPlannen;
+                return itemPlannen;  
+              }
+            }
+          });
+          itemsPlannen = itemsPlannen.filter(Boolean);  
+          this.setState({dataPlannen: itemsPlannen});
+
+          let combinedInvoices = [];
+          for (var i = 0; i < itemsInvoices.length; i++){
+            for (var j = 0; j < itemsPlannen.length; j++){    
+              if (itemsPlannen[j].key === itemsInvoices[i].planKey) {
+                combinedInvoices.push ({
+                  userUid: itemsInvoices[i].userUid,
+                  dossierNr: itemsPlannen[j].dossierNr,
+                  key: itemsInvoices[i].key,
+                  aardInvoice: itemsInvoices[i].aardInvoice,
+                  fee: itemsInvoices[i].fee,
+                  planKey: itemsInvoices[i].planKey,
+                  dateCreated: itemsInvoices[i].dateCreated,
+                  datePaid: itemsInvoices[i].datePaid,
+                  fullName: itemsPlannen[j].name + " " + itemsPlannen[j].familyName,
+                })
+                
+              }
+            }
+          }
+          tempData = combinedInvoices;
+          this.setState({data: tempData});
+        });
+      });
+    });
   }
 
   handleRequestSort = (event, property) => {
@@ -200,13 +197,14 @@ class EnhancedTable extends Component {
     for (var i = 0; i < this.state.data.length; i++){
       if (this.state.data[i].key === this.state.paimentId) {        
         paidInvoice.push({
-          AardInvoice: this.state.data[i].AardInvoice,
-          DateCreated: this.state.data[i].DateCreated,
-          DatePaid: val,
-          Fee: this.state.data[i].Fee,
-          PlanKey: this.state.data[i].PlanKey,
+          aardInvoice: this.state.data[i].aardInvoice,
+          dateCreated: this.state.data[i].dateCreated,
+          datePaid: val,
+          fee: this.state.data[i].fee,
+          planKey: this.state.data[i].planKey,
           fullName: this.state.data[i].name + " " + this.state.data[i].familyName,
-          paimentId: this.state.paimentId
+          paimentId: this.state.paimentId,
+          userUid: this.state.data[i].userUid
         });
         this.setState({paimentInvoice: paidInvoice});   
       }
@@ -214,27 +212,40 @@ class EnhancedTable extends Component {
 
     firebase.database().ref().child('/invoices/' + this.state.paimentInvoice[0].paimentId)
       .set({ 
-        AardInvoice: this.state.paimentInvoice[0].AardInvoice,
-        DateCreated: this.state.paimentInvoice[0].DateCreated,
-        DatePaid: this.state.paimentInvoice[0].DatePaid,
-        Fee: this.state.paimentInvoice[0].Fee,
-        PlanKey: this.state.paimentInvoice[0].PlanKey
+        aardInvoice: this.state.paimentInvoice[0].aardInvoice,
+        dateCreated: this.state.paimentInvoice[0].dateCreated,
+        datePaid: this.state.paimentInvoice[0].datePaid,
+        fee: this.state.paimentInvoice[0].fee,
+        planKey: this.state.paimentInvoice[0].planKey,
+        userUid: this.state.paimentInvoice[0].userUid
     });
     this.setState({
       openConfirmationDialogPaid: false, 
       openSnackbar: true, 
-      paimentInvoice: [], 
-      snackBarContent: "Factuur van " + this.state.paimentInvoice[0].fullName + "  -  €" +  this.state.paimentInvoice[0].Fee + " Is betaald!"
     });
   }
 
   handleCloseConfirmationDialogPaid = () => {
     this.setState({openConfirmationDialogPaid: false});
   }
+
   handleOpenConfirmationDialogPaid = (event, id) => {
+    this.getInvoice(id);
     this.setState({openConfirmationDialogPaid: true, paimentId: id});
   }
   
+  getInvoice (id) {
+    for (var i = 0; i < this.state.data.length; i++) {
+      if (id == this.state.data[i].key){
+        this.setState({
+          selectedFullName: this.state.data[i].fullName,
+          selectedFee: this.state.data[i].fee,
+          snackBarContent: "Factuur van " + this.state.data[i].fullName + "  -  €" +  this.state.data[i].fee + " Is betaald!",
+        });
+      }
+    }
+  }
+
   handleOpenSnackbar = () => {
     this.setState({ openSnackbar: true });
   };
@@ -247,6 +258,64 @@ class EnhancedTable extends Component {
   };
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
+
+  handleChangeKwartaal = event => {
+    this.setState({ [event.target.name]: event.target.value});
+  };
+
+  isOfKwartaal (item) {
+    if (this.state.kwartaal === "" || this.state.kwartaal == 0) return true;
+    if (this.state.kwartaal === 1) {
+      if (item.dateCreated.split('/')[1] >= 1 && item.dateCreated.split('/')[1] <= 3){
+        return true;
+      }     
+    }
+    else if (this.state.kwartaal === 2) {
+      if (item.dateCreated.split('/')[1] >= 4 && item.dateCreated.split('/')[1] <= 6){
+        return true;
+      }     
+    }
+    else if (this.state.kwartaal === 3) {
+      if (item.dateCreated.split('/')[1] >= 7 && item.dateCreated.split('/')[1] <= 9){
+        return true;
+      }     
+    }
+    else if (this.state.kwartaal === 4) {
+      if (item.dateCreated.split('/')[1] >= 10 && item.dateCreated.split('/')[1] <= 12){
+        return true;
+      }     
+    }
+
+    return false;
+  }
+
+  isPaid (item) {
+    if (this.state.paid === "" || this.state.paid == 5) {
+      return true;
+    }
+    else if (this.state.paid == 0) {
+      if (item.datePaid == ""){
+        return true;
+      }     
+    }
+    else if (this.state.paid == 1) {
+      if (item.datePaid != ""){
+        return true;
+      }     
+    }
+    return false;
+  }
+
+  filterData () {
+    let filterData = this.state.data.filter(item => (
+      this.isOfKwartaal(item) && this.isPaid(item)
+    ));
+    return filterData;
+  }
+
+  handleChangePaid = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
   render() {
     const { classes } = this.props;
@@ -270,8 +339,40 @@ class EnhancedTable extends Component {
 
     return (
       <div>
-        <Menu />
-        <Header headerTitle="Facturatie"/>
+        <form autoComplete="off" className="form">
+          <FormControl className="formControl">
+            <InputLabel htmlFor="age-simple">Kwartaal</InputLabel>
+            <Select
+              value={this.state.kwartaal}
+              onChange={this.handleChangeKwartaal}
+              inputProps={{
+                name: 'kwartaal',
+                id: 'kwartaal',
+              }}
+            >
+              <MenuItem value={0}>Alles</MenuItem>
+              <MenuItem value={1}>Kwartaal 1</MenuItem>
+              <MenuItem value={2}>Kwartaal 2</MenuItem>
+              <MenuItem value={3}>Kwartaal 3</MenuItem>
+              <MenuItem value={4}>Kwartaal 4</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl className="formControl">
+            <InputLabel htmlFor="age-simple">Betalingsstatus</InputLabel>
+            <Select
+              value={this.state.paid}
+              onChange={this.handleChangePaid}
+              inputProps={{
+                name: 'paid',
+                id: 'paid',
+              }}
+            >
+              <MenuItem value={5}>Alles</MenuItem>
+              <MenuItem value={1}>Betaald</MenuItem>
+              <MenuItem value={0}>Onbetaald</MenuItem>
+            </Select>
+          </FormControl>
+        </form>
         <div className="ContainerClients">
         <Paper className={classes.root}>
           
@@ -285,7 +386,7 @@ class EnhancedTable extends Component {
                 rowCount={data.length}
               />
               <TableBody>
-                {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+                {this.filterData().slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
                   const isSelected = this.isSelected(n.id);
                   return (
                     <TableRow
@@ -302,15 +403,15 @@ class EnhancedTable extends Component {
                           label="Betalen" 
                           secondary={true} 
                           onClick={event => this.handleOpenConfirmationDialogPaid(event, n.key)}
-                          disabled={n.DatePaid}
+                          disabled={n.datePaid}
                         />
                       </TableCell>
                       <TableCell className="dossierNrColumn">{n.dossierNr}</TableCell>
                       <TableCell className="fullNameColumn">{n.fullName}</TableCell>
-                      <TableCell className="AardInvoiceColumn">{n.AardInvoice}</TableCell>
-                      <TableCell className="FeeColumn">€{n.Fee}</TableCell>
-                      <TableCell className="DateCreatedColumn">{n.DateCreated}</TableCell>
-                      <TableCell className="DatePaidColumn">{n.DatePaid}</TableCell>
+                      <TableCell className="aardInvoiceColumn">{n.aardInvoice}</TableCell>
+                      <TableCell className="feeColumn">€{n.fee}</TableCell>
+                      <TableCell className="dateCreatedColumn">{n.dateCreated}</TableCell>
+                      <TableCell className="datePaidColumn">{n.datePaid}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -340,7 +441,7 @@ class EnhancedTable extends Component {
         </div>
         
         <Dialog
-            title={"Betalingsbevestiging " + this.state.paimentInvoice.fullName + " - €" + this.state.paimentInvoice.Fee}
+            title={"Betalingsbevestiging " + this.state.selectedFullName + " - €" + this.state.selectedFee}
             actions={actionsConfirmationDialogPaid}
             modal={false}
             open={this.state.openConfirmationDialogPaid}

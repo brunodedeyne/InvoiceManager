@@ -8,7 +8,7 @@ import HomeIcon from "../../../assets/img/house.png";
 import PhoneIcon from "../../../assets/img/phone.png";
 import EmailIcon from "../../../assets/img/email.png";
 import BTWIcon from "../../../assets/img/btw.png";
-import NumberIcon from "../../../assets/img/number.png";
+import RRNIcon from "../../../assets/img/rrn.png";
 import BuildingIcon from "../../../assets/img/building.png";
 import AardIcon from "../../../assets/img/aard.png";
 import DossierIcon from "../../../assets/img/dossier.png";
@@ -17,6 +17,7 @@ import MenuItem from 'material-ui/MenuItem';
 import {withRouter} from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete';
 import Header from '../../HeaderComponents/Header';
+import CustomDrawer from '../../HeaderComponents/CustomDrawer';
 import Menu from '../../MenuComponents/Menu';
 // import PropTypes from 'prop-types';
 // import { withStyles } from '@material-ui/core/styles';
@@ -30,16 +31,9 @@ import './NewInvoice.css';
 import * as firebase from 'firebase';  
 
 const dataSourceConfig = {
-    text: 'familyName',
-    value: 'familyName',
+    text: 'dossierNr',
+    value: 'dossierNr',
 };
-
-// const styles = theme => ({
-//     close: {
-//         width: theme.spacing.unit * 4,
-//         height: theme.spacing.unit * 4,
-//     },
-// });
 
 class NewInvoice extends React.Component {
     constructor(props) {
@@ -62,17 +56,17 @@ class NewInvoice extends React.Component {
 
             phoneDummy: '+32 498/123.456',
             phone: '',
-            strippedPhone: '',
+            //strippedPhone: '',
 
             emailDummy: 'Johndoe@gmail.com',
             email: '', 
             
             BTWDummy: 'BE 0999.999.999',
             BTW: '',
-            strippedBTW: '',
+            //strippedBTW: '',
 
-            numerDummy: '97.11.21-275.45',
-            number: '',
+            RRNDummy: '97.11.21-275.45',
+            RRN: '',
 
             buildingStreetDummy: '124 Main Street',
             buildingStreet: '', 
@@ -80,41 +74,29 @@ class NewInvoice extends React.Component {
             buildingCityDummy: "Anytown",
             buildingCity: '',
 
-            AardDummy: 'verbouwing bestaande woning',
-            Aard: '',
+            aardDummy: 'verbouwing bestaande woning',
+            aard: '',
 
-            DossierNrDummy: '2017/256',
-            DossierNr: '',
+            dossierNrDummy: '2017/256',
+            dossierNr: '',
 
-            FeeDummy: '€1000',
-            Fee: '',
+            feeDummy: '€1000',
+            fee: '',
 
-            AardInvoiceDummy: 'Voorontwerp Gebouw',
-            AardInvoice: '',
+            aardInvoiceDummy: 'Voorontwerp Gebouw',
+            aardInvoice: '',
 
             key: '',
 
-            numberValid: false,
-            phoneValid: false,
-
-            numberClasses: '',
-            numberClassesCard: '',
-            numberError: '',
-            emailError: '',
-            emailClasses: '',
-            emailClassesCard: '',
-            BTWClasses: '',
-
             openInvoice: false,
-            openPlanEdit: false,
             openConfirmationDialogInvoices: false,
             enableNewInvoiceContactCard: true,
-            enableEditPlanContactCard:true,
             openSuccessInvoice: false,
             enabled: false,
             openSnackbar: false,
             snackBarType: '',
-            snackBarContent: ''
+            snackBarContent: '',
+            userUid: '',
         };
 
         this.database = firebase.database().ref('/plannen');
@@ -123,7 +105,7 @@ class NewInvoice extends React.Component {
     handleChange = (event, index, value) => {
         for (var i = 0; i < this.state.plannen.length; i++){
             if (this.state.plannen[i].key === value){
-                this.setState({strippedPhone: "0" + this.state.plannen[i].phone.substring(4).split('.').join("").split('/').join("")});
+                //this.setState({strippedPhone: "0" + this.state.plannen[i].phone.substring(4).split('.').join("").split('/').join("")});
                 this.setState({
                     nameDummy : this.state.plannen[i].name,
                     name: this.state.plannen[i].name,
@@ -146,8 +128,8 @@ class NewInvoice extends React.Component {
                     BTWDummy: this.state.plannen[i].BTW,
                     BTW: this.state.plannen[i].BTW,
 
-                    numerDummy: this.state.plannen[i].number,
-                    number: this.state.plannen[i].number,
+                    RRNDummy: this.state.plannen[i].RRN,
+                    RRN: this.state.plannen[i].RRN,
 
                     buildingStreetDummy: this.state.plannen[i].buildingStreet,
                     buildingStreet: this.state.plannen[i].buildingStreet, 
@@ -155,18 +137,18 @@ class NewInvoice extends React.Component {
                     buildingCityDummy: this.state.plannen[i].buildingCity,
                     buildingCity: this.state.plannen[i].buildingCity,
 
-                    AardDummy: this.state.plannen[i].Aard,
-                    Aard: this.state.plannen[i].Aard,
+                    aardDummy: this.state.plannen[i].aard,
+                    aard: this.state.plannen[i].aard,
 
-                    DossierNrDummy: this.state.plannen[i].dossierNr,
-                    DossierNr: this.state.plannen[i].dossierNr,
+                    dossierNrDummy: this.state.plannen[i].dossierNr,
+                    dossierNr: this.state.plannen[i].dossierNr,
 
                     key: this.state.plannen[i].key,
                     value: value,
-                    enableEditPlanContactCard: false,
+                    //enableEditPlanContactCard: false,
                     enableNewInvoiceContactCard: false, 
-                    numberValid: true,
-                    phoneValid: true
+                    // RRNValid: true,
+                    // phoneValid: true
                 })
             }
         }
@@ -188,130 +170,25 @@ class NewInvoice extends React.Component {
         this.setState({expanded: false});
     };
 
-    updateName = (e) =>{ 
-        this.setState({name: e.target.value, nameDummy: e.target.value});
-    }
-
-    updateFamilyName = (e) =>{ 
-        this.setState({familyName: e.target.value, familyNameDummy: e.target.value});
-    }
-
-    updateStreet = (e) =>{ 
-        this.setState({street: e.target.value, streetDummy: e.target.value});
-    }
-
-    updateCity = (e) =>{ 
-        this.setState({city: e.target.value, cityDummy: e.target.value});
-    }
-
-    updatePhone = (e) =>{ 
-        if (e.target.value.substring(0,1) == 0) {           
-            if (parseInt(e.target.value.substring(1, 2)) !== 4) {
-                if (e.target.value.length === 6 || e.target.value.length === 9) e.target.value += ".";
-                if (e.target.value.length === 3) e.target.value += "/";
-            }
-            if (parseInt(e.target.value.substring(1, 2)) === 4) {
-                if (e.target.value.length === 8) e.target.value += ".";
-                if (e.target.value.length === 4) e.target.value += "/";
-            }
-            this.setState({phone: e.target.value, phoneDummy: e.target.value});
-        }
-    }
-
-    updatePhoneOnChange = (e) => {               
-        this.setState({phone: e.target.value, phoneDummy: e.target.value});
-        if (this.state.phone.length === 11) this.setState({phoneValid: true})
-    }
-
-    updateEmail = (e) =>{ 
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        var valid =  re.test(String(e.target.value).toLowerCase());
-        if (!valid) {
-            this.setState({ emailClasses: "errorFillIn" });
-            this.setState({ emailClassesCard: "errorFillInCard" });
-            this.setState({ emailError: "Ongeldig Emailadres!" }); 
-        } else {
-            this.setState({ emailClasses: "" });
-            this.setState({ emailClassesCard: "" });
-            this.setState({ emailError: "" }); 
-        }
-        this.setState({email: e.target.value, emailDummy: e.target.value});
-    }
-
-    updateNumber = (e) =>{
-        if (e.target.value.length === 2 || e.target.value.length === 5 || e.target.value.length === 12) e.target.value += "."; 
-        if (e.target.value.length === 8) e.target.value += "-";
-        this.setState({number: e.target.value, numerDummy: e.target.value});
-    }
-
-    updateNumberOnChange = (e) => {
-        this.setState({number: e.target.value, numerDummy: e.target.value});
-        if(e.target.value.length === 15) {
-            var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", "")); 
-            if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
-                this.setState({ numberClasses: "errorFillIn" });
-                this.setState({ numberClassesCard: "errorFillInCard" });
-                this.setState({ numberError: "Ongeldig Rijksregisternummer!" }); 
-                this.setState({ numberValid: false }); 
-            }       
-            else {
-                this.setState({ numberClasses: "" });
-                this.setState({ numberClassesCard: "" });
-                this.setState({ numberError: "" }); 
-                this.setState({ numberValid: true }); 
-            }
-        }
-    }
-
-    updateBTW = (e) =>{      
-        if (e.target.value.substring(0,1) == 0){
-            if (e.target.value.length ===  4 || e.target.value.length === 8)    e.target.value += ".";       
-            this.setState({BTW: "BE " + e.target.value, BTWDummy: "BE " +  e.target.value});
-        }
-        if (e.target.value.substring(0,1) != 0){
-            if (e.target.value.length ===  3 || e.target.value.length === 7)    e.target.value += ".";       
-            this.setState({BTW: "BE 0" + e.target.value, BTWDummy: "BE 0" +  e.target.value});
-        }
-    }
-
-    updateBuildingStreet = (e) =>{ 
-        this.setState({buildingStreet: e.target.value, buildingStreetDummy: e.target.value});
-    }
-
-    updateBuildingCity = (e) =>{ 
-        this.setState({buildingCity: e.target.value, buildingCityDummy: e.target.value});
-    }
-
-    updateAard = (e) =>{ 
-        this.setState({Aard: e.target.value, AardDummy: e.target.value});
-    }
-
     updateAardInvoice = (e) =>{ 
-        this.setState({AardInvoice: e.target.value, AardInvoiceDummy: e.target.value});
+        this.setState({aardInvoice: e.target.value, aardInvoiceDummy: e.target.value});
     }
 
     updateFee = (e) =>{ 
-        this.setState({Fee: e.target.value});
+        this.setState({fee: e.target.value});
     }
 
     handleOpenNewInvoice = () => {
         this.setState({openInvoice: true});
     };
 
-    handleOpenConfirmationDialogInvoices = () => {
-        this.setState({openConfirmationDialogInvoices: true});
-    };
-
-    handleOpenEditPlan = () => {
-        this.setState({openPlanEdit: true});
-    };
-
     handleCloseNewInvoice = () => {
         this.setState({openInvoice: false});
     };
 
-    handleCloseEditPlan = () => {
-        this.setState({openPlanEdit: false});
+
+    handleOpenConfirmationDialogInvoices = () => {
+        this.setState({openConfirmationDialogInvoices: true});
     };
 
     handleCloseConfirmationDialogInvoices = () => {
@@ -328,39 +205,19 @@ class NewInvoice extends React.Component {
 
         e.preventDefault();
         let item = {
-            Fee: this.state.Fee,
-            AardInvoice: this.state.AardInvoice,
-            PlanKey: this.state.key,
-            DateCreated: val,
-            DatePaid: ''
+            fee: this.state.fee,
+            aardInvoice: this.state.aardInvoice,
+            planKey: this.state.key,
+            dateCreated: val,
+            datePaid: '',
+            userUid: this.state.userUid,
         }
         firebase.database().ref('invoices').push(item);
 
         this.setState({
             openConfirmationDialogInvoices: false, 
             openInvoice: false, openSnackbar: true, 
-            snackBarContent: "factuur voor " + this.state.name + " " + this.state.familyName + "   -  €" + this.state.Fee + " Aangemaakt!"
-        });
-    }
-
-    handleEditPlan = () => {
-        firebase.database().ref().child('/plannen/' + this.state.key)
-        .set({ dossierNr: this.state.DossierNr,
-            name: this.state.name,
-            familyName: this.state.familyName,
-            street: this.state.street,
-            city: this.state.city,
-            email: this.state.email,
-            phone: this.state.phone,
-            number: this.state.number,
-            BTW: this.state.BTW,
-            buildingStreet: this.state.buildingStreet,
-            buildingCity: this.state.buildingCity,
-            aard: this.state.Aard, 
-            DossierNr: this.state.DossierNr    });
-        this.setState({
-            openPlanEdit: false, 
-            snackBarContent: "Plan van " + this.state.name + " " + this.state.familyName + " is aangepast!"
+            snackBarContent: "factuur voor " + this.state.name + " " + this.state.familyName + "   -  €" + this.state.fee + " Aangemaakt!"
         });
     }
 
@@ -387,8 +244,8 @@ class NewInvoice extends React.Component {
             BTWDummy: val.BTW,
             BTW: val.BTW,
 
-            numerDummy: val.number,
-            number: val.number,
+            RRNDummy: val.RRN,
+            RRN: val.RRN,
 
             buildingStreetDummy: val.buildingStreet,
             buildingStreet: val.buildingStreet, 
@@ -396,41 +253,46 @@ class NewInvoice extends React.Component {
             buildingCityDummy: val.buildingCity,
             buildingCity: val.buildingCity,
 
-            AardDummy: val.Aard,
-            Aard: val.Aard,
+            aardDummy: val.aard,
+            aard: val.aard,
 
-            DossierNrDummy: val.dossierNr,
-            DossierNr: val.dossierNr,
+            dossierNrDummy: val.dossierNr,
+            dossierNr: val.dossierNr,
 
             key: val.key,
-            enableEditPlanContactCard: false,
+            //enableEditPlanContactCard: false,
             enableNewInvoiceContactCard: false, 
-            numberValid: true,
-            phoneValid: true
+            // RRNValid: true,
+            // phoneValid: true
         })
     };
 
-    componentWillMount (){
-        const allPlans = this.state.plannen;
-        this.database.on('child_added', snapshot => {
-            allPlans.push({
-                key: snapshot.key,
-                dossierNr: snapshot.val().DossierNr,
-                name: snapshot.val().name,
-                familyName: snapshot.val().familyName,
-                street: snapshot.val().street,
-                city: snapshot.val().city,
-                email: snapshot.val().email,
-                phone: snapshot.val().phone,
-                number: snapshot.val().number,
-                BTW: snapshot.val().BTW,
-                buildingStreet: snapshot.val().buildingStreet,
-                buildingCity: snapshot.val().buildingCity,
-                Aard: snapshot.val().aard
-            })
-            this.setState({plannen: allPlans});
-        })
-    }
+    // componentWillMount (){
+    //     //const allPlans = this.state.plannen;
+
+
+    //     // this.database.on('child_added', snapshot => {
+    //     //     if (snapshot.val().userUid === this.state.userUid) {
+    //     //         console.log(snapshot.val());
+    //     //         allPlans.push({
+    //     //             key: snapshot.key,
+    //     //             dossierNr: snapshot.val().dossierNr,
+    //     //             name: snapshot.val().name,
+    //     //             familyName: snapshot.val().familyName,
+    //     //             street: snapshot.val().street,
+    //     //             city: snapshot.val().city,
+    //     //             email: snapshot.val().email,
+    //     //             phone: snapshot.val().phone,
+    //     //             RRN: snapshot.val().RRN,
+    //     //             BTW: snapshot.val().BTW,
+    //     //             buildingStreet: snapshot.val().buildingStreet,
+    //     //             buildingCity: snapshot.val().buildingCity,
+    //     //             aard: snapshot.val().aard,
+    //     //         })
+    //     //         this.setState({plannen: allPlans});
+    //     //     }
+    //     // })
+    // }
     
     handleOpenSnackbar = () => {
         this.setState({ openSnackbar: true });
@@ -444,6 +306,23 @@ class NewInvoice extends React.Component {
     };
 
     componentDidMount () {
+        this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+            this.setState({userUid: user.uid});    
+            let items = [];
+            this.database.on('value', (snapshot) => {
+                items = Object.values(snapshot.val()).map((item, i) => { 
+                    if (user){
+                        if (item.userUid == user.uid) {
+                            item.key = i;
+                            return item; 
+                        }
+                    }
+                });
+                items = items.filter(Boolean);
+                this.setState({plannen: items});
+            });    
+        });  
+
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
         const options = {
@@ -508,24 +387,11 @@ class NewInvoice extends React.Component {
       }
 
     render() {
-        const { name, familyName, street, city, email, number, phone, phoneValid, buildingStreet, buildingCity, Aard, numberValid, Fee, AardInvoice } = this.state;
-        const enabledEditPlan =
-            name.length > 0 &&
-            familyName.length > 0 &&
-            street.length > 0 &&
-            city.length > 0 &&
-            email.length > 0 &&   
-            phone.length > 11 &&  
-            phoneValid &&         
-            buildingStreet.length > 0 &&
-            buildingCity.length > 0 &&
-            Aard.length > 0 &&
-            number.length > 14 &&
-            numberValid;   
-            
+        const { name, familyName, street, city, email, RRN, phone, phoneValid, buildingStreet, buildingCity, aard, RRNValid, fee, aardInvoice } = this.state;
+
         const enabledNewInvoice =
-            Fee.length > 0 && 
-            AardInvoice.length > 0;
+            fee.length > 0 && 
+            aardInvoice.length > 0;
         const actionsNewInvoice = [
             <FlatButton
                 label="Nieuwe Factuur"
@@ -538,20 +404,6 @@ class NewInvoice extends React.Component {
                 secondary={true}
                 keyboardFocused={true}
                 onClick={this.handleCloseNewInvoice}
-          />,
-        ];
-        const actionsEditPlan = [
-            <FlatButton
-              label="Wijzig Plan"
-              primary={true}
-              onClick={this.handleEditPlan}
-              disabled={!enabledEditPlan}
-            />,
-            <FlatButton
-                label="Annuleer"
-                secondary={true}
-                keyboardFocused={true}
-                onClick={this.handleCloseEditPlan}
           />,
         ];
         const actionsConfirmationDialogInvoices = [
@@ -570,8 +422,7 @@ class NewInvoice extends React.Component {
         ];
         return (
             <div>
-                <Header headerTitle="Nieuwe Factuur"/>
-                <Menu /> 
+                {/* <Header headerTitle="Nieuwe Factuur"/> */}
                 <section className="form__Container">  
                     <div className="labelDropDown">Kies Uw Cliënt: </div>
                         <div className="Dropdown">  
@@ -583,7 +434,7 @@ class NewInvoice extends React.Component {
                                     {
                                         this.state.plannen.map((plan) => {
                                             return (
-                                                <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.familyName + " " + plan.name}  />
+                                                <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.name + " " + plan.familyName}  />
                                             )
                                         })
                                     }
@@ -591,7 +442,7 @@ class NewInvoice extends React.Component {
                         </div>
                         <div className="labelSearchName">
                             <AutoComplete
-                                floatingLabelText="Zoek op Naam of Dossier"
+                                floatingLabelText="Zoek op Dossier Nummer"
                                 dataSourceConfig={dataSourceConfig}
                                 dataSource={this.state.plannen}
                                 filter={AutoComplete.caseInsensitiveFilter}
@@ -622,15 +473,15 @@ class NewInvoice extends React.Component {
                                             <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>                              
                                     </div>
                                     <div>
-                                        <img src={NumberIcon} alt="Number Icon"/>
-                                        <div className={ this.state.numberClassesCard }>{this.state.numerDummy}</div>
+                                        <img src={RRNIcon} alt="RRN Icon"/>
+                                        <div className={ this.state.RRNClassesCard }>{this.state.RRNDummy}</div>
                                     </div>
                                 </div>
                                 <div></div>
                                 <div className="info buildingInfo">
                                     <div> 
                                         <img src={DossierIcon} alt="Dossier Icon"/>
-                                        <div>{this.state.DossierNrDummy}</div>
+                                        <div>{this.state.dossierNrDummy}</div>
                                     </div>
                                     <div> 
                                         <img src={BuildingIcon} alt="Building Icon" className="addressContactCardImg"/>
@@ -639,7 +490,7 @@ class NewInvoice extends React.Component {
                                     </div>
                                     <div>
                                         <img src={AardIcon} alt="Aard Icon"/>
-                                        <div className="aardContactCard">{this.state.AardDummy}</div>
+                                        <div className="aardContactCard">{this.state.aardDummy}</div>
                                     </div>
                                 </div>
                                 <div className="actionButtonsInvoice">
@@ -649,31 +500,24 @@ class NewInvoice extends React.Component {
                                         onClick={this.handleOpenNewInvoice}
                                         disabled={this.state.enableNewInvoiceContactCard}
                                     />
-                                    <FlatButton
-                                        label="Bewerk Plan"
-                                        primary={true}
-                                        keyboardFocused={true}
-                                        onClick={this.handleOpenEditPlan}
-                                        disabled={this.state.enableEditPlanContactCard}
-                                    />
                                 </div>
                             </CardText>
                         </Card>
                     </div>
                     <Dialog
-                        title={"Factuur voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
+                        title={"Factuur voor " + this.state.name + " " + this.state.familyName + " - " + this.state.dossierNr}
                         actions={actionsNewInvoice}
                         modal={false}
                         open={this.state.openInvoice}
                         onRequestClose={this.handleCloseNewInvoice}
                     >
-                        <form>
+                        <form className="form__ContainerNewInvoice">
                             <TextField
                                 name="Ereloon"
                                 floatingLabelText="Ereloon"
                                 className="form__TextField"
                                 onChange={this.updateFee}
-                                type="number"
+                                type="RRN"
                             />
                             <TextField
                                 name="AardInvoice"
@@ -684,119 +528,14 @@ class NewInvoice extends React.Component {
                         </form>
                     </Dialog>
                     <Dialog
-                        title={"Bewerk Plan voor " + this.state.familyName + " " + this.state.name + " - " + this.state.DossierNr}
-                        actions={actionsEditPlan}
-                        modal={false}
-                        open={this.state.openPlanEdit}
-                        onRequestClose={this.handleCloseEditPlan}
-                        autoScrollBodyContent={true}
-                    >
-                    <div className="formEditPlan">
-                        <TextField
-                            name="familyName"
-                            floatingLabelText="Naam *"
-                            className="form__TextField"
-                            onChange={this.updateFamilyName}
-                            value={this.state.familyName}
-                        />
-                        <TextField
-                            name="name"
-                            floatingLabelText="Voornaam *"
-                            className="form__TextField"
-                            onChange={this.updateName}
-                            value={this.state.name}
-                        />
-                        <TextField
-                            name="street"
-                            id="street"
-                            floatingLabelText="Straat *"
-                            className="form__TextField"
-                            onChange={this.updateStreet}
-                            type="text"
-                            placeholder=""
-                            value={this.state.street}                            
-                        />
-                        <TextField
-                            name="city"
-                            floatingLabelText="Gemeente *"
-                            className="form__TextField"
-                            onChange={this.updateCity}
-                            value={this.state.city}
-                        />
-                        <TextField
-                            name="phone"
-                            id="phone"
-                            floatingLabelText="Telefoon *"
-                            className="form__TextField"
-                            maxLength="12"
-                            onKeyPress={this.updatePhone}
-                            onChange={this.updatePhoneOnChange}
-                            value={this.state.phone}
-                        />
-                        <TextField
-                            name="email"
-                            floatingLabelText="Email *"
-                            className="form__TextField"
-                            onChange={this.updateEmail}
-                            type="email"
-                            value={this.state.email}
-                        />
-                        <TextField
-                            name="BTW"
-                            floatingLabelText="BTW Nummer"
-                            className={"form__TextField " + this.state.BTWClasses }
-                            onKeyPress={this.updateBTW}
-                            maxLength="12"
-                        />
-                        <TextField
-                            name="number"
-                            floatingLabelText="Rijksregisternummer *"
-                            className={"form__TextField " + this.state.numberClasses }
-                            onKeyPress={this.updateNumber}
-                            onChange={this.updateNumberOnChange}
-                            maxLength="15"
-                            errorText={this.state.numberError}
-                            value={this.state.number}
-                        />
-                    </div>
-                    <div className="border"></div>
-                    <div className="form__Plan">
-                        <TextField
-                            name="buildingStreet"
-                            id="buildingStreet"
-                            floatingLabelText="Ligging *"
-                            className="form__TextField"
-                            onChange={this.updateBuildingStreet}
-                            placeholder=""
-                            autoComplete="email"
-                            value={this.state.buildingStreet}
-                        />
-                        <TextField
-                            name="buildingCity"
-                            floatingLabelText="Bouwplaats *"
-                            className="form__TextField"
-                            onChange={this.updateBuildingCity}
-                            value={this.state.buildingCity}
-                            value={this.state.buildingCity}
-                        />
-                        <TextField
-                            name="Aard"
-                            floatingLabelText="Aard *"
-                            className="form__TextField"
-                            onChange={this.updateAard}
-                            value={this.state.Aard}
-                        />
-                        </div>
-                    </Dialog>
-                    <Dialog
                         title={"Factuur Bevestiging voor " + this.state.name + " " + this.state.familyName}
                         actions={actionsConfirmationDialogInvoices}
                         modal={false}
                         open={this.state.openConfirmationDialogInvoices}
                         onRequestClose={this.handleCloseConfirmationDialogInvoices}
                     >   
-                    <strong>Ereloon:   </strong>€{this.state.Fee} <br />
-                    <strong>Aard:      </strong>{this.state.AardInvoice} <br />
+                    <strong>Ereloon:   </strong>€{this.state.fee} <br />
+                    <strong>Aard:      </strong>{this.state.aardInvoice} <br />
                     </Dialog>
                     <Snackbar
                         anchorOrigin={{

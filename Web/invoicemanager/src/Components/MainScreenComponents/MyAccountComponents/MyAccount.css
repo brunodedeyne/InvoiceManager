@@ -1,0 +1,38 @@
+.container {
+    background-color: #dcdcdc;
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.container > div {
+    margin: 0;
+    width: 100%;
+}
+
+.paddingClass {
+    padding: 10px;
+}
+
+.shadowClass {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px !important;
+}
+
+.unPaid {
+    text-align: center;
+}
+
+.form__ContainerEditPlan {
+    text-align: center;
+}
+
+.form__ContainerEditEmail input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 50px white inset;
+}
+
+.form__TextFieldEditEmail {
+    display: block;
+    float: left;
+    width: 100% !important;
+    font-size: 20px !important;
+    height: 85px !important;
+}

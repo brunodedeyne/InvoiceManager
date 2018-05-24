@@ -2,10 +2,6 @@
     margin-top: 0 !important;
 }
 
-.ContainerClients {
-    margin-left: 14rem;
-}
-
 .Header {
     margin-left: 10px;
 }
@@ -31,7 +27,7 @@
     padding: 0 !important;   
 }
 
-.AardColumn {
+.aardColumn {
     padding: 0 !important;   
 }
 
@@ -45,4 +41,8 @@
 
 .MuiTableCell-paddingNone-178 {
     padding: 4px 56px 4px 24px !important;
+}
+
+.deleteClient {
+    float: left;
 }
