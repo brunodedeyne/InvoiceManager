@@ -8,6 +8,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
+import Checkbox from '@material-ui/core/Checkbox';
 import TableRow from '@material-ui/core/TableRow';
 
 
@@ -122,14 +123,11 @@ class Overview extends React.Component {
           for (var i = 0; i < itemsInvoices.length; i++){
             for (var j = 0; j < itemsPlannen.length; j++){    
               if (itemsPlannen[j].key === itemsInvoices[i].planKey && itemsInvoices[i].dateCreated.split('/')[1] === val) {
-                if (itemsInvoices[i].datePaid == "") statusPaimentLastMonth = "Onbetaald";
-                else statusPaimentLastMonth= "Betaald";
                 combinedInvoicesLastMonth.push ({
                   dossierNr: itemsPlannen[j].dossierNr,
                   fee: itemsInvoices[i].fee,
                   dateCreated: itemsInvoices[i].dateCreated,
                   datePaid: itemsInvoices[i].datePaid,         
-                  status: statusPaimentLastMonth         
                 })
               }
             }
@@ -198,27 +196,25 @@ class Overview extends React.Component {
                 <Paper className="unPaidOverview paddingClassOverview shadowClassOverview">Bedrag bij Cliënten: <strong>€{this.state.unPaid}</strong></Paper>
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={6} className="gridUnPaid">
                 <Paper className="paddingClassOverview shadowClassOverview">
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Status</TableCell>
-                        <TableCell numeric>Dossier Nummer</TableCell>
-                        <TableCell numeric>Ereloon</TableCell>
-                        <TableCell numeric>Datum</TableCell>
+                        <TableCell className="statusHeaderUnPaid">Status</TableCell>
+                        <TableCell className="dossierHeaderUnPaid" numeric>Dossier</TableCell>
+                        <TableCell className="feeHeaderUnPaid" numeric>Ereloon</TableCell>
+                        <TableCell className="dateHeaderUnPaid" numeric>Datum</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {this.state.dataUnpaid.map(n => {
                         return (
                           <TableRow key={n.id}>
-                            <TableCell>
-                              {n.status}
-                            </TableCell>
-                            <TableCell numeric>{n.dossierNr}</TableCell>
-                            <TableCell numeric>{n.fee}</TableCell>
-                            <TableCell numeric>{n.dateCreated}</TableCell>
+                            <Checkbox disabled />
+                            <TableCell className="dossierUnPaid" numeric>{n.dossierNr}</TableCell>
+                            <TableCell className="feeUnPaid" numeric>€{n.fee}</TableCell>
+                            <TableCell className="dateUnPaid" numeric>{n.dateCreated}</TableCell>
                           </TableRow>
                         );
                       })}
@@ -227,29 +223,29 @@ class Overview extends React.Component {
                 </Paper>
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={6} className="gridMonth">
                 <Paper className="paddingClass shadowClass">
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Status</TableCell>
-                        <TableCell numeric>Dossier Nummer</TableCell>
-                        <TableCell numeric>Ereloon</TableCell>
-                        <TableCell numeric>Datum</TableCell>
-                        <TableCell numeric>BetaalDatum</TableCell>
+                        <TableCell className="statusHeaderMonth">Status</TableCell>
+                        <TableCell className="dossierHeaderMonth" numeric>Dossier</TableCell>
+                        <TableCell className="feeHeaderMonth" numeric>Ereloon</TableCell>
+                        <TableCell className="dateCreatedHeaderMonth" numeric>Datum</TableCell>
+                        <TableCell className="datePaidHeaderMonth" numeric>BetaalDatum</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {this.state.dataLastMonth.map(n => {
                         return (
                           <TableRow key={n.id}>
-                            <TableCell>
-                              {n.status}
-                            </TableCell>
-                            <TableCell numeric>{n.dossierNr}</TableCell>
-                            <TableCell numeric>{n.fee}</TableCell>
-                            <TableCell numeric>{n.dateCreated}</TableCell>
-                            <TableCell numeric>{n.datePaid}</TableCell>
+                            {n.datePaid ? 
+                              <Checkbox disabled checked value="checkedE" /> :
+                              <Checkbox disabled value="checkedD" />}
+                            <TableCell className="dossierNrMonth" numeric>{n.dossierNr}</TableCell>
+                            <TableCell className="feeMonth" numeric>{n.fee}</TableCell>
+                            <TableCell className="dateCreatedMonth" numeric>{n.dateCreated}</TableCell>
+                            <TableCell className="datePaidMonth" numeric>{n.datePaid}</TableCell>
                           </TableRow>
                         );
                       })}

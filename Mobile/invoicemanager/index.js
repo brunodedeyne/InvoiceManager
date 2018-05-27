@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native';
 import App from './App';
 
-AppRegistry.registerComponent('invoicemanager', () => App);
+AppRegistry.registerComponent('InvoiceManager', () => App);

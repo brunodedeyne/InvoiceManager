@@ -1,5 +1,5 @@
 {
-  "name": "invoicemanager",
+  "name": "InvoiceManager",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,12 +8,13 @@
   },
   "dependencies": {
     "react": "16.3.1",
-    "react-native": "0.55.4"
+    "react-native": "0.55.4",
+    "react-native-navigation": "^1.1.463"
   },
   "devDependencies": {
-    "babel-jest": "22.4.4",
+    "babel-jest": "23.0.0",
     "babel-preset-react-native": "4.0.0",
-    "jest": "22.4.4",
+    "jest": "23.0.0",
     "react-test-renderer": "16.3.1"
   },
   "jest": {

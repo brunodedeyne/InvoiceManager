@@ -2,7 +2,7 @@
     margin-top: 0 !important;
 }
 
-.Header {
+.HeaderClients {
     margin-left: 10px;
 }
 
@@ -10,29 +10,29 @@
     background-color: #dcdcdc;
 }
 
-.dossierNrColumn {
-    width: 10px;
+.dossierNrColumnClients {
+    padding: 4px 0 4px 20px !important;
+    width: 64px !important;
 }
 
-.fullNameColumn {
-    width: 80px;       
+.fullNameColumnClients {
+    padding: 4px 0 4px 15px !important;
 }
 
-.addressColumn {
-    width: 150px;
-    padding-left: 0 !important;
+.addressColumnClients {
+    padding: 4px 0 4px 0 !important;
 }
 
-.buildingAddressColumn {
+.buildingAddressColumnClients {
+    padding: 4px 0 4px 0 !important; 
+}
+
+.aardColumnClients {
     padding: 0 !important;   
 }
 
-.aardColumn {
-    padding: 0 !important;   
-}
-
-.phoneColumn {
-    width: 80px;
+.phoneColumnClients {
+    padding: 4px 0 4px 0 !important;
 }
 
 .table {
@@ -43,6 +43,35 @@
     padding: 4px 56px 4px 24px !important;
 }
 
-.deleteClient {
+.deleteClientClients {
     float: left;
+}
+
+.dossierNrColumnHeaderClients {
+    padding: 4px 0 4px 20px !important;
+}
+
+.fullNameColumnHeaderClients {
+    padding: 4px 0 4px 15px !important;
+    width: 140px !important;
+}
+
+.addressColumnHeaderClients {
+    padding: 4px 0 4px 0 !important;
+    width: 150px !important;
+}
+
+.buildingAddressColumnHeaderClients {
+    padding: 4px 0 4px 0 !important;
+    width: 150px !important;
+}
+
+.phoneColumnHeaderClients {
+    padding: 4px 0 4px 0 !important;
+    width: 110px !important;
+}
+
+.aardColumnHeaderClients {
+    padding: 4px 0 4px 0 !important;   
+    width: 200px !important;
 }

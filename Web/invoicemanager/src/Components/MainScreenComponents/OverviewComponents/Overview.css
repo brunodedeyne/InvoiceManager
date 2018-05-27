@@ -9,6 +9,7 @@
 
 .paddingClassOverview {
     padding: 10px;
+
 }
 
 .shadowClassOverview {
@@ -17,4 +18,109 @@
 
 .unPaidOverview {
     text-align: center;
+}
+
+.gridUnPaid {
+    min-width: 350px;
+    margin:  0 auto !important;
+}
+
+.gridMonth {
+    min-width: 370px;
+    margin:  0 auto !important;
+}
+
+.dateUnPaid {
+    padding: 4px 3px 4px 10px !important;
+    text-align: left !important;
+    width: 10px !important;
+}
+
+.feeUnPaid {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.dossierUnPaid {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.statusUnPaid {
+    padding: 4px 0 4px 3px !important;
+    text-align: left !important;
+}
+
+.dateHeaderUnPaid {
+    padding: 4px 3px 4px 10px !important;
+    text-align: left !important;
+}
+
+.feeHeaderUnPaid {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.dossierHeaderUnPaid {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.statusHeaderUnPaid {
+    padding: 4px 0 4px 3px !important;
+    text-align: left !important;
+}
+
+
+
+.datePaidMonth {
+    padding: 4px 3px 4px 10px !important;
+    text-align: left !important;
+    width: 10px !important;
+}
+
+.dateCreatedMonth {
+    padding: 4px 3px 4px 10px !important;
+    text-align: left !important;
+    width: 10px !important;
+}
+
+.feeMonth {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.dossierNrMonth {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.statusMonth {
+    padding: 4px 0 4px 3px !important;
+    text-align: left !important;
+}
+
+.dateCreatedHeaderMonth {
+    padding: 4px 3px 4px 10px !important;
+    text-align: left !important;
+}
+
+.datePaidHeaderMonth {
+    padding: 4px 3px 4px 10px !important;
+    text-align: left !important;
+}
+
+.feeHeaderMonth {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.dossierHeaderMonth {
+    padding: 4px 0 4px 0 !important;
+    text-align: left !important;
+}
+
+.statusHeaderMonth {
+    padding: 4px 0 4px 3px !important;
+    text-align: left !important;
 }

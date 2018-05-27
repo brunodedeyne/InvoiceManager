@@ -244,12 +244,13 @@ class NewPlan extends React.Component {
                 dossierNrs = Object.values(snapshot.val()).map((item, i) => { 
                     if (user) {
                         if (item.userUid == user.uid) {
-                            return item.dossierNr
+                            return parseInt(item.dossierNr.split('/')[1])
                         }
                     }
                 });
                 dossierNrs = dossierNrs.filter(Boolean);
-                this.setState({dossierNrs: dossierNrs});
+                var maxDossierNr = (parseInt(Math.max.apply(Math, dossierNrs))) + 1;
+                this.setState({maxDossierNr: maxDossierNr});
             });
         });  
 
@@ -316,18 +317,8 @@ class NewPlan extends React.Component {
           })
       }
     pushForm = (e) => {                
-        // const newArray = [];
-        // console.log(this.state.dossierNrs.length);
-        // for (var i = 0;i < this.state.dossierNrs.length; i++){
-        //     newArray.push(parseInt(this.state.dossierNrs[i].dossierNr.split('/')[1]));
-        // }
-        // var maxDossierNr = (parseInt(Math.max.apply(Math, newArray))) + 1;
-        // if (this.state.dossierNrs.length === 0) maxDossierNr = 1;
-        // console.log("LOL" + maxDossierNr);
-        
-        var maxDossierNr = 1;
         let now = new Date();
-        let newDossierNr = now.getFullYear() + "/" + maxDossierNr;
+        let newDossierNr = now.getFullYear() + "/" + this.state.maxDossierNr;
         this.setState({lastDossierNr: newDossierNr});  
 
         e.preventDefault();

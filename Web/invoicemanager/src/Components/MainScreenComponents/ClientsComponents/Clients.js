@@ -42,7 +42,7 @@ const columnData = [
   { id: 'address', label: 'Adres' },
   { id: 'phone', label: 'Telefoon' },
   { id: 'buildingAddress', label: 'Adres Gebouw' },
-  { id: 'Aard', label: 'Aard' },
+  { id: 'aard', label: 'Aard' },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -63,7 +63,7 @@ class EnhancedTableHead extends React.Component {
                 numeric={column.numeric}
                 padding={column.disablePadding ? 'none' : 'default'}
                 sortDirection={orderBy === column.id ? order : false}
-                className={column.id + "Column"}
+                className={column.id + "ColumnHeaderClients"}
               >
                 <Tooltip
                   title={"Sorteer " + column.label}
@@ -153,13 +153,12 @@ class EnhancedTable extends React.Component {
 
   componentWillMount (){
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      console.log(user.uid);
-      this.setState({userUid: user.uid});        
+      if (user) this.setState({userUid: user.uid});        
     });
   }
 
-  async componentDidMount () {
-    await this.fillData();
+  componentDidMount () {
+    this.fillData();
   }
 
   fillData () {
@@ -168,10 +167,13 @@ class EnhancedTable extends React.Component {
       if (user) this.setState({userUid: user.uid});    
       let items = [];
       this.database.on('value', (snapshot) => {
-          items = Object.values(snapshot.val()).map((item, i) => { 
-            if (user){
-              if (item.userUid == user.uid) {
-                item.key = i;
+          items = Object.entries(snapshot.val()).map((item, i) => { 
+            if (user){              
+              if (item[1].userUid == user.uid) {
+                console.log(i);
+                var itemKey = item[0];
+                item = item[1];
+                item.key = itemKey;
                 item.fullName = item.name + " " + item.familyName;
                 item.address = item.street + `<br />` + item.city;
                 item.buildingAddress = item.buildingStreet + '<br />' + item.buildingCity;
@@ -233,6 +235,8 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   handleClientInfo (event, id) {
+    console.log(id);
+    console.log(event);
     this.state.nameErrorText == "" ;
     this.state.familyNameErrorText == "" ;
     this.state.streetErrorText == "" ;
@@ -577,13 +581,12 @@ class EnhancedTable extends React.Component {
                       key={n.id}
                       selected={isSelected}
                     >
-
-                      <TableCell className="dossierNrColumn"><a href="#" onClick={event => this.handleClientInfo(event, n.key)}>{n.dossierNr}</a></TableCell>
-                      <TableCell className="naamColumn">{n.fullName}</TableCell>
-                      <TableCell className="adresColumn">{Parser(n.address)}</TableCell>
-                      <TableCell className="phoneColumn">{n.phone}</TableCell>
-                      <TableCell className="gebouwAdresColumn">{Parser(n.buildingAddress)}</TableCell>
-                      <TableCell className="aardColumn">{n.aard}</TableCell>
+                      <TableCell className="dossierNrColumnClients"><a href="#" onClick={event => this.handleClientInfo(event, n.key)}>{n.dossierNr}</a></TableCell>
+                      <TableCell className="fullNameColumnClients">{n.fullName}</TableCell>
+                      <TableCell className="addressColumnClients">{Parser(n.address)}</TableCell>
+                      <TableCell className="phoneColumnClients">{n.phone}</TableCell>
+                      <TableCell className="buildingAddressColumnClients">{Parser(n.buildingAddress)}</TableCell>
+                      <TableCell className="aardColumnClients">{n.aard}</TableCell>
                     </TableRow>
                   );
                 })}

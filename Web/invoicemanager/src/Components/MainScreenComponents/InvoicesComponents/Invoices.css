@@ -2,38 +2,73 @@
     background-color: #dcdcdc;
 }
 
-.dossierNrColumn {
-    width: 10px;
+.dossierNrColumnInvoices {
+    padding: 4px 0 4px 15px !important;
 }
 
-.fullNameColumn {
-    width: 80px;       
+.dossierNrColumnHeaderInvoices {
+    padding: 4px 0 4px 15px !important;
 }
 
-.FeeColumn {
-    width: 150px;
-    padding-left: 0 !important;
+.paidColumnInvoices {
+    padding: 4px 0 4px 15px !important;
 }
 
-.DateCreatedColumn {
+.paidColumnHeaderInvoices {
+    padding: 4px 0 4px 31px !important;
+}
+
+.fullNameColumnInvoices {
+    padding: 4px 0 4px 24px !important;
+    width: 170px;       
+}
+
+.fullNameColumnHeaderInvoices {
+    padding: 4px 0 4px 24px !important;
+}
+
+.feeColumnInvoices {
+    padding: 4px 0 4px 0 !important;
+}
+
+.feeColumnHeaderInvoices {
+    padding: 4px 0 4px 0 !important;   
+}
+
+.dateCreatedColumnInvoices {
     padding: 0 !important;   
 }
 
-.DatePaidColumn {
+.dateCreatedColumnHeaderInvoices {
+    padding: 4px 0 4px 0 !important;  
+    width: 120px !important; 
+}
+
+.datePaidColumnInvoices {
     padding: 0 !important;   
 }
 
-.AardInvoiceColumn {
+.datePaidColumnHeaderInvoices {
+    padding: 4px 0 4px 0 !important;  
+    width: 120px !important;  
+}
+
+.aardInvoiceColumnInvoices {
     padding: 0 !important;   
 }
 
-.form {
+.aardInvoiceColumnHeaderInvoices {
+    padding: 4px 0 4px 0 !important;   
+    width: 200px !important;
+}
+
+.formInvoices {
     margin-left: 30px;
     margin-bottom: 20px;
     margin-top: 20px;
 }
 
-.formControl {
+.formControlInvoices {
     width: 175px;
     margin-left: 20px !important;
 }

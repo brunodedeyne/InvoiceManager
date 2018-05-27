@@ -10,6 +10,11 @@ import Paper from '@material-ui/core/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
+import TableHead from '@material-ui/core/TableHead';
+import Tooltip from '@material-ui/core/Tooltip';
+import { lighten } from '@material-ui/core/styles/colorManipulator';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '../../MenuComponents/Menu';
 import Header from '../../HeaderComponents/Header';
@@ -18,7 +23,7 @@ import * as firebase from 'firebase';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
-import EnhancedTableHead from '../EnhancedTableHead';
+
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -44,6 +49,92 @@ const styles = theme => ({
   },
 });
 
+const columnData = [
+  { id: 'paid', label: 'Betalen' },
+  { id: 'dossierNr', label: 'Dossier' },
+  { id: 'fullName', label: 'Naam' },
+  { id: 'aardInvoice', label: 'Aard Factuur' },
+  { id: 'fee', label: 'Ereloon' },
+  { id: 'dateCreated', label: 'Opgesteld op' },
+  { id: 'datePaid', label: 'Betaald op' },
+];
+
+class EnhancedTableHead extends React.Component {
+    createSortHandler = property => event => {
+      this.props.onRequestSort(event, property);
+    };
+  
+    render() {
+      const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+  
+      return (
+        <TableHead className="Head">
+          <TableRow className="Header">
+            {columnData.map(column => {
+              return (
+                <TableCell
+                  key={column.id}
+                  numeric={column.numeric}
+                  padding={column.disablePadding ? 'none' : 'default'}
+                  sortDirection={orderBy === column.id ? order : false}
+                  className={column.id + "ColumnHeaderInvoices"}
+                >
+                  <Tooltip
+                    title="Sort"
+                    placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+                    enterDelay={300}
+                  >
+                    <TableSortLabel
+                      active={orderBy === column.id}
+                      direction={order}
+                      onClick={this.createSortHandler(column.id)}
+                    >
+                      {column.label}
+                    </TableSortLabel>
+                  </Tooltip>
+                </TableCell>
+              );
+            }, this)}
+          </TableRow>
+        </TableHead>
+      );
+    }
+  }
+  
+  EnhancedTableHead.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+  };
+  
+  const toolbarStyles = theme => ({
+    root: {
+      paddingRight: theme.spacing.unit,
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    spacer: {
+      flex: '1 1 100%',
+    },
+    actions: {
+      color: theme.palette.text.secondary,
+    },
+    title: {
+      flex: '0 0 auto',
+    },
+  });
+
 class EnhancedTable extends Component {
   constructor(props, context) {
     super(props, context);
@@ -67,10 +158,11 @@ class EnhancedTable extends Component {
       snackBarContent: '',
       kwartaal: '',
       paid: '',
-      initialDataCall: false
+      initialDataCall: false,
+      dialogContent: '',
+      confirmOrCancel: false
     };
     this.database = firebase.database().ref('/invoices');
-    this.getInvoice = this.getInvoice.bind(this);
     this.filterData = this.filterData.bind(this);
     this.getData = this.getData.bind(this);
   }
@@ -193,13 +285,16 @@ class EnhancedTable extends Component {
 
     let now = new Date();
     let val = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+    var tempDate = '';
 
     for (var i = 0; i < this.state.data.length; i++){
-      if (this.state.data[i].key === this.state.paimentId) {        
+      if (this.state.data[i].key === this.state.paimentId) {   
+        if (this.state.confirmOrCancel) tempDate = val;
+        else tempDate = ""
         paidInvoice.push({
           aardInvoice: this.state.data[i].aardInvoice,
           dateCreated: this.state.data[i].dateCreated,
-          datePaid: val,
+          datePaid: tempDate,
           fee: this.state.data[i].fee,
           planKey: this.state.data[i].planKey,
           fullName: this.state.data[i].name + " " + this.state.data[i].familyName,
@@ -229,19 +324,23 @@ class EnhancedTable extends Component {
     this.setState({openConfirmationDialogPaid: false});
   }
 
-  handleOpenConfirmationDialogPaid = (event, id) => {
-    this.getInvoice(id);
-    this.setState({openConfirmationDialogPaid: true, paimentId: id});
-  }
-  
-  getInvoice (id) {
+  handleOpenConfirmationDialogPaid = (event, id, datePaid) => {
+    var selectedFullName = '';
+    var selectedFee = '';
     for (var i = 0; i < this.state.data.length; i++) {
       if (id == this.state.data[i].key){
-        this.setState({
-          selectedFullName: this.state.data[i].fullName,
-          selectedFee: this.state.data[i].fee,
-          snackBarContent: "Factuur van " + this.state.data[i].fullName + "  -  €" +  this.state.data[i].fee + " Is betaald!",
-        });
+          selectedFullName = this.state.data[i].fullName,
+          selectedFee = this.state.data[i].fee,          
+          this.setState({
+            confirmOrCancel: datePaid ? false : true,
+            openConfirmationDialogPaid: true,
+            paimentId: id,
+            dialogContent: 
+              datePaid ? 
+                "Wilt u de factuur van " + selectedFullName + "  -  €" +  selectedFee + " Ongedaan maken?": 
+                "Bevestiging van factuur " + selectedFullName + "  -  €" + selectedFee,
+            snackBarContent: "Factuur van " + this.state.data[i].fullName + "  -  €" +  this.state.data[i].fee + " Is betaald!",
+          });
       }
     }
   }
@@ -324,7 +423,7 @@ class EnhancedTable extends Component {
 
     const actionsConfirmationDialogPaid = [
       <FlatButton
-          label="Bevestigen"
+          label={this.state.confirmOrCancel ? "Bevestigen" : "Ongedaan maken"}
           primary={true}
           keyboardFocused={true}
           onClick={this.pushPaiment}
@@ -339,8 +438,8 @@ class EnhancedTable extends Component {
 
     return (
       <div>
-        <form autoComplete="off" className="form">
-          <FormControl className="formControl">
+        <form autoComplete="off" className="formInvoices">
+          <FormControl className="formControlInvoices">
             <InputLabel htmlFor="age-simple">Kwartaal</InputLabel>
             <Select
               value={this.state.kwartaal}
@@ -357,7 +456,7 @@ class EnhancedTable extends Component {
               <MenuItem value={4}>Kwartaal 4</MenuItem>
             </Select>
           </FormControl>
-          <FormControl className="formControl">
+          <FormControl className="formControlInvoices">
             <InputLabel htmlFor="age-simple">Betalingsstatus</InputLabel>
             <Select
               value={this.state.paid}
@@ -373,7 +472,7 @@ class EnhancedTable extends Component {
             </Select>
           </FormControl>
         </form>
-        <div className="ContainerClients">
+        <div className="ContainerInvoices">
         <Paper className={classes.root}>
           
           <div className={classes.tableWrapper}>
@@ -398,20 +497,20 @@ class EnhancedTable extends Component {
                       key={n.id}
                       selected={isSelected}
                     >
-                      <TableCell className="PaidColumn">
+                      <TableCell className="paidColumnInvoices">
                         <FlatButton 
-                          label="Betalen" 
-                          secondary={true} 
-                          onClick={event => this.handleOpenConfirmationDialogPaid(event, n.key)}
-                          disabled={n.datePaid}
+                          label={n.datePaid ? "Annuleer" : "Betalen"}
+                          primary={!n.datePaid}
+                          secondary={n.datePaid} 
+                          onClick={event => this.handleOpenConfirmationDialogPaid(event, n.key, n.datePaid)}                          
                         />
                       </TableCell>
-                      <TableCell className="dossierNrColumn">{n.dossierNr}</TableCell>
-                      <TableCell className="fullNameColumn">{n.fullName}</TableCell>
-                      <TableCell className="aardInvoiceColumn">{n.aardInvoice}</TableCell>
-                      <TableCell className="feeColumn">€{n.fee}</TableCell>
-                      <TableCell className="dateCreatedColumn">{n.dateCreated}</TableCell>
-                      <TableCell className="datePaidColumn">{n.datePaid}</TableCell>
+                      <TableCell className="dossierNrColumnInvoices">{n.dossierNr}</TableCell>
+                      <TableCell className="fullNameColumnInvoices">{n.fullName}</TableCell>
+                      <TableCell className="aardInvoiceColumnInvoices">{n.aardInvoice}</TableCell>
+                      <TableCell className="feeColumnInvoices">€{n.fee}</TableCell>
+                      <TableCell className="dateCreatedColumnInvoices">{n.dateCreated}</TableCell>
+                      <TableCell className="datePaidColumnInvoices">{n.datePaid}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -441,7 +540,7 @@ class EnhancedTable extends Component {
         </div>
         
         <Dialog
-            title={"Betalingsbevestiging " + this.state.selectedFullName + " - €" + this.state.selectedFee}
+            title={this.state.dialogContent}
             actions={actionsConfirmationDialogPaid}
             modal={false}
             open={this.state.openConfirmationDialogPaid}

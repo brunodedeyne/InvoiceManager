@@ -36,8 +36,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CloseIcon from '@material-ui/icons/Close';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 
@@ -52,10 +51,8 @@ import { Link } from 'react-router-dom';
 import Badge from 'material-ui/Badge';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 
-
 import * as routes from './constants/routes/routes';
 import * as firebase from 'firebase';
-
 
 //Import CSS
 import './assets/css/styles.min.css';
@@ -93,6 +90,7 @@ const styles = theme => ({
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
+    float: 'left',
   },
   hide: {
     display: 'none',
@@ -134,7 +132,7 @@ class App extends React.Component {
     super();
     this.state = {
       loading: true,
-      open: true,
+      open: false,
       anchorEl: null,
       avatarButton: '',
       width: 0, 
@@ -142,21 +140,23 @@ class App extends React.Component {
       avatarButton: '',
       profileUid: '',
       title: 'Default',
-      numberOfUnpaidInvoices: 0
+      numberOfUnpaidInvoices: 0,
+      zIndexCss: ''
     }
 
     this.database = firebase.database().ref('/invoices');
     this.handleClickAccountMenu = this.handleClickAccountMenu.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.getNumberOfUnPaidInvoices = this.getNumberOfUnPaidInvoices.bind(this);
+    this.changeURL = this.changeURL.bind(this);
   }  
 
   handleDrawerOpen = () => {
-    this.setState({ open: true });
+    this.setState({ open: true, });
   };
 
   handleDrawerClose = () => {
-    this.setState({ open: false });
+    this.setState({ open: false, zIndexCss: "header__HighZIndex" });
   };
 
   handleClickAccountMenu = event => {
@@ -180,8 +180,8 @@ class App extends React.Component {
   }
 
   updateWindowDimensions() {
-    if (window.innerWidth <= 620) this.setState({open: false});
-    else if (window.innerWidth > 620) this.setState({open: true});
+    if (window.innerWidth <= 600) this.setState({open: false});
+    else if (window.innerWidth > 600) this.setState({open: true});
   }
 
   getNumberOfUnPaidInvoices () {   
@@ -211,7 +211,15 @@ class App extends React.Component {
     });
   }
 
+  changeURL (url){
+    this.setState({ title: url});
+  }
+
   componentDidMount() {
+    if (window.innerWidth <= 600) this.setState({open: false});
+    else if (window.innerWidth > 600) this.setState({open: true});
+    var currentRoute = window.location.href.split('/')[(window.location.href.split('/').length) - 1];
+    this.setState({ title: currentRoute.replace('_', ' ')});
     this.getNumberOfUnPaidInvoices(); 
     var avatarButton = '';
     var tempUid = '';
@@ -232,7 +240,7 @@ class App extends React.Component {
         avatarButton: avatarButton,
       });            
     });
-    //window.addEventListener('resize', this.updateWindowDimensions);
+    window.addEventListener('resize', this.updateWindowDimensions);
 
     var tempNumberOfUnpaidInvoices = 0;
 
@@ -253,12 +261,13 @@ render () {
   if (this.state.loading) return(
     <Loading />
   );
-  if (this.state.user) return (
+  if (this.state.user) 
+  return (
     <div className="AppDiv">
       <Router>
         <MuiThemeProvider>
           <div className="App">
-            <div className={"root header__Container"}>
+            <div className={"root header__Container header__ZIndex"}>
               <AppBar
                 position="absolute"
                 className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
@@ -270,9 +279,16 @@ render () {
                     onClick={this.handleDrawerOpen}
                     className={classNames(classes.menuButton, this.state.open && classes.hide)}
                   >
-                    {/* <Logo text="Dedeyne - Coomans"/> */}
                     <MenuIcon />
                   </IconButton>
+                  <div className={classes.toolbar}>
+                    <IconButton 
+                      onClick={this.handleDrawerClose}
+                      className={classNames(classes.menuButton, !this.state.open && classes.hide)}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
                   <Typography variant="title" color="inherit" noWrap>
                     {this.state.title}
                   </Typography>
@@ -282,7 +298,7 @@ render () {
                       aria-haspopup="true"
                       onClick={this.handleClickAccountMenu}
                     >
-                      <Avatar className="avatar">{this.state.avatarButton}</Avatar>
+                      <Avatar className="avatar">BD</Avatar>
                     </Button>
                   </p>
                   <Menu
@@ -291,10 +307,11 @@ render () {
                     open={Boolean(anchorEl)}
                     onClose={this.handleCloseAccountMenu}
                   >
-                    <Link to={routes.My_ACCOUNT}><MenuItem onClick={this.handleMyAccount}>Mijn Account</MenuItem></Link>
+                    <Link to={routes.My_ACCOUNT}  onClick={() => this.changeURL("Mijn Account")}><MenuItem onClick={this.handleMyAccount}>Mijn Account</MenuItem></Link>
                     <MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem>
                   </Menu>
                 </Toolbar>
+                
               </AppBar>
               <Drawer
                 variant="permanent"
@@ -305,13 +322,11 @@ render () {
                 open={this.state.open}
               >
                 <div className={classes.toolbar}>
-                  <IconButton onClick={this.handleDrawerClose}>
-                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                  </IconButton>
+   
                 </div>
                 <List className="newStuff">
                   <div className="newStuffDivider">
-                    <Link to={routes.NEW_PLAN}>
+                    <Link to={routes.NEW_PLAN} onClick={() => this.changeURL("Nieuw Plan")}>
                       <ListItem button>
                         <ListItemIcon className="listItems">
                           <NewPlanIcon />
@@ -319,7 +334,7 @@ render () {
                         <ListItemText primary="Nieuw Plan" className="listItems"/>
                       </ListItem>
                     </Link>
-                    <Link to={routes.NEW_INVOICE}>
+                    <Link to={routes.NEW_INVOICE} onClick={() => this.changeURL("Nieuwe Factuur")}>
                       <ListItem button>
                         <ListItemIcon className="listItems">
                           <NewInvoiceIcon />
@@ -331,7 +346,7 @@ render () {
                 </List>
                 <List>
                 <div>
-                  <Link to={routes.OVERVIEW}>
+                  <Link to={routes.OVERVIEW} onClick={() => this.changeURL("Overzicht")}>
                     <ListItem button>
                       <ListItemIcon className="listItems">
                         <OverviewIcon />
@@ -339,7 +354,7 @@ render () {
                       <ListItemText primary="Overzicht"  className="listItems"/>
                     </ListItem>
                   </Link>
-                  <Link to={routes.CLIENTS}>
+                  <Link to={routes.CLIENTS} onClick={() => this.changeURL("Cliënten")}>
                     <ListItem button>
                       <ListItemIcon className="listItems">
                         <ClientsIcon />
@@ -347,7 +362,7 @@ render () {
                       <ListItemText primary="Cliënten" className="listItems"/>
                     </ListItem>
                   </Link>  
-                  <Link to={routes.INVOICES}>
+                  <Link to={routes.INVOICES} onClick={() => this.changeURL("Facturatie")}>
                     <ListItem button>
                       <Badge
                         badgeContent={this.state.numberOfUnpaidInvoices }
@@ -407,7 +422,8 @@ render () {
         <Login />
       </MuiThemeProvider>
     </div>
-  )}
+  )
+}
 }
 
 App.propTypes = {

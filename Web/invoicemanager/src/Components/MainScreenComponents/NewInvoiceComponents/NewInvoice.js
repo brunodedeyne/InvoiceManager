@@ -268,32 +268,31 @@ class NewInvoice extends React.Component {
         })
     };
 
-    // componentWillMount (){
-    //     //const allPlans = this.state.plannen;
+    componentWillMount (){
+        const allPlans = this.state.plannen;
 
-
-    //     // this.database.on('child_added', snapshot => {
-    //     //     if (snapshot.val().userUid === this.state.userUid) {
-    //     //         console.log(snapshot.val());
-    //     //         allPlans.push({
-    //     //             key: snapshot.key,
-    //     //             dossierNr: snapshot.val().dossierNr,
-    //     //             name: snapshot.val().name,
-    //     //             familyName: snapshot.val().familyName,
-    //     //             street: snapshot.val().street,
-    //     //             city: snapshot.val().city,
-    //     //             email: snapshot.val().email,
-    //     //             phone: snapshot.val().phone,
-    //     //             RRN: snapshot.val().RRN,
-    //     //             BTW: snapshot.val().BTW,
-    //     //             buildingStreet: snapshot.val().buildingStreet,
-    //     //             buildingCity: snapshot.val().buildingCity,
-    //     //             aard: snapshot.val().aard,
-    //     //         })
-    //     //         this.setState({plannen: allPlans});
-    //     //     }
-    //     // })
-    // }
+        this.database.on('child_added', snapshot => {
+            if (snapshot.val().userUid === this.state.userUid) {
+                console.log(snapshot.val());
+                allPlans.push({
+                    key: snapshot.key,
+                    dossierNr: snapshot.val().dossierNr,
+                    name: snapshot.val().name,
+                    familyName: snapshot.val().familyName,
+                    street: snapshot.val().street,
+                    city: snapshot.val().city,
+                    email: snapshot.val().email,
+                    phone: snapshot.val().phone,
+                    RRN: snapshot.val().RRN,
+                    BTW: snapshot.val().BTW,
+                    buildingStreet: snapshot.val().buildingStreet,
+                    buildingCity: snapshot.val().buildingCity,
+                    aard: snapshot.val().aard,
+                })
+                this.setState({plannen: allPlans});
+            }
+        })
+    }
     
     handleOpenSnackbar = () => {
         this.setState({ openSnackbar: true });
@@ -308,7 +307,7 @@ class NewInvoice extends React.Component {
 
     componentDidMount () {
         this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-            this.setState({userUid: user.uid});    
+            if (user) this.setState({userUid: user.uid});    
             let items = [];
             this.database.on('value', (snapshot) => {
                 items = Object.values(snapshot.val()).map((item, i) => { 
