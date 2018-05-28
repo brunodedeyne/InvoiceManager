@@ -130,7 +130,7 @@ class Header extends React.Component {
 
   handleSignOut = () => {
     firebase.auth().signOut().then(function() {
-      this.props.history.push('/Login');
+      this.props.history.push('/InvoiceManager/Login');
     }).catch(function(error) {
       console.log(error);
     });

@@ -169,7 +169,7 @@ class App extends React.Component {
 
   handleSignOut = () => {
     firebase.auth().signOut().then(function() {
-      this.props.history.push('/Inloggen');
+      this.props.history.push('/InvoiceManager/Inloggen');
     }).catch(function(error) {
       console.log(error);
     });
