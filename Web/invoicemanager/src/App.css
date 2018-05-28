@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Century Gothic';
-  src: URL('assets/Fonts/CenturyGothic.ttf') format('ttf');
+  src: URL('./assets/Fonts/CenturyGothic.ttf') format('ttf');
 }
 
 html {
