@@ -41,6 +41,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
+<<<<<<< HEAD
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
@@ -48,4 +49,12 @@
     "type": "git"
   },
   "homepage": "https://brunodedeyne.github.io/InvoiceManager"
+=======
+    "deploy": "gh-pages -d build"
+  },
+  "repository": {
+    "type": "git",
+    "homepage" : "https://brunodedeyne.github.io/InvoiceManager/"
+  }
+>>>>>>> d241651... bugs removed
 }
