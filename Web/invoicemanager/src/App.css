@@ -103,8 +103,8 @@ h2 {
     margin-left: 11px !important;
   }
 
-  .App-drawerPaperClose-6, .jss5 {
-    width: 70px !important;
+  .App-drawerPaperClose-6 {
+    width: 240px !important;
   }
 
   .header__ZIndex > header {
