@@ -216,6 +216,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log(process.env.PUBLIC_URL);
     if (window.innerWidth <= 600) this.setState({open: false});
     else if (window.innerWidth > 600) this.setState({open: true});
     var currentRoute = window.location.href.split('/')[(window.location.href.split('/').length) - 1];
