@@ -1,5 +1,5 @@
 export const LOGIN = '/InvoiceManager/Inloggen';
-export const LANDING = '/InvoiceManager/';
+export const LANDING = '/InvoiceManager/Overzicht';
 export const My_ACCOUNT = '/InvoiceManager/Mijn_Account';
 export const NEW_PLAN = '/InvoiceManager/Nieuw_Plan';
 export const NEW_INVOICE = '/InvoiceManager/Nieuwe_Factuur';
