@@ -25,7 +25,6 @@ body {
 } */
 
 .header__Container > header {
-
   height: 56px !important;
 }
 
@@ -34,28 +33,28 @@ h2 {
   margin: 14px 0 0 20px !important;
 }
 
-.App-toolbar-7 {
+.App-toolbar-7, .jss7 {
   background-color: white !important;
   display: inline-block !important;
   height: 56px !important;
   padding: 0 !important;
 }
 
-.App-menuButton-3 {
+.App-menuButton-3, .jss3 {
   margin-top:  4px !important;
   margin-left:  4px !important;
   margin-right:  0 !important;
 }
 
-.MuiToolbar-root-44 {
+.MuiToolbar-root-44, .jss44 {
   display: inline-block !important;
 }
 
-.MuiToolbar-gutters-45 {
+.MuiToolbar-gutters-45, .jss45 {
   padding-left: 0 !important;
 }
 
-.App-drawerPaperClose-6 {
+.App-drawerPaperClose-6, .jss6 {
   width: 60px !important;
 }
 
@@ -102,11 +101,11 @@ h2 {
     min-height: 56px !important;
   }
 
-  .App-menuButton-3 {
+  .App-menuButton-3, .jss3 {
     margin-left: 11px !important;
   }
 
-  .App-drawerPaperClose-6 {
+  .App-drawerPaperClose-6, .jss6 {
     width: 70px !important;
   }
 
