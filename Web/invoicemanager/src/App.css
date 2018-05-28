@@ -107,4 +107,8 @@ h2 {
   .header__ZIndex > header {
     z-index: 1201 !important;
   }
+
+  .jss7 {
+    min-height: 56px !important;
+  }
 }
