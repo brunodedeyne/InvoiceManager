@@ -300,7 +300,7 @@ render () {
                       aria-haspopup="true"
                       onClick={this.handleClickAccountMenu}
                     >
-                      <Avatar className="avatar">BD</Avatar>
+                      <Avatar className="avatar">{this.state.avatarButton}</Avatar>
                     </Button>
                   </p>
                   <Menu

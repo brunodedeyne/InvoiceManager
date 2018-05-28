@@ -29,7 +29,7 @@ body {
 }
 
 h2 {
-  float: right !important;
+  float: left !important;
   margin: 14px 0 0 20px !important;
 }
 
@@ -38,6 +38,7 @@ h2 {
   display: inline-block !important;
   height: 56px !important;
   padding: 0 !important;
+  float: left;
 }
 
 .App-menuButton-3, .jss3 {
