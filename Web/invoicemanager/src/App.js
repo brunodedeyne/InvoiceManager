@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { withRouter } from "react-router-dom";
 import { browserHistory } from 'react-router'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -139,7 +139,7 @@ class App extends React.Component {
       height: 0,
       avatarButton: '',
       profileUid: '',
-      title: 'Default',
+      title: 'Overzicht',
       numberOfUnpaidInvoices: 0,
       zIndexCss: ''
     }
@@ -220,7 +220,8 @@ class App extends React.Component {
     if (window.innerWidth <= 600) this.setState({open: false});
     else if (window.innerWidth > 600) this.setState({open: true});
     var currentRoute = window.location.href.split('/')[(window.location.href.split('/').length) - 1];
-    this.setState({ title: currentRoute.replace('_', ' ')});
+    if (currentRoute == "" ) this.setState({ title: "Overzicht"});
+    else this.setState({ title: currentRoute.replace('_', ' ')});    
     this.getNumberOfUnPaidInvoices(); 
     var avatarButton = '';
     var tempUid = '';
@@ -382,6 +383,7 @@ render () {
               </Drawer>
               <main className={classes.content + " content"}>
                 <div className={classes.toolbar} />
+                <Switch>
                 <Route
                   exact path={routes.NEW_PLAN}
                   component={() => <NewPlan />}
@@ -410,6 +412,11 @@ render () {
                   exact path={routes.My_ACCOUNT}
                   component={() => <MyAccount />}         
                 />
+                <Route 
+                  path="*" 
+                  component={() => <Overview />} 
+                />
+                </Switch>
               </main>
             </div>   
           </div>
