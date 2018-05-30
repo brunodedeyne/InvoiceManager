@@ -1,57 +1,135 @@
-import {Platform} from 'react-native';
-import {Navigation} from 'react-native-navigation';
-import {registerScreens, registerScreenVisibilityListener} from './screens';
+import React, { Component } from 'react';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
+import Login from './src/Components/Login/Login';
+import Loading from './src/Components/Loading/Loading';
+import LoggedInStack from './src/Components/MainScreenComponents/LoggedInStackComponents/Main';
+import CustomStack from './src/Components/MainScreenComponents/LoggedInStackComponents/CustomStack';
+import NewInvoice from './src/Components/MainScreenComponents/NewInvoiceComponents/NewInvoice';
+import NewPlan from './src/Components/MainScreenComponents/NewPlanComponents/NewPlan';
+import { Provider as PaperProvider } from 'react-native-paper';
+import * as firebase from 'firebase';
 
+import { COLOR, ThemeProvider } from 'react-native-material-ui';
 
-// screen related book keeping
-registerScreens();
-registerScreenVisibilityListener();
+import {
+  createStackNavigator,
+} from 'react-navigation';
 
-const tabs = [{
-  label: 'Navigation',
-  screen: 'example.Types',
-  icon: require('../img/list.png'),
-  title: 'Navigation Types',
-}, {
-  label: 'Actions',
-  screen: 'example.Actions',
-  icon: require('../img/swap.png'),
-  title: 'Navigation Actions',
-}];
+import ActionButton from 'react-native-action-button';
 
-if (Platform.OS === 'android') {
-  tabs.push({
-    label: 'Transitions',
-    screen: 'example.Transitions',
-    icon: require('../img/transform.png'),
-    title: 'Navigation Transitions',
-  });
-}
+import {
+  BottomNavigation,
+  Toolbar
+} from 'react-native-material-ui';
 
-// this will start our app
-Navigation.startTabBasedApp({
-  tabs,
-  animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
-  tabsStyle: {
-    tabBarBackgroundColor: '#003a66',
-    tabBarButtonColor: '#ffffff',
-    tabBarSelectedButtonColor: '#ff505c',
-    tabFontFamily: 'BioRhyme-Bold',
-  },
-  appStyle: {
-    tabBarBackgroundColor: '#003a66',
-    navBarButtonColor: '#ffffff',
-    tabBarButtonColor: '#ffffff',
-    navBarTextColor: '#ffffff',
-    tabBarSelectedButtonColor: '#ff505c',
-    navigationBarColor: '#003a66',
-    navBarBackgroundColor: '#003a66',
-    statusBarColor: '#002b4c',
-    tabFontFamily: 'BioRhyme-Bold',
-  },
-  drawer: {
-    left: {
-      screen: 'example.Types.Drawer'
+import Icon from 'react-native-vector-icons/MaterialIcons';
+var config = {
+  apiKey: "AIzaSyDiYwctQZs8cq4LwrUJ0JZvs0ne2f9Bjbg",
+  authDomain: "invoicemanager-1525702104034.firebaseapp.com",
+  databaseURL: "https://invoicemanager-1525702104034.firebaseio.com",
+  projectId: "invoicemanager-1525702104034",
+  storageBucket: "invoicemanager-1525702104034.appspot.com",
+  messagingSenderId: "908003589667"
+};
+
+firebase.initializeApp(config);
+
+type Props = {};
+export default class App extends Component<Props> {
+  constructor (props) {
+    super (props);
+    this.state = {
+      loading: true,
+      user: ''
     }
   }
+
+  componentDidMount () {
+    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {        
+        user.providerData.forEach(function (profile) {      
+          tempUid = profile.uid;
+        });
+      }
+      else {
+        console.log("Uitgelogd: "  + user);
+      }
+      this.setState({
+        loading: false,
+        user: user
+      });            
+    });
+  }
+
+
+
+  render() {
+      // if (this.state.loading) return(
+      //   <Loading />
+      // );
+      // if (this.state.user) {
+        return (
+          <ThemeProvider uiTheme={uiTheme}>
+          {/* <CustomStack /> */}
+            <LoggedInStack />
+            <ActionButton style={styles.actionButton} buttonColor="#2e8b57">
+              <ActionButton.Item buttonColor='rgba(231,76,60,1)' title="Nieuw Plan" onPress={() => this.props.navigation.navigate('NewPlan')}>
+                <Icon name="create-new-folder" style={styles.actionButtonIcon} />
+              </ActionButton.Item>
+              <ActionButton.Item buttonColor='rgba(231,76,60,1)' title="Nieuwe Factuur" onPress={() => this.props.navigation.navigate('NewInvoice')}>
+                <Icon name="note-add" style={styles.actionButtonIcon} />
+              </ActionButton.Item>
+            </ActionButton>  
+          </ThemeProvider>        
+        );
+      // }
+      // return (
+      //   <PaperProvider>
+      //     <View style={styles.container}>
+      //       <Login />
+      //     </View>
+      //   </PaperProvider>
+      // );
+  }
+}
+
+
+const uiTheme = {
+  toolbar: {
+      container: {
+          height: 50,
+          bottom: 0,
+      },
+  },
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#F5FCFF',
+    flex: 1,
+    justifyContent: 'center'
+  },
+  toolbar: {
+    backgroundColor: 'white',
+  },
+  body: {
+    flex: 1,
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  actionButton: {
+    right: 0,
+    bottom: 0
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white',
+  },
 });
