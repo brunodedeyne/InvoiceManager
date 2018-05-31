@@ -1,59 +1,70 @@
 import React from 'react';
-import { Text, View, ScrollView } from 'react-native';
-import {
-  ListItem,
-} from 'react-native-material-ui';
+import { View, ScrollView, ListView } from 'react-native';
+// import {
+//   ListItem,
+// } from 'react-native-material-ui';
+import { createStackNavigator } from 'react-navigation';
 import * as firebase from 'firebase';  
+import { Container, Header, Body, Content, Button, Icon, List, ListItem, Text } from 'native-base';
 
-const UP = 1;
-const DOWN = -1;
+// const UP = 1;
+// const DOWN = -1;
 
 class Clients extends React.Component {
+  //static navigationOptions = { header: null }
+
+
   constructor(props) {
     super(props);
 
-    this.offset = 0;
-    this.scrollDirection = 0;
+    // this.offset = 0;
+    // this.scrollDirection = 0;
 
+    // this.state = {
+    //   data: []
+    // };
+    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      data: []
+      basic: true,
+      //data: [],
+      listViewData: [],
     };
-    this.renderItem = this.renderItem.bind(this);
+    //this.renderItem = this.renderItem.bind(this);
     this.database = firebase.database().ref('/plannen');
   }
 
 
-  renderItem = (title) => {
-    return (
-      <ListItem
-        divider
-        centerElement={title}
-      />
-    );
-  }
+  // renderItem = (title) => {
+  //   return (
+  //     <ListItem
+  //       divider
+  //       centerElement={title}
+  //     />
+  //   );
+  // }
 
-  onScroll = (ev) => {
-    const currentOffset = ev.nativeEvent.contentOffset.y;
+  // onScroll = (ev) => {
+  //   const currentOffset = ev.nativeEvent.contentOffset.y;
 
-    const sub = this.offset - currentOffset;
+  //   const sub = this.offset - currentOffset;
 
-    // don't care about very small moves
-    if (sub > -2 && sub < 2) {
-      return;
-    }
+  //   // don't care about very small moves
+  //   if (sub > -2 && sub < 2) {
+  //     return;
+  //   }
 
-    this.offset = ev.nativeEvent.contentOffset.y;
+  //   this.offset = ev.nativeEvent.contentOffset.y;
 
-    const currentDirection = sub > 0 ? UP : DOWN;
+  //   const currentDirection = sub > 0 ? UP : DOWN;
 
-    if (this.scrollDirection !== currentDirection) {
-      this.scrollDirection = currentDirection;
+  //   if (this.scrollDirection !== currentDirection) {
+  //     this.scrollDirection = currentDirection;
 
-      this.setState({
-        bottomHidden: currentDirection === DOWN,
-      });
-    }
-  }
+  //     this.setState({
+  //       bottomHidden: currentDirection === DOWN,
+  //     });
+  //   }
+  // }
 
   componentDidMount () {
     this.fillData();
@@ -78,33 +89,58 @@ class Clients extends React.Component {
             //}
           });
           items = items.filter(Boolean);
-          this.setState({ data: items });
-          console.log(this.state.data);
+          this.setState({ listViewData: items });
       });    
     //});
   }
 
   render() {
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     return (
-      <View>
-        <ScrollView
-          keyboardShouldPersistTaps="always"
-          keyboardDismissMode="interactive"
-          onScroll={this.onScroll}
-        >
-          {
-            this.state.data.map((n) => {
-              return (
-                <ListItem
-                  divider
-                  centerElement={n.dossierNr + "  -  " + n.fullName}
-                  onPress={() => this.props.navigation.navigate("Invoices")}
-                />
-              )
-            })
-          }          
-        </ScrollView>
-      </View>
+
+      <List
+        dataSource={this.ds.cloneWithRows(this.state.listViewData)}
+        renderRow={data =>
+          <ListItem>
+            <Body>
+              <Text>{data.fullName}</Text>
+              <Text note>{data.dossierNr}</Text>
+            </Body>
+          </ListItem>
+        }
+        renderLeftHiddenRow={data =>
+          <Button full onPress={() => this.props.navigation.navigate("DetailClients", {fullName: n.fullName})}>
+            <Icon active name="information-circle" />
+          </Button>}
+        // renderRightHiddenRow={(data, secId, rowId, rowMap) =>
+        //   <Button full danger onPress={_ => this.deleteRow(secId, rowId, rowMap)}>
+        //     <Icon active name="trash" />
+        //   </Button>}
+        leftOpenValue={75}
+        // rightOpenValue={-75}
+      >
+
+      </List>
+    // return (
+    //   <View>
+    //     <ScrollView
+    //       keyboardShouldPersistTaps="always"
+    //       keyboardDismissMode="interactive"
+    //       onScroll={this.onScroll}
+    //     >
+    //       {
+    //         this.state.data.map((n) => {
+    //           return (
+    //             <ListItem
+    //               divider
+    //               centerElement={n.dossierNr + "  -  " + n.fullName}
+    //               onPress={() => this.props.navigation.navigate("DetailClients", {fullName: n.fullName})}
+    //             />
+    //           )
+    //         })
+    //       }          
+    //     </ScrollView>
+    //   </View>
     );
   }
 }

@@ -169,7 +169,7 @@ class EnhancedTable extends React.Component {
       this.database.on('value', (snapshot) => {
           items = Object.entries(snapshot.val()).map((item, i) => { 
             if (user){              
-              if (item[1].userUid == user.uid) {
+              //if (item[1].userUid == user.uid) {
                 console.log(i);
                 var itemKey = item[0];
                 item = item[1];
@@ -178,7 +178,7 @@ class EnhancedTable extends React.Component {
                 item.address = item.street + `<br />` + item.city;
                 item.buildingAddress = item.buildingStreet + '<br />' + item.buildingCity;
                 return item;
-              }
+              //}
             }
           });
           items = items.filter(Boolean);

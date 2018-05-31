@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from "material-ui/TextField";
 import FlatButton from 'material-ui/FlatButton';
-
+import PasswordIcon from '@material-ui/icons/Lock';
+import MailIcon from '@material-ui/icons/Email';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 
@@ -18,7 +19,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-import logoImg from '../../assets/img/logo2.png'
+import logoImg from '../../assets/img/logo_white.png'
 import './Login.css';
 
 class Login extends Component {   
@@ -147,31 +148,41 @@ class Login extends Component {
                         <div className="section__Box">
                             <img src={logoImg} alt="logo" className="section__Img" />              
                         </div>
-                        <div className="section__Textfields">
-                            <TextField
-                                name="email"
-                                floatingLabelText="Email"
-                                onChange={this.updateEmail}
-                                errorText={this.state.emailErrorText}
-                                onKeyPress={this._handleKeyPress}
-                            /><br/>
-                            <TextField
-                                name="password"
-                                floatingLabelText="Wachtwoord"
-                                type="password"
-                                onChange={this.updatePassword}
-                                errorText={this.state.passwordErrorText}
-                                onKeyPress={this._handleKeyPress}
-                            /><br/><br/>
-                            <div>
-                                <FlatButton onClick={this.handleOpenResetEmail} label="Wachtwoord Vergeten?" primary={true} />
-                            </div><br/>
+                        <div className="section__TextfieldsLogin">
+                            <div className="textFieldLogin">
+                                <MailIcon />
+                                <TextField
+                                    name="email"
+                                    floatingLabelText="Email"
+                                    onChange={this.updateEmail}
+                                    errorText={this.state.emailErrorText}
+                                    onKeyPress={this._handleKeyPress}
+                                    inputStyle={{color: "white"}}
+                                    style={{textIndent: 30, left: 0}}
+                                /><br/>
+                            </div>
+                            <div className="textFieldLogin">
+                                <PasswordIcon style={{bottom: 34}} />
+                                <TextField
+                                    name="password"
+                                    floatingLabelText="Wachtwoord"
+                                    type="password"
+                                    onChange={this.updatePassword}
+                                    errorText={this.state.passwordErrorText}
+                                    onKeyPress={this._handleKeyPress}
+                                    inputStyle={{color: "white"}}
+                                    style={{textIndent: 30, left: 0}}
+                                /><br/><br/>
+                            </div>
                             <RaisedButton 
                                 onClick={this.handleSignIn}  
                                 disabled={!enabledLoginButton}  
                             >    
                                 Inloggen 
                             </RaisedButton>
+                            <div className="footerPassword">
+                                <FlatButton onClick={this.handleOpenResetEmail} label="Wachtwoord Vergeten?" primary={true} />
+                            </div><br/>
                         </div>
                     </CardContent>
                 </Card>
