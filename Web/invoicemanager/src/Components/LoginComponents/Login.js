@@ -20,6 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 import logoImg from '../../assets/img/logo_white.png'
+import logo2Img from '../../assets/img/logo2.png'
 import './Login.css';
 
 class Login extends Component {   
@@ -149,8 +150,8 @@ class Login extends Component {
                             <img src={logoImg} alt="logo" className="section__Img" />              
                         </div>
                         <div className="section__TextfieldsLogin">
-                            <div className="textFieldLogin">
-                                <MailIcon />
+                            <div className="divTextFieldLogin">
+                                <MailIcon className="mailIcon" />
                                 <TextField
                                     name="email"
                                     floatingLabelText="Email"
@@ -158,11 +159,12 @@ class Login extends Component {
                                     errorText={this.state.emailErrorText}
                                     onKeyPress={this._handleKeyPress}
                                     inputStyle={{color: "white"}}
-                                    style={{textIndent: 30, left: 0}}
+                                    className="textFieldLogin"
+                                    autoComplete="off"
                                 /><br/>
                             </div>
-                            <div className="textFieldLogin">
-                                <PasswordIcon style={{bottom: 34}} />
+                            <div className="divTextFieldLogin">
+                                <PasswordIcon  className="passwordIcon" />
                                 <TextField
                                     name="password"
                                     floatingLabelText="Wachtwoord"
@@ -171,18 +173,21 @@ class Login extends Component {
                                     errorText={this.state.passwordErrorText}
                                     onKeyPress={this._handleKeyPress}
                                     inputStyle={{color: "white"}}
-                                    style={{textIndent: 30, left: 0}}
+                                    className="textFieldLogin"
                                 /><br/><br/>
                             </div>
                             <RaisedButton 
                                 onClick={this.handleSignIn}  
-                                disabled={!enabledLoginButton}  
+                                disabled={!enabledLoginButton} 
+                                className="loginButton" 
                             >    
                                 Inloggen 
                             </RaisedButton>
-                            <div className="footerPassword">
-                                <FlatButton onClick={this.handleOpenResetEmail} label="Wachtwoord Vergeten?" primary={true} />
-                            </div><br/>
+                            <footer>
+                                <p>
+                                    <FlatButton className="flatButton" onClick={this.handleOpenResetEmail} label="Wachtwoord Vergeten?" primary={true} />
+                                </p>
+                            </footer><br/>
                         </div>
                     </CardContent>
                 </Card>

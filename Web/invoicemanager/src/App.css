@@ -4,10 +4,18 @@
 }
 
 html {
-  background: linear-gradient(#3E4F68, #212E45) ;
+  /* background: linear-gradient(#3E4F68, #212E45) ; */
+  background:linear-gradient(0deg,rgba(0,0,0,0.35),rgba(0,0,0,0.35)),url('./assets/img/backgroundHQ.jpg');
+  background-size:cover;
+  background-position-x: center;
   width: 100%;
   height: 100%;
 }
+
+html:after {
+  opacity: 0.5;
+}
+
 /* 
 body {
   background-color: #33425C;

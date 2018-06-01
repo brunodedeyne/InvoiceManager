@@ -5,7 +5,7 @@
 
 .section__Container > div {
     -webkit-box-shadow: none;
-    margin-top: 130px;
+    margin-top: 100px;
     background-color: transparent;
 }
 
@@ -25,32 +25,49 @@
     text-align: center;
 }
 
-.textFieldLogin {
+.divTextFieldLogin {
     position: relative;
 }
 
-.textFieldLogin > svg {
+.divTextFieldLogin > svg {
     color: white;
     position: absolute;
     font-size: 20px;
-    bottom: 13px;
 }
 
-label {
+.textFieldLogin > label {
+    text-indent: 40px;
     color: white !important;
-    left: 8px;
+    left: 0px;
+    top: inherit;
 }
 
-input {
-    width: 88% !important;
+.textFieldLogin > input {
+    text-indent: 30px;
+    left: 0px;
 }
 
-.footerPassword {
+.mailIcon {
+    bottom: 13px !important;
+}
+
+.passwordIcon {
+    bottom: 35px !important;
+}
+
+footer {
     position: fixed;
     bottom: 0;
-    text-align: center;
-    margin: 0 auto;
-    margin-bottom: 5px;
+    bottom: 0;
+    width: 230px;
+    height: 50px;
+    margin-left: -115px;
+    margin-top: -25px;
+    left: 50%;
+}
+
+.loginButton {
+    margin-top: 25px;
 }
 
 input:-webkit-autofill,
@@ -74,3 +91,43 @@ input:-webkit-autofill:active {
         color: white;
     }
 }
+
+@media (min-width: 650px){
+    .section__Img {
+        width: 300px;
+    }
+
+    .divTextFieldLogin > svg {
+        font-size: 30px;
+        bottom: 35px;
+    }
+
+    .textFieldLogin > label {
+        text-indent: 40px;
+        left: 15px;
+        font-size: 20px !important;
+        padding-bottom: 10px !important;
+
+    }
+    
+    .textFieldLogin > input {
+        text-indent: 30px;
+        left: 15px;
+        padding-bottom: 10px !important;
+        font-size: 20px !important;
+    }
+    
+    /* .section__Container {
+        margin: 0 auto;
+        width: 100%;
+        margin-top: 100px;
+    }
+    
+    .section__Container > div {
+        background-color: white;
+        opacity: 0.8;
+        width: 400px;
+        margin: 0 auto;
+        text-align: center;
+    } */
+}  

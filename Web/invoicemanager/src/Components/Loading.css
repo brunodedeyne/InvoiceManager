@@ -1,7 +1,8 @@
 .Loading__DivContainer {
     text-align: center;
     margin-top: 150px;
-    background-color: #dcdcdc;
+    background-color: transparent;
+    color: white;
 }
 
 .Loading__PText {

@@ -9,8 +9,8 @@ class Loading extends React.Component {
         return (
             <MuiThemeProvider>
                 <div className="Loading__DivContainer">
-                    <p className="Loading__PText">Even geduld, U wordt doorverwezen naar de gevraagde pagina</p>
-                    <CircularProgress size={80} thickness={5} />
+                    <p className="Loading__PText">U wordt doorverwezen naar de gevraagde pagina</p>
+                    <CircularProgress size={70} thickness={5} color={"white"} />
                 </div>
             </MuiThemeProvider>
         )
