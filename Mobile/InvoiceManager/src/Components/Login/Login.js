@@ -35,7 +35,6 @@ class Login extends React.Component {
     await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
         errorCode = error.code;
     });
-    console.log(errorCode);
     if (errorCode === "auth/invalid-email") tempEmailErrorText = "Controleer Email!";
     if (errorCode === "auth/user-not-found") tempEmailErrorText = "Geen geldige gebruiker!";
     if (errorCode === "auth/wrong-password") tempPasswordErrorText = "Controleer Wachtwoord!";
