@@ -1,5 +1,5 @@
 .containerOverview {
-    background-color: #dcdcdc
+    background-color: #dcdcdc;
 }
 
 .containerOverview > div {
@@ -7,120 +7,22 @@
     width: 100%;
 }
 
-.paddingClassOverview {
-    padding: 10px;
-
+.icon {
+    margin: 10px;
+    display: inline-block;
+    float: left;
 }
 
-.shadowClassOverview {
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px !important;
+.icon + p {
+    margin-top: 11px;
 }
 
-.unPaidOverview {
-    text-align: center;
+.containerInfo {
+    display: inline-block !important;
 }
 
-.gridUnPaid {
-    min-width: 350px;
-    margin:  0 auto !important;
-}
-
-.gridMonth {
-    min-width: 370px;
-    margin:  0 auto !important;
-}
-
-.dateUnPaid {
-    padding: 4px 3px 4px 10px !important;
-    text-align: left !important;
-    width: 10px !important;
-}
-
-.feeUnPaid {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.dossierUnPaid {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.statusUnPaid {
-    padding: 4px 0 4px 3px !important;
-    text-align: left !important;
-}
-
-.dateHeaderUnPaid {
-    padding: 4px 3px 4px 10px !important;
-    text-align: left !important;
-}
-
-.feeHeaderUnPaid {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.dossierHeaderUnPaid {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.statusHeaderUnPaid {
-    padding: 4px 0 4px 3px !important;
-    text-align: left !important;
-}
-
-
-
-.datePaidMonth {
-    padding: 4px 3px 4px 10px !important;
-    text-align: left !important;
-    width: 10px !important;
-}
-
-.dateCreatedMonth {
-    padding: 4px 3px 4px 10px !important;
-    text-align: left !important;
-    width: 10px !important;
-}
-
-.feeMonth {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.dossierNrMonth {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.statusMonth {
-    padding: 4px 0 4px 3px !important;
-    text-align: left !important;
-}
-
-.dateCreatedHeaderMonth {
-    padding: 4px 3px 4px 10px !important;
-    text-align: left !important;
-}
-
-.datePaidHeaderMonth {
-    padding: 4px 3px 4px 10px !important;
-    text-align: left !important;
-}
-
-.feeHeaderMonth {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.dossierHeaderMonth {
-    padding: 4px 0 4px 0 !important;
-    text-align: left !important;
-}
-
-.statusHeaderMonth {
-    padding: 4px 0 4px 3px !important;
-    text-align: left !important;
+@media screen and (min-width: 820px) {
+    .containerOverview {
+        display: inline-block;
+    }
 }

@@ -40,9 +40,6 @@ export default class App extends Component<Props> {
           tempUid = profile.uid;
         });
       }
-      else {
-        console.log("Uitgelogd: " + user);
-      }
       this.setState({
         loading: false,
         user: user

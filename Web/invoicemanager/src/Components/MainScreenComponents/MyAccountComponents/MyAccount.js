@@ -1,24 +1,35 @@
+// Import Default Components
+import React from 'react';
+//import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+// Import Icons
+import { Close as CloseIcon } from '@material-ui/icons';
 
-import Header from '../../HeaderComponents/Header';
-import Menu from '../../MenuComponents/Menu';
-import * as firebase from 'firebase';  
-import {withRouter} from 'react-router-dom';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from "material-ui/TextField";
-import Dialog from 'material-ui/Dialog';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-//Import CSS
+// Import Material UI Components
+import {
+    Snackbar,
+    IconButton,
+    Paper,
+    Grid,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    Button,
+} from '@material-ui/core';
+
+import {
+    TextField,
+} from 'material-ui';
+
+// Import Database
+import * as firebase from 'firebase';
+
+// Import CSS
 import './MyAccount.css';
 
 class MyAccount extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             email: '',
@@ -37,66 +48,46 @@ class MyAccount extends React.Component {
         this.setNewPassword = this.setNewPassword.bind(this);
     }
 
-    componentDidMount () {
+    componentDidMount() {
         var user = firebase.auth().currentUser;
         var tempEmail = '';
         if (user != null) {
             user.providerData.forEach(function (profile) {
-               tempEmail = profile.email;
+                tempEmail = profile.email;
             });
-            this.setState({email: tempEmail, user});
+            this.setState({ email: tempEmail, user });
         }
     }
 
-    handleOpenSnackbar = () => {
-        this.setState({ openSnackbar: true });
-    };
-    
     handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
-        }    
+            return;
+        }
         this.setState({ openSnackbar: false });
     };
 
-    handleOpenEditEmail = () => {
-        this.setState({openEditEmail: true});
-    };
-
-    handleCloseEditEmail = () => {
-        this.setState({openEditEmail: false});
-    };
-
-    handleOpenEditPassword = () => {
-        this.setState({openEditPassword: true});
-    };
-
-    handleCloseEditPassword = () => {
-        this.setState({openEditPassword: false});
-    };
-
-    updateEmailInput = (e) =>{         
-        if (e.target.value.length <= 0) this.setState({errorTextEmail: "Email mag niet leeg zijn!"});
-        else this.setState({errorTextEmail: "", updatedEmail: e.target.value});
+    updateEmailInput = (e) => {
+        if (e.target.value.length <= 0) this.setState({ errorTextEmail: "Email mag niet leeg zijn!" });
+        else this.setState({ errorTextEmail: "", updatedEmail: e.target.value });
     }
 
-    updatePasswordInput = (e) =>{         
-        if (e.target.value.length <= 0) this.setState({errorTextPassword: "Wachtwoord mag niet leeg zijn!"});
-        else this.setState({errorTextPassword: "", updatedPassword: e.target.value});
+    updatePasswordInput = (e) => {
+        if (e.target.value.length <= 0) this.setState({ errorTextPassword: "Wachtwoord mag niet leeg zijn!" });
+        else this.setState({ errorTextPassword: "", updatedPassword: e.target.value });
     }
 
-    updatePasswordConfirmationInput = (e) =>{         
-        if (e.target.value.length <= 0) this.setState({errorTextPasswordConfirmation: "Wachtwoord bevestiging mag niet leeg zijn!"});
-        else this.setState({errorTextPasswordConfirmation: "", updatedPasswordConfirmation: e.target.value});
+    updatePasswordConfirmationInput = (e) => {
+        if (e.target.value.length <= 0) this.setState({ errorTextPasswordConfirmation: "Wachtwoord bevestiging mag niet leeg zijn!" });
+        else this.setState({ errorTextPasswordConfirmation: "", updatedPasswordConfirmation: e.target.value });
     }
 
-    async setNewEmail () {
-        if (this.state.updatedEmail.length == 0) this.setState({errorTextEmail: "Email mag niet leeg zijn!"});
+    async setNewEmail() {
+        if (this.state.updatedEmail.length == 0) this.setState({ errorTextEmail: "Email mag niet leeg zijn!" });
         else {
             let errorCode;
             let tempEmailErrorText;
-            let tempSnapckbar;
-            await this.state.user.updateEmail(this.state.updatedEmail).then(function() {}).catch(function(error) {
+            //let tempSnapckbar;
+            await this.state.user.updateEmail(this.state.updatedEmail).then(function () { }).catch(function (error) {
                 errorCode = error.code;
             });
 
@@ -105,7 +96,8 @@ class MyAccount extends React.Component {
                 if (errorCode === "auth/requires-recent-login") tempEmailErrorText = "Gelieve opnieuw in te loggen!";
                 this.setState({
                     errorTextEmail: tempEmailErrorText,
-                })}
+                })
+            }
             else {
                 this.setState({
                     snackBarContent: "Emailadres aangepast naar " + this.state.updatedEmail,
@@ -115,29 +107,27 @@ class MyAccount extends React.Component {
             }
             var user = firebase.auth().currentUser;
 
-            user.sendEmailVerification().then(function() {
+            user.sendEmailVerification().then(function () {
 
-            }).catch(function(error) {
-                console.log(error.code);
+            }).catch(function (error) {
             });
         }
     }
 
-    async setNewPassword () {
-        if (this.state.updatedPassword.length == 0) this.setState({errorTextPassword: "Wachtwoord mag niet leeg zijn!", errorTextPasswordConfirmation: "Wachtwoord bevestiging mag niet leeg zijn!"});
-        else if (this.state.updatedPasswordConfirmation.length == 0) this.setState({errorTextPasswordConfirmation: "Wachtwoord bevestiging mag niet leeg zijn!"});
-        else if (this.state.updatedPassword != this.state.updatedPasswordConfirmation) this.setState({errorTextPasswordConfirmation: "Wachtwoorden zijn niet gelijk!"});
+    async setNewPassword() {
+        if (this.state.updatedPassword.length == 0) this.setState({ errorTextPassword: "Wachtwoord mag niet leeg zijn!", errorTextPasswordConfirmation: "Wachtwoord bevestiging mag niet leeg zijn!" });
+        else if (this.state.updatedPasswordConfirmation.length == 0) this.setState({ errorTextPasswordConfirmation: "Wachtwoord bevestiging mag niet leeg zijn!" });
+        else if (this.state.updatedPassword != this.state.updatedPasswordConfirmation) this.setState({ errorTextPasswordConfirmation: "Wachtwoorden zijn niet gelijk!" });
         else {
             let errorCode;
             let tempPasswordErrorText;
             let tempPasswordConfirmationErrorText;
-            let tempSnapckbar;
-            await this.state.user.updatePassword(this.state.updatedPassword).then(function() {}).catch(function(error) {
+            //let tempSnapckbar;
+            await this.state.user.updatePassword(this.state.updatedPassword).then(function () { }).catch(function (error) {
                 errorCode = error.code;
-            });              
+            });
 
             if (errorCode) {
-                console.log(errorCode);
                 if (errorCode === "auth/weak-password") tempPasswordErrorText = "Zwak Wachtwoord, probeer opnieuw!";
                 if (errorCode === "auth/requires-recent-login") tempPasswordErrorText = "Gelieve opnieuw in te loggen!";
                 this.setState({
@@ -155,87 +145,84 @@ class MyAccount extends React.Component {
         }
     }
 
-    render () {
-        const actionsEditEmail = [
-            <FlatButton
-                label="Email Wijzigen"
-                primary={true}
-                onClick={this.setNewEmail}
-
-            />,
-            <FlatButton
-                label="Annuleer"
-                secondary={true}
-                keyboardFocused={true}
-                onClick={this.handleCloseEditEmail}
-          />,
-        ];
-        const actionsEditPassword = [
-            <FlatButton
-                label="Wachtwoord Wijzigen"
-                primary={true}
-                onClick={this.setNewPassword}
-            />,
-            <FlatButton
-                label="Annuleer"
-                secondary={true}
-                keyboardFocused={true}
-                onClick={this.handleCloseEditPassword}
-          />,
-        ];
-        return  (
+    render() {
+        return (
             <div>
                 <div className="container paddingClass">
                     <Grid container spacing={24}>
                         <Grid item xs={12}>
-                            <Paper className="unPaid paddingClass shadowClass">Email: <strong>{this.state.email}</strong></Paper>                
+                            <Paper className="unPaid paddingClass shadowClass">Email: <strong>{this.state.email}</strong></Paper>
                             <div className="unPaid">
-                                <FlatButton onClick={this.handleOpenEditEmail} label="Email Wijzigen" primary={true} />
-                                <FlatButton onClick={this.handleOpenEditPassword} label="Wachtwoord Wijzigen" primary={true} />
+                                <Button onClick={() => this.setState({ openEditEmail: true })} color="primary">Email Wijzigen</Button>
+                                <Button onClick={() => this.setState({ openEditPassword: true })} color="primary">Wachtwoord Wijzigen</Button>
                             </div>
                         </Grid>
                     </Grid>
                 </div>
                 <Dialog
-                    actions={actionsEditEmail}
                     modal={false}
                     open={this.state.openEditEmail}
-                    onRequestClose={this.handleCloseEditEmail}
+                    onRequestClose={() => this.setState({ openEditEmail: false })}
                 >
-                    <form className="form__ContainerEditEmail">
-                        <TextField
-                            name="newEmail"
-                            floatingLabelText="Nieuw Emailadres *"
-                            className="form__TextFieldEditEmail"
-                            onChange={this.updateEmailInput}
-                            errorText={this.state.errorTextEmail}
-                        />
-                    </form>
+                    <DialogContent>
+                        <form className="form__ContainerEditEmail">
+                            <TextField
+                                name="newEmail"
+                                floatingLabelText="Nieuw Emailadres *"
+                                className="form__TextFieldEditEmail"
+                                onChange={this.updateEmailInput}
+                                errorText={this.state.errorTextEmail}
+                            />
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            color="primary"
+                            onClick={this.setNewEmail}
+                        >Email Wijzigen</Button>
+                        <Button
+                            color="secondary"
+                            keyboardFocused={true}
+                            onClick={() => this.setState({ openEditEmail: false })}
+                        >Annuleer</Button>
+                    </DialogActions>
                 </Dialog>
                 <Dialog
-                    actions={actionsEditPassword}
                     modal={false}
                     open={this.state.openEditPassword}
-                    onRequestClose={this.handleCloseEditPassword}
+                    onRequestClose={() => this.setState({ openEditPassword: false })}
                 >
-                    <form className="form__ContainerNewInvoice">
-                        <TextField
-                            name="newPassword"
-                            floatingLabelText="Wachtwoord *"
-                            className="form__TextField"
-                            onChange={this.updatePasswordInput}
-                            errorText={this.state.errorTextPassword}
-                            type="password"
-                        />
-                        <TextField
-                            name="newPasswordConfirmation"
-                            floatingLabelText="Wachtwoord Bevestiging *"
-                            className="form__TextField"
-                            onChange={this.updatePasswordConfirmationInput}
-                            errorText={this.state.errorTextPasswordConfirmation}
-                            type="password"
-                        />
-                    </form>
+                    <DialogContent>
+                        <form className="form__ContainerNewInvoice">
+                            <TextField
+                                name="newPassword"
+                                floatingLabelText="Wachtwoord *"
+                                className="form__TextField"
+                                onChange={this.updatePasswordInput}
+                                errorText={this.state.errorTextPassword}
+                                type="password"
+                            />
+                            <TextField
+                                name="newPasswordConfirmation"
+                                floatingLabelText="Wachtwoord Bevestiging *"
+                                className="form__TextField"
+                                onChange={this.updatePasswordConfirmationInput}
+                                errorText={this.state.errorTextPasswordConfirmation}
+                                type="password"
+                            />
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            color="priamary"
+                            onClick={this.setNewPassword}
+                        >Wachtwoord Wijzigen</Button>
+                        <Button
+                            color="secondary"
+                            keyboardFocused={true}
+                            onClick={() => this.setState({ openEditPassword: false })}
+                        >Annuleer</Button>
+                    </DialogActions>
                 </Dialog>
                 <Snackbar
                     anchorOrigin={{

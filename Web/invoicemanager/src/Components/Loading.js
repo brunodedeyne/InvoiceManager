@@ -1,7 +1,11 @@
+// Import Default Components
 import React from 'react';
+
+// Import Extra Components
 import CircularProgress from 'material-ui/CircularProgress';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+// Import CSS
 import './Loading.css';
 
 class Loading extends React.Component {

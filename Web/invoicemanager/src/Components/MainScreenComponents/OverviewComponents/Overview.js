@@ -1,60 +1,45 @@
-
+// Import Default Components
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import Checkbox from '@material-ui/core/Checkbox';
-import TableRow from '@material-ui/core/TableRow';
 
+// Import Icons
+import {
+  Info as AardIcon,
+  Fingerprint as DossierIcon,
+  Check as DatePaidIcon,
+  DateRange as DateCreatedIcon,
+  EuroSymbol as FeeIcon,
+  AccountCircle as NameIcon,
+  Info as InfoIcon,
+  ExpandLess,
+  ExpandMore,
+} from '@material-ui/icons';
 
-import Header from '../../HeaderComponents/Header';
-import Menu from '../../MenuComponents/Menu';
-import * as firebase from 'firebase';  
-import {withRouter} from 'react-router-dom';
+// Import Material UI Components
+import {
+  Paper, 
+  Grid,
+  Checkbox,
+  Collapse,
+  ListSubheader,
+  List,
+  ListItem,
+  ListItemText,
+  Divider
+} from '@material-ui/core';
 
-//Import CSS
+// Import Extra's
+import Parser from 'html-react-parser';
+
+// Import Database
+import * as firebase from 'firebase';
+import { withRouter } from 'react-router-dom';
+
+// Import CSS
 import './Overview.css';
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
-  },
-});
-
-let id = 0;
-function createData(name, calories, fat, carbs, protein) {
-  id += 1;
-  return { id, name, calories, fat, carbs, protein };
-}
-
-const data = [
-  createData('Frozen yoghurt', 159, 6.0, 24),
-  createData('Ice cream sandwich', 237, 9.0, 37),
-  createData('Eclair', 262, 16.0, 24),
-  createData('Cupcake', 305, 3.7, 67),
-  createData('Gingerbread', 356, 16.0, 49),
-];
-
-const data2 = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 class Overview extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       unPaid: '1100, 20',
@@ -63,7 +48,10 @@ class Overview extends React.Component {
       dataLastMonth: [],
       dataUnpaid: [],
       dataPlannen: [],
-      dataInvoices: []
+      dataInvoices: [],
+      data: [],
+      value: 'unPaid',
+      openCollapse: false
     };
 
     this.database = firebase.database().ref('/invoices');
@@ -71,196 +59,249 @@ class Overview extends React.Component {
     this.getData = this.getData.bind(this);
   }
 
-  componentWillMount (){
+  componentWillMount() {
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      if (user) this.setState({userUid: user.uid});        
-    });    
+      if (user) this.setState({ userUid: user.uid });
+    });
   }
 
-  async componentDidMount (){
-    await this.getData(); 
-    this.getUnPaidAmount(); 
+  async componentDidMount() {
+    await this.getData();
+    this.getUnPaidAmount();
   }
 
-  async getData () {   
+  async getData() {
     let itemsInvoices = [];
     let itemsPlannen = [];
-    let tempDataLastMonth = [];
-    let tempDataUnpaid = [];
+    let tempData = [];
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
       firebase.database().ref('/invoices').on('value', (snapshotInvoices) => {
-        itemsInvoices = Object.entries(snapshotInvoices.val()).map((itemInvoices, iInvoices) => { 
-          if (user){
-            if (user.uid == itemInvoices[1].userUid){
+        itemsInvoices = Object.entries(snapshotInvoices.val()).map((itemInvoices, iInvoices) => {
+          if (user) {
+            if (user.uid == itemInvoices[1].userUid) {
               var invoiceKey = itemInvoices[0];
               itemInvoices = itemInvoices[1];
               itemInvoices.key = invoiceKey;
-              return itemInvoices; 
+              return itemInvoices;
             }
-        }
-        });     
+          }
+        });
         itemsInvoices = itemsInvoices.filter(Boolean);
-        this.setState({dataInvoices: itemsInvoices});
-        
+        this.setState({ dataInvoices: itemsInvoices });
+
         firebase.database().ref('/plannen').on('value', (snapshotPlannen) => {
-          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {     
-            if (user){     
-              if (user.uid == itemPlannen[1].userUid){ 
+          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {
+            if (user) {
+              if (user.uid == itemPlannen[1].userUid) {
                 itemPlannen = itemPlannen[1];
                 itemPlannen.key = iPlannen;
-                return itemPlannen;  
+                return itemPlannen;
               }
             }
           });
-          itemsPlannen = itemsPlannen.filter(Boolean);  
-          this.setState({dataPlannen: itemsPlannen});
+          itemsPlannen = itemsPlannen.filter(Boolean);
+          this.setState({ dataPlannen: itemsPlannen });
 
-          let now = new Date();
-          let val = `${now.getMonth()+1}`;
-
-          let combinedInvoicesLastMonth = [];
-          var statusPaimentLastMonth = "";
-          for (var i = 0; i < itemsInvoices.length; i++){
-            for (var j = 0; j < itemsPlannen.length; j++){    
-              if (itemsPlannen[j].key === itemsInvoices[i].planKey && itemsInvoices[i].dateCreated.split('/')[1] === val) {
-                combinedInvoicesLastMonth.push ({
+          let combinedInvoices = [];
+          for (var i = 0; i < itemsInvoices.length; i++) {
+            for (var j = 0; j < itemsPlannen.length; j++) {
+              if (itemsPlannen[j].key === itemsInvoices[i].planKey) {
+                combinedInvoices.push({
+                  userUid: itemsInvoices[i].userUid,
                   dossierNr: itemsPlannen[j].dossierNr,
+                  key: itemsInvoices[i].key,
+                  aardInvoice: itemsInvoices[i].aardInvoice,
                   fee: itemsInvoices[i].fee,
-                  dateCreated: itemsInvoices[i].dateCreated,
-                  datePaid: itemsInvoices[i].datePaid,         
-                })
-              }
-            }
-          }
-          tempDataLastMonth = combinedInvoicesLastMonth;
-          this.setState({dataLastMonth: tempDataLastMonth});
-
-          let combinedInvoicesUnpaid = [];
-          var statusPaimentUnpaid = "";
-          for (var i = 0; i < itemsInvoices.length; i++){
-            for (var j = 0; j < itemsPlannen.length; j++){    
-              if (itemsPlannen[j].key === itemsInvoices[i].planKey && itemsInvoices[i].datePaid == "") {
-                if (itemsInvoices[i].datePaid == "") statusPaimentUnpaid = "Onbetaald";
-                else statusPaimentUnpaid = "Betaald";
-                combinedInvoicesUnpaid.push ({
-                  dossierNr: itemsPlannen[j].dossierNr,
-                  fee: itemsInvoices[i].fee,
+                  planKey: itemsInvoices[i].planKey,
                   dateCreated: itemsInvoices[i].dateCreated,
                   datePaid: itemsInvoices[i].datePaid,
-                  status: statusPaimentUnpaid
-                })                
+                  fullName: itemsPlannen[j].name + " " + itemsPlannen[j].familyName,
+                })
+
               }
             }
           }
-          tempDataUnpaid = combinedInvoicesUnpaid;
-          this.setState({dataUnpaid: tempDataUnpaid});
+          tempData = combinedInvoices;
+          this.setState({ data: tempData });
         });
       });
     });
   }
 
-  getUnPaidAmount () {   
+  getUnPaidAmount() {
     let itemsInvoices = [];
     let tempUnPaid = 0;
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      if (user) this.setState({userUid: user.uid});  
+      if (user) this.setState({ userUid: user.uid });
       firebase.database().ref('/invoices').on('value', (snapshotInvoices) => {
-        itemsInvoices = Object.values(snapshotInvoices.val()).map((itemInvoices) => { 
+        itemsInvoices = Object.values(snapshotInvoices.val()).map((itemInvoices) => {
           if (user) {
-            if (itemInvoices.userUid == user.uid) {     
-              return itemInvoices; 
-            }
-          }          
-        });     
-        itemsInvoices = itemsInvoices.filter(Boolean);
-        this.setState({dataInvoices: itemsInvoices});      
-          for (var i = 0; i < itemsInvoices.length; i++){  
-            if (itemsInvoices[i].datePaid == "") {
-              tempUnPaid = tempUnPaid + parseInt(itemsInvoices[i].fee);              
+            if (itemInvoices.userUid == user.uid) {
+              return itemInvoices;
             }
           }
-          this.setState({unPaid: tempUnPaid.toLocaleString().replace(',', ' ')});
+        });
+        itemsInvoices = itemsInvoices.filter(Boolean);
+        this.setState({ dataInvoices: itemsInvoices });
+        for (var i = 0; i < itemsInvoices.length; i++) {
+          if (itemsInvoices[i].datePaid == "") {
+            tempUnPaid = tempUnPaid + parseInt(itemsInvoices[i].fee);
+          }
+        }
+        this.setState({ unPaid: tempUnPaid.toLocaleString().replace(',', ' ') });
       });
     });
   }
 
-  render () {
+  handleChangeRadioButtons = event => {
+    this.setState({ value: event.target.value });
+  };
+
+  isCategory(category, item) {
+    if (category == "unPaid") {
+      if (item.datePaid == "") return true;
+      else return false;
+    }
+    if (category == "lastMonth") {
+      let now = new Date();
+      let val = `${now.getMonth() + 1}`;
+
+      if (item.dateCreated.split('/')[1] === val) return true;
+      else return false;
+    }
+    return true;
+  }
+
+  filterData(category) {
+    let filterData = this.state.data.filter(item => (
+      this.isCategory(category, item)
+    ));
+    return filterData;
+  }
+
+  handleClickExpand = (e) => {
+    this.setState({ [e]: !this.state[e] });
+  };
+
+  render() {
     const { classes } = this.props;
-    return  (
+    return (
       <div>
-        <div>
-        <div>
-          <div className="containerOverview paddingClassOverview">
-            <Grid container spacing={24}>
-              <Grid item xs={12}>
-                <Paper className="unPaidOverview paddingClassOverview shadowClassOverview">Bedrag bij Cliënten: <strong>€{this.state.unPaid}</strong></Paper>
-              </Grid>
-
-              <Grid item xs={6} className="gridUnPaid">
-                <Paper className="paddingClassOverview shadowClassOverview">
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className="statusHeaderUnPaid">Status</TableCell>
-                        <TableCell className="dossierHeaderUnPaid" numeric>Dossier</TableCell>
-                        <TableCell className="feeHeaderUnPaid" numeric>Ereloon</TableCell>
-                        <TableCell className="dateHeaderUnPaid" numeric>Datum</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {this.state.dataUnpaid.map(n => {
-                        return (
-                          <TableRow key={n.id}>
-                            <Checkbox disabled />
-                            <TableCell className="dossierUnPaid" numeric>{n.dossierNr}</TableCell>
-                            <TableCell className="feeUnPaid" numeric>€{n.fee}</TableCell>
-                            <TableCell className="dateUnPaid" numeric>{n.dateCreated}</TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </Paper>
-              </Grid>
-
-              <Grid item xs={6} className="gridMonth">
-                <Paper className="paddingClass shadowClass">
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className="statusHeaderMonth">Status</TableCell>
-                        <TableCell className="dossierHeaderMonth" numeric>Dossier</TableCell>
-                        <TableCell className="feeHeaderMonth" numeric>Ereloon</TableCell>
-                        <TableCell className="dateCreatedHeaderMonth" numeric>Datum</TableCell>
-                        <TableCell className="datePaidHeaderMonth" numeric>BetaalDatum</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {this.state.dataLastMonth.map(n => {
-                        return (
-                          <TableRow key={n.id}>
-                            {n.datePaid ? 
-                              <Checkbox disabled checked value="checkedE" /> :
-                              <Checkbox disabled value="checkedD" />}
-                            <TableCell className="dossierNrMonth" numeric>{n.dossierNr}</TableCell>
-                            <TableCell className="feeMonth" numeric>{n.fee}</TableCell>
-                            <TableCell className="dateCreatedMonth" numeric>{n.dateCreated}</TableCell>
-                            <TableCell className="datePaidMonth" numeric>{n.datePaid}</TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </Paper>
-              </Grid>
-            </Grid>
-          </div>
+        <div className="ContainerOverview">
+          <Paper>
+            <div >
+              <List>
+                <ListItem>
+                  <ListItemText style={{ textAlign: "center" }} primary={Parser("Onbetaald bedrag: <strong>€" + this.state.unPaid + "</strong>")} />
+                </ListItem>
+              </List>
+              <List className="unPaidInvoices">
+                <ListSubheader>Onbetaalde Facturen</ListSubheader>
+                <Divider />
+                  {this.filterData("unPaid") == "" ? <div>
+                    <ListItem
+                      role={undefined}
+                      dense
+                      button
+                    >
+                      <ListItemText
+                        primary={"Geen items te vinden"}
+                      />
+                    </ListItem>
+                  </div> : ""}
+                  {this.filterData("unPaid").map(value => (
+                    <div>
+                      <ListItem
+                        onClick={this.handleClickExpand.bind(this, "unPaid_" + value.fullName + "_" + value.aardInvoice)}
+                        button
+                      >
+                        <Checkbox
+                          checked={value.datePaid ? true : false}
+                          tabIndex={-1}
+                          disableRipple
+                          disabled
+                        /> 
+                        <ListItemText
+                          primary={value.dossierNr}
+                          secondary={value.fullName}
+                        />
+                        {this.state["unPaid_" + value.fullName + "_" + value.aardInvoice] ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      <Divider />
+                      <Collapse key={"unPaid_" + this.filterData("unPaid_").values.key + "_" + value.aardInvoice} in={this.state["unPaid_" + value.fullName + "_" + value.aardInvoice]} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                          <ListItem className="containerInfo" button>
+                            <NameIcon className="icon" /><p>{value.fullName}</p><br />
+                            <DossierIcon className="icon" /><p>{value.dossierNr}</p><br />
+                            <FeeIcon className="icon" /><p>{value.fee}</p><br />
+                            <AardIcon className="icon" /><p>{value.aardInvoice}</p><br />
+                            <DateCreatedIcon className="icon" /><p>{value.dateCreated}</p><br />
+                            <DatePaidIcon className="icon" style={{color: value.datePaid ? "black" : "red" }}/><p>{value.datePaid ? value.datePaid : <p style={{color: "red"}}>Nog niet betaald!</p>}</p><br />
+                          </ListItem>
+                        </List>
+                      </Collapse>
+                    </div>
+                  ))}
+                </List>
+                <List className="unPaidInvoices">
+                  <ListSubheader>Laatste Maand</ListSubheader>
+                  <Divider />
+                  {this.filterData("lastMonth") == "" ? <div>
+                    <ListItem
+                      role={undefined}
+                      dense
+                      button
+                    >
+                      <ListItemText
+                        primary={"Geen items te vinden voor deze filter"}
+                      />
+                    </ListItem>
+                  </div> : ""}
+                  {this.filterData("lastMonth").map(value => (
+                    <div>
+                      <ListItem
+                        button
+                        key={"lastMonth_" + value.key}
+                        onClick={this.handleClickExpand.bind(this, "lastMonth_" + value.fullName + "_" + value.aardInvoice)}
+                      >
+                        <Checkbox
+                          checked={value.datePaid ? true : false}
+                          tabIndex={-1}
+                          disableRipple
+                          disabled
+                        /> 
+                        <ListItemText
+                          primary={value.dossierNr}
+                          secondary={value.fullName}
+                        />
+                        {this.state["lastMonth_" + value.fullName + "_" + value.aardInvoice] ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      <Divider />
+                      <Collapse key={"lastMonth_" + this.filterData("lastMonth").values.key + "_" + value.aardInvoice} in={this.state["lastMonth_" + value.fullName + "_" + value.aardInvoice]} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                          <ListItem className="containerInfo" button>
+                            <NameIcon className="icon" /><p>{value.fullName}</p><br />
+                            <DossierIcon className="icon" /><p>{value.dossierNr}</p><br />
+                            <FeeIcon className="icon" /><p>{value.fee}</p><br />
+                            <AardIcon className="icon" /><p>{value.aardInvoice}</p><br />
+                            <DateCreatedIcon className="icon" /><p>{value.dateCreated}</p><br />
+                            <DatePaidIcon className="icon" /><p>{value.datePaid ? value.datePaid : "Nog niet betaald!"}</p><br />
+                          </ListItem>
+                        </List>
+                      </Collapse>
+                    </div>
+                  ))}
+              </List>
+            </div>
+          </Paper>
         </div>
-        </div>
-      </div>
+      </div >
     )
   }
 }
 
+Overview.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default Overview;

@@ -1,48 +1,59 @@
+// Import Default Components
 import React, { Component } from 'react';
-import TextField from "material-ui/TextField";
-// import RaisedButton from "material-ui/RaisedButton";
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import HomeIcon from "../../../assets/img/house.png";
-import PhoneIcon from "../../../assets/img/phone.png";
-import EmailIcon from "../../../assets/img/email.png";
-import BTWIcon from "../../../assets/img/btw.png";
-import RRNIcon from "../../../assets/img/rrn.png";
-import BuildingIcon from "../../../assets/img/building.png";
-import AardIcon from "../../../assets/img/aard.png";
-import DossierIcon from "../../../assets/img/dossier.png";
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import {withRouter} from 'react-router-dom';
-import AutoComplete from 'material-ui/AutoComplete';
-import Header from '../../HeaderComponents/Header';
-import CustomDrawer from '../../HeaderComponents/CustomDrawer';
-import Menu from '../../MenuComponents/Menu';
-// import PropTypes from 'prop-types';
-// import { withStyles } from '@material-ui/core/styles';
-// import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+import { withRouter } from 'react-router-dom';
 
-//Import CSS
+// Import Icons
+import {
+    Info as AardIcon,
+    Fingerprint as DossierIcon,
+    Home as AddressIcon,
+    Person as FullNameIcon,
+    Home as BuildingAddressIcon,
+    InsertDriveFile as BTWIcon,
+    Dvr as RRNIcon,
+    Phone as PhoneIcon,
+    Email as EmailIcon,
+    Close as CloseIcon
+} from "@material-ui/icons";
+
+// Import Material UI Components
+import {
+    List,
+    ListItem,
+    ListItemText,
+    DialogTitle,
+    IconButton,
+    Snackbar,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    Button
+} from '@material-ui/core';
+import {
+    MenuItem,
+    DropDownMenu,
+    TextField
+} from "material-ui";
+import AutoComplete from 'material-ui/AutoComplete';
+
+// Import Database
+import * as firebase from 'firebase';
+
+// Import CSS
 import './NewInvoice.css';
-import * as firebase from 'firebase';  
 
 const dataSourceConfig = {
-    text: 'dossierNr',
-    value: 'dossierNr',
+    text: 'familyName',
+    value: 'familyName',
 };
 
 class NewInvoice extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            expanded: true,
             plannen: [],
             value: "Default",
-            nameDummy : 'John',
+            nameDummy: 'John',
             name: '',
 
             familyNameDummy: 'Doe',
@@ -52,24 +63,22 @@ class NewInvoice extends React.Component {
             street: '',
 
             cityDummy: 'Anytown',
-            city: '',      
+            city: '',
 
             phoneDummy: '+32 498/123.456',
             phone: '',
-            //strippedPhone: '',
 
             emailDummy: 'Johndoe@gmail.com',
-            email: '', 
-            
+            email: '',
+
             BTWDummy: 'BE 0999.999.999',
             BTW: '',
-            //strippedBTW: '',
 
             RRNDummy: '97.11.21-275.45',
             RRN: '',
 
             buildingStreetDummy: '124 Main Street',
-            buildingStreet: '', 
+            buildingStreet: '',
 
             buildingCityDummy: "Anytown",
             buildingCity: '',
@@ -85,6 +94,7 @@ class NewInvoice extends React.Component {
 
             aardInvoiceDummy: 'Voorontwerp Gebouw',
             aardInvoice: '',
+            selectedDossierNr: '',
 
             key: '',
 
@@ -101,13 +111,12 @@ class NewInvoice extends React.Component {
 
         this.database = firebase.database().ref('/plannen');
     }
-    
+
     handleChange = (event, index, value) => {
-        for (var i = 0; i < this.state.plannen.length; i++){
-            if (this.state.plannen[i].key === value){
-                //this.setState({strippedPhone: "0" + this.state.plannen[i].phone.substring(4).split('.').join("").split('/').join("")});
+        for (var i = 0; i < this.state.plannen.length; i++) {
+            if (this.state.plannen[i].key === value) {
                 this.setState({
-                    nameDummy : this.state.plannen[i].name,
+                    nameDummy: this.state.plannen[i].name,
                     name: this.state.plannen[i].name,
 
                     familyNameDummy: this.state.plannen[i].familyName,
@@ -117,14 +126,14 @@ class NewInvoice extends React.Component {
                     street: this.state.plannen[i].street,
 
                     cityDummy: this.state.plannen[i].city,
-                    city: this.state.plannen[i].city,      
+                    city: this.state.plannen[i].city,
 
                     phoneDummy: this.state.plannen[i].phone,
                     phone: this.state.plannen[i].phone,
 
                     emailDummy: this.state.plannen[i].email,
-                    email: this.state.plannen[i].email, 
-                    
+                    email: this.state.plannen[i].email,
+
                     BTWDummy: this.state.plannen[i].BTW,
                     BTW: this.state.plannen[i].BTW,
 
@@ -132,7 +141,7 @@ class NewInvoice extends React.Component {
                     RRN: this.state.plannen[i].RRN,
 
                     buildingStreetDummy: this.state.plannen[i].buildingStreet,
-                    buildingStreet: this.state.plannen[i].buildingStreet, 
+                    buildingStreet: this.state.plannen[i].buildingStreet,
 
                     buildingCityDummy: this.state.plannen[i].buildingCity,
                     buildingCity: this.state.plannen[i].buildingCity,
@@ -142,66 +151,19 @@ class NewInvoice extends React.Component {
 
                     dossierNrDummy: this.state.plannen[i].dossierNr,
                     dossierNr: this.state.plannen[i].dossierNr,
+                    selectedDossierNr: this.state.plannen[i].dossierNr,
 
                     key: this.state.plannen[i].key,
                     value: value,
-                    //enableEditPlanContactCard: false,
-                    enableNewInvoiceContactCard: false, 
-                    // RRNValid: true,
-                    // phoneValid: true
+                    enableNewInvoiceContactCard: false,
                 })
             }
         }
     }
-    
-    handleExpandChange = (expanded) => {
-        this.setState({expanded: expanded});
-    };
-    
-    handleToggle = (event, toggle) => {
-        this.setState({expanded: toggle});
-    };
-    
-    handleExpand = () => {
-        this.setState({expanded: true});
-    };
-    
-    handleReduce = () => {
-        this.setState({expanded: false});
-    };
-
-    updateAardInvoice = (e) =>{ 
-        this.setState({aardInvoice: e.target.value, aardInvoiceDummy: e.target.value});
-    }
-
-    updateFee = (e) =>{ 
-        this.setState({fee: e.target.value});
-    }
-
-    handleOpenNewInvoice = () => {
-        this.setState({openInvoice: true});
-    };
-
-    handleCloseNewInvoice = () => {
-        this.setState({openInvoice: false});
-    };
-
-
-    handleOpenConfirmationDialogInvoices = () => {
-        this.setState({openConfirmationDialogInvoices: true});
-    };
-
-    handleCloseConfirmationDialogInvoices = () => {
-        this.setState({openConfirmationDialogInvoices: false})
-    }
-
-    handleCloseSuccessInvoice = () => {
-        this.setState({openSuccessInvoice: false})
-    }
 
     pushInvoice = (e) => {
         let now = new Date();
-        let val = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+        let val = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
 
         e.preventDefault();
         let item = {
@@ -215,16 +177,16 @@ class NewInvoice extends React.Component {
         firebase.database().ref('invoices').push(item);
 
         this.setState({
-            openConfirmationDialogInvoices: false, 
-            openInvoice: false, openSnackbar: true,
-            openSnackbar: true, 
+            openConfirmationDialogInvoices: false,
+            openInvoice: false,
+            openSnackbar: true,
             snackBarContent: "factuur voor " + this.state.name + " " + this.state.familyName + "   -  €" + this.state.fee + " Aangemaakt!"
         });
     }
 
     selectClient = (val) => {
         this.setState({
-            nameDummy : val.name,
+            nameDummy: val.name,
             name: val.name,
 
             familyNameDummy: val.familyName,
@@ -234,14 +196,14 @@ class NewInvoice extends React.Component {
             street: val.street,
 
             cityDummy: val.city,
-            city: val.city,      
+            city: val.city,
 
             phoneDummy: val.phone,
             phone: val.phone,
 
             emailDummy: val.email,
-            email: val.email, 
-            
+            email: val.email,
+
             BTWDummy: val.BTW,
             BTW: val.BTW,
 
@@ -249,7 +211,7 @@ class NewInvoice extends React.Component {
             RRN: val.RRN,
 
             buildingStreetDummy: val.buildingStreet,
-            buildingStreet: val.buildingStreet, 
+            buildingStreet: val.buildingStreet,
 
             buildingCityDummy: val.buildingCity,
             buildingCity: val.buildingCity,
@@ -259,21 +221,18 @@ class NewInvoice extends React.Component {
 
             dossierNrDummy: val.dossierNr,
             dossierNr: val.dossierNr,
+            selectedDossierNr: val.dossierNr,
 
             key: val.key,
-            //enableEditPlanContactCard: false,
-            enableNewInvoiceContactCard: false, 
-            // RRNValid: true,
-            // phoneValid: true
+            enableNewInvoiceContactCard: false,
         })
     };
 
-    componentWillMount (){
+    componentWillMount() {
         const allPlans = this.state.plannen;
 
         this.database.on('child_added', snapshot => {
             if (snapshot.val().userUid === this.state.userUid) {
-                console.log(snapshot.val());
                 allPlans.push({
                     key: snapshot.key,
                     dossierNr: snapshot.val().dossierNr,
@@ -289,253 +248,221 @@ class NewInvoice extends React.Component {
                     buildingCity: snapshot.val().buildingCity,
                     aard: snapshot.val().aard,
                 })
-                this.setState({plannen: allPlans});
+                this.setState({ plannen: allPlans });
             }
         })
     }
-    
-    handleOpenSnackbar = () => {
-        this.setState({ openSnackbar: true });
-      };
-    
+
     handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
-        }    
+            return;
+        }
         this.setState({ openSnackbar: false });
     };
 
-    componentDidMount () {
+    componentDidMount() {
         this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-            if (user) this.setState({userUid: user.uid});    
+            if (user) this.setState({ userUid: user.uid });
             let items = [];
             this.database.on('value', (snapshot) => {
-                items = Object.values(snapshot.val()).map((item, i) => { 
-                    if (user){
+                items = Object.values(snapshot.val()).map((item, i) => {
+                    if (user) {
                         if (item.userUid == user.uid) {
                             item.key = i;
-                            return item; 
+                            return item;
                         }
                     }
                 });
                 items = items.filter(Boolean);
-                this.setState({plannen: items});
-            });    
-        });  
+                this.setState({ plannen: items });
+            });
+        });
 
         const input = document.getElementById('street');
         const building = document.getElementById('buildingStreet');
         const options = {
-          componentRestrictions: {country: 'be'},
-          types: ['address']
+            componentRestrictions: { country: 'be' },
+            types: ['address']
         };
         const geoAutocomplete = new window.google.maps.places.Autocomplete((input), options);
 
         const geoAutocompleteBuilding = new window.google.maps.places.Autocomplete((building), options);
 
         geoAutocomplete.addListener('place_changed', () => {
-          const selectedPlace = geoAutocomplete.getPlace();
-          const componentForm = {
-            street_number: 'long_name',
-            route: 'long_name',
-            locality: 'long_name',
-            administrative_area_level_1: 'short_name',
-            country: 'long_name',
-            postal_code: 'long_name'
-          };
-          // Get each component of the address from the place details
-          // and fill the corresponding field on the form.
-          let selectedSuggest = {};
-          for (let addressComponent of selectedPlace.address_components) {
-            const addressType = addressComponent.types[0];
-            if (componentForm[addressType]) {
-              selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-            };
-          };
-          this.setState({street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}`});
-          this.setState({city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`}); 
-          var newCity = this.state.city;
-          input.value = this.state.street;
-          this.setState({cityDummy: newCity});
-        })
-
-        geoAutocompleteBuilding.addListener('place_changed', () => {
-            const selectedPlace = geoAutocompleteBuilding.getPlace();
+            const selectedPlace = geoAutocomplete.getPlace();
             const componentForm = {
-              street_number: 'long_name',
-              route: 'long_name',
-              locality: 'long_name',
-              administrative_area_level_1: 'short_name',
-              country: 'long_name',
-              postal_code: 'long_name'
+                street_number: 'long_name',
+                route: 'long_name',
+                locality: 'long_name',
+                administrative_area_level_1: 'short_name',
+                country: 'long_name',
+                postal_code: 'long_name'
             };
             // Get each component of the address from the place details
             // and fill the corresponding field on the form.
             let selectedSuggest = {};
             for (let addressComponent of selectedPlace.address_components) {
-              const addressType = addressComponent.types[0];
-              if (componentForm[addressType]) {
-                selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-              };
+                const addressType = addressComponent.types[0];
+                if (componentForm[addressType]) {
+                    selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
+                };
             };
-            this.setState({buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}`});
-            this.setState({buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`}); 
+            this.setState({ street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
+            this.setState({ city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
+            var newCity = this.state.city;
+            input.value = this.state.street;
+            this.setState({ cityDummy: newCity });
+        })
+
+        geoAutocompleteBuilding.addListener('place_changed', () => {
+            const selectedPlace = geoAutocompleteBuilding.getPlace();
+            const componentForm = {
+                street_number: 'long_name',
+                route: 'long_name',
+                locality: 'long_name',
+                administrative_area_level_1: 'short_name',
+                country: 'long_name',
+                postal_code: 'long_name'
+            };
+            // Get each component of the address from the place details
+            // and fill the corresponding field on the form.
+            let selectedSuggest = {};
+            for (let addressComponent of selectedPlace.address_components) {
+                const addressType = addressComponent.types[0];
+                if (componentForm[addressType]) {
+                    selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
+                };
+            };
+            this.setState({ buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
+            this.setState({ buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
             var newCityBuilding = this.state.buildingCity;
             building.value = this.state.buildingStreet;
-            this.setState({buildingCityDummy: newCityBuilding});
-          })
-      }
+            this.setState({ buildingCityDummy: newCityBuilding });
+        })
+    }
 
     render() {
         const { name, familyName, street, city, email, RRN, phone, phoneValid, buildingStreet, buildingCity, aard, RRNValid, fee, aardInvoice } = this.state;
 
         const enabledNewInvoice =
-            fee.length > 0 && 
+            fee.length > 0 &&
             aardInvoice.length > 0;
-        const actionsNewInvoice = [
-            <FlatButton
-                label="Nieuwe Factuur"
-                primary={true}
-                onClick={this.handleOpenConfirmationDialogInvoices}
-                disabled={!enabledNewInvoice}
-            />,
-            <FlatButton
-                label="Annuleer"
-                secondary={true}
-                keyboardFocused={true}
-                onClick={this.handleCloseNewInvoice}
-          />,
-        ];
-        const actionsConfirmationDialogInvoices = [
-            <FlatButton
-                label="Bevestigen"
-                primary={true}
-                keyboardFocused={true}
-                onClick={this.pushInvoice}
-            />,
-            <FlatButton
-                label="Annuleer"
-                secondary={true}
-                keyboardFocused={true}
-                onClick={this.handleCloseConfirmationDialogInvoices}
-            />
-        ];
         return (
             <div>
-                {/* <Header headerTitle="Nieuwe Factuur"/> */}
-                <section className="form__Container">  
+                <section className="form__Container">
                     <div className="labelDropDown">Kies Uw Cliënt: </div>
-                        <div className="Dropdown">  
-                                <DropDownMenu
-                                    value={this.state.value}
-                                    onChange={this.handleChange}
-                                    autoWidth={false}
-                                >
-                                    {
-                                        this.state.plannen.map((plan) => {
-                                            return (
-                                                <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.name + " " + plan.familyName}  />
-                                            )
-                                        })
-                                    }
-                                </DropDownMenu>
-                        </div>
-                        <div className="labelSearchName">
-                            <AutoComplete
-                                floatingLabelText="Zoek op Dossier Nummer"
-                                dataSourceConfig={dataSourceConfig}
-                                dataSource={this.state.plannen}
-                                filter={AutoComplete.caseInsensitiveFilter}
-                                className="form__TextFieldSearchName"
-                                onNewRequest={this.selectClient}
-                            />
-                        </div>
-                        <div className="contactCardInvoice">
-                        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
-                            <CardTitle className="title" title={this.state.nameDummy + " " + this.state.familyNameDummy} expandable={true}/>
-                            <CardText className="Text" expandable={true}>
+                    <div className="Dropdown">
+                        <DropDownMenu
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            autoWidth={false}
+                        >
+                            {
+                                this.state.plannen.map((plan) => {
+                                    return (
+                                        <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.name + " " + plan.familyName} />
+                                    )
+                                })
+                            }
+                        </DropDownMenu>
+                    </div>
+                    <div className="labelSearchName">
+                        <AutoComplete
+                            floatingLabelText="Zoek op Familienaam"
+                            dataSourceConfig={dataSourceConfig}
+                            dataSource={this.state.plannen}
+                            filter={AutoComplete.caseInsensitiveFilter}
+                            className="form__TextFieldSearchName"
+                            onNewRequest={this.selectClient}
+                            value={this.state.selectedDossierNr}
+                        />
+                    </div>
+                    <div className="contactCardInvoice">
+                        <List component="div" disablePadding>
+                            <ListItem className="containerInfo" button>
                                 <div className="info personalInfoInvoice">
-                                    <div> 
-                                        <img src={HomeIcon} alt="Address Icon" className="addressContactCardImg"/>
-                                        <div className="addressContactCard">{this.state.streetDummy}<br/>
-                                        {this.state.cityDummy}</div>
-                                    </div>
-                                    <div>
-                                        <img src={PhoneIcon} alt="Phone Icon"/>
-                                        <div>{this.state.phoneDummy}</div>
-                                    </div>
-                                    <div>
-                                        <img src={EmailIcon} alt="Email Icon"/>
-                                        <div>{this.state.emailDummy}</div>
-                                    </div>
-                                    <div>
-                                        <img src={BTWIcon} alt="BTW Icon"/>
-                                            <div className={ this.state.BTWClasses }>{this.state.BTWDummy}</div>                              
-                                    </div>
-                                    <div>
-                                        <img src={RRNIcon} alt="RRN Icon"/>
-                                        <div className={ this.state.RRNClassesCard }>{this.state.RRNDummy}</div>
-                                    </div>
+                                    <FullNameIcon className="icon" /><p>{this.state.nameDummy + " " + this.state.familyNameDummy}</p><br />
+                                    <AddressIcon className="icon addressIcon" /><p>{this.state.streetDummy}<br />{this.state.cityDummy}</p><br />
+                                    <EmailIcon className="icon" /><p>{this.state.emailDummy}</p><br />
+                                    <PhoneIcon className="icon" /><p>{this.state.phoneDummy}</p><br />
+                                    <BTWIcon className="icon" /><p>{this.state.BTWDummy ? this.state.BTWDummy : "Geen BTW"}</p><br />
+                                    <RRNIcon className="icon" /><p>{this.state.RRNDummy}</p><br />
                                 </div>
-                                <div></div>
                                 <div className="info buildingInfo">
-                                    <div> 
-                                        <img src={DossierIcon} alt="Dossier Icon"/>
-                                        <div>{this.state.dossierNrDummy}</div>
-                                    </div>
-                                    <div> 
-                                        <img src={BuildingIcon} alt="Building Icon" className="addressContactCardImg"/>
-                                        <div className="addressContactCard">{this.state.buildingStreetDummy}<br/>
-                                        {this.state.buildingCityDummy}</div>
-                                    </div>
-                                    <div>
-                                        <img src={AardIcon} alt="Aard Icon"/>
-                                        <div className="aardContactCard">{this.state.aardDummy}</div>
-                                    </div>
+                                    <BuildingAddressIcon className="icon buildingAddressIcon" /><p>{this.state.buildingStreetDummy}<br />{this.state.buildingCityDummy}</p><br />
+                                    <AardIcon className="icon" /><p>{this.state.aardDummy}</p><br />
                                 </div>
-                                <div className="actionButtonsInvoice">
-                                    <FlatButton
-                                        label="Nieuwe Factuur"
-                                        primary={true}
-                                        onClick={this.handleOpenNewInvoice}
-                                        disabled={this.state.enableNewInvoiceContactCard}
-                                    />
-                                </div>
-                            </CardText>
-                        </Card>
+                            </ListItem>
+                            <div className="actionButtonsInvoice">
+                                <Button
+                                    color="primary"
+                                    onClick={() => this.setState({ openInvoice: true })}
+                                    disabled={this.state.enableNewInvoiceContactCard}
+                                >Nieuwe Factuur</Button>
+                            </div>
+                        </List>
                     </div>
                     <Dialog
-                        title={"Factuur voor " + this.state.name + " " + this.state.familyName + " - " + this.state.dossierNr}
-                        actions={actionsNewInvoice}
                         modal={false}
                         open={this.state.openInvoice}
-                        onRequestClose={this.handleCloseNewInvoice}
+                        onRequestClose={() => this.setState({ openInvoice: false })}
+                        className="dialogNewInvoice"
                     >
-                        <form className="form__ContainerNewInvoice">
-                            <TextField
-                                name="Ereloon"
-                                floatingLabelText="Ereloon"
-                                className="form__TextField"
-                                onChange={this.updateFee}
-                                type="number"
-                            />
-                            <TextField
-                                name="AardInvoice"
-                                floatingLabelText="Aard"
-                                className="form__TextField"
-                                onChange={this.updateAardInvoice}
-                            />
-                        </form>
+                        <DialogTitle>{this.state.name + " " + this.state.familyName + "  " + this.state.dossierNr}</DialogTitle>
+                        <DialogContent>
+                            <form className="form__ContainerNewInvoice">
+                                <TextField
+                                    name="Ereloon"
+                                    floatingLabelText="Ereloon"
+                                    className="form__TextField__NewInvoice"
+                                    onChange={(e) => this.setState({ fee: e.target.value })}
+                                    type="number"
+                                    autoComplete="off"
+                                />
+                                <TextField
+                                    name="AardInvoice"
+                                    floatingLabelText="Aard"
+                                    className="form__TextField__NewInvoice"
+                                    onChange={(e) => this.setState({ aardInvoice: e.target.value, aardInvoiceDummy: e.target.value })}
+                                    autoComplete="off"
+                                />
+                            </form>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                color="primary"
+                                onClick={() => this.setState({ openConfirmationDialogInvoices: true })}
+                                disabled={!enabledNewInvoice}
+                            >Nieuwe Factuur</Button>
+                            <Button
+                                color="secondary"
+                                keyboardFocused={true}
+                                onClick={() => this.setState({ openInvoice: false })}
+                            >Annuleer</Button>
+                        </DialogActions>
                     </Dialog>
                     <Dialog
-                        title={"Factuur Bevestiging voor " + this.state.name + " " + this.state.familyName}
-                        actions={actionsConfirmationDialogInvoices}
                         modal={false}
                         open={this.state.openConfirmationDialogInvoices}
-                        onRequestClose={this.handleCloseConfirmationDialogInvoices}
-                    >   
-                    <strong>Ereloon:   </strong>€{this.state.fee} <br />
-                    <strong>Aard:      </strong>{this.state.aardInvoice} <br />
+                        onRequestClose={() => this.setState({ openConfirmationDialogInvoices: false })}
+                    >
+                        <DialogTitle>{"Factuur Bevestiging voor " + this.state.name + " " + this.state.familyName}</DialogTitle>
+                        <DialogContent>
+                            <strong>Ereloon:   </strong>€{this.state.fee} <br />
+                            <strong>Aard:      </strong>{this.state.aardInvoice} <br />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button
+                                color="primary"
+                                keyboardFocused={true}
+                                onClick={this.pushInvoice}
+                            >Bevestigen</Button>
+                            <Button
+                                color="secondary"
+                                keyboardFocused={true}
+                                onClick={() => this.setState({ openConfirmationDialogInvoices: false })}
+                            >Annuleer</Button>
+                        </DialogActions>
                     </Dialog>
                     <Snackbar
                         anchorOrigin={{

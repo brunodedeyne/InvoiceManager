@@ -1,39 +1,17 @@
-.contactCard {
-    height: auto;
-}
-
-.title, .buttons {
-    text-align: center;
-}
-
-.Text {
-    padding: 0 0 16px 16px !important;
-}
-
-img {
-    width: 25px;
-    margin-left: 15px;
-    margin-right: 15px;
-    margin-bottom: 10px;
-}
-
 .parent {
-    min-width: 621px;
-}
-
-.infoNewPlan {
-    font-size: 14px;
-    display: inline-block;
-}
-
-.personalInfoNewPlan {
+    max-width: 400px;
+    margin: 0 auto;
     width: 100%;
-    float: left;
 }
 
-.buildingInfoNewPlan {
-    width: 90%;
-    padding-left: 0;
+.parent >  div > div {
+    width: 100% !important;
+    max-width: 400px;
+    margin:  0 auto;
+}
+
+.card {
+    width: 100%;
 }
 
 .errorFillIn > input {
@@ -48,30 +26,9 @@ img {
     -webkit-box-shadow: 0 0 0 50px #dcdcdc inset;
 }
 
-.addressContactCard {
-    margin-bottom: 10px;
-}
-
-.aardContactCard {
-    padding-right: 4rem;
-}
-
-.addressContactCardImg {
-    margin-top: 7px;
-}
-
-.infoNewPlan div {
-    display: -webkit-box;
-}
-
-.infoNewPlan div div {
-    margin-top: 4px;
-}
-
 .formNewPlan {
     display: inline-block;
     width: 100%;
-    min-width: 380px;
     margin-bottom: 25px;
 }
 
@@ -80,12 +37,21 @@ img {
     float: left;
     width: 90% !important;
     font-size: 20px !important;
-    margin-right: 5%;
+    margin-right: 10%;
     height: 85px !important;
+    margin-top: 10px;
 }
 
 .buildingStreetNewPlan {
     border-top: 1px solid #293541;
+}
+
+.form__TextField__NewPlan > input {
+    color: #293541 !important;
+}
+
+.form__TextField__NewPlan > label {
+    color: #293541 !important;
 }
 
 .RRNNewPlan {
@@ -93,12 +59,12 @@ img {
 }
 
 .form__PersonalNewPlan {
-    padding-left: 3rem;
+    padding-left: 10%;
     height: 25rem;
 }
 
 .form__PlanNewPlan {
-    padding-left: 3rem;
+    padding-left: 10%;
     height: 14rem;
 }
 
@@ -146,41 +112,20 @@ img {
     font-size: 25px;
 }
 
-/* labelNewPlan {
-    color: #293541 !important;
-} */
+.icon {
+    margin: 10px;
+    display: inline-block;
+    float: left;
+}
 
-@media screen and (min-width: 780px) {
-    .buildingInfoNewPlan {
-        width: 47%;
-        padding-left: 25px;
-    }
-
-    .personalInfoNewPlan {
-        width: 47%;
-        float: left;
-    }
-
-    .contactCard {
-        height: 18rem;
-        max-width: 900px;
-    }
-
-    .personalInfoNewPlan::after {
-        content: "";
-        background-color: #293541;
-        position: absolute;
-        width: 1px;
-        height: 11rem;
-        top: 100px;
-        left: 50%;
-        display: block;
-    }
-}   
+.icon + p {
+    margin-top: 11px;
+}
 
 @media screen and (min-width: 800px) {
     .form__TextField__NewPlan {
         width: 45% !important;
+        margin-right: 5%;
     }
 
     .buildingStreetNewPlan {

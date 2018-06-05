@@ -1,27 +1,23 @@
 .section__Container {
     margin: 0 auto;
     width: 100%;
+    margin-top: 100px;
 }
 
-.section__Container > div {
+.section__Container + div {
     -webkit-box-shadow: none;
-    margin-top: 100px;
     background-color: transparent;
 }
 
-.section__Box {
+.div__logoContainer {
     text-align: center;
 }
 
-.section__Modal {
-    padding-top: 50px !important;
-}
-
-.section__Img {
+.div__logoImg {
     width: 250px;
 }
 
-.section__TextfieldsLogin {
+.div__textfieldsContainer {
     text-align: center;
 }
 
@@ -70,64 +66,27 @@ footer {
     margin-top: 25px;
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-animation: autofill 0s forwards;
-    animation: autofill 0s forwards;
-}
-
-@keyframes autofill {
-    100% {
-        background: transparent;
-        color: white;
-    }
-}
-
-@-webkit-keyframes autofill {
-    100% {
-        background: transparent;
-        color: white;
-    }
-}
-
 @media (min-width: 650px){
-    .section__Img {
+    .div__logoImg {
         width: 300px;
     }
 
     .divTextFieldLogin > svg {
-        font-size: 30px;
+        font-size: 20px;
         bottom: 35px;
     }
 
     .textFieldLogin > label {
-        text-indent: 40px;
+        text-indent: 26px;
         left: 15px;
         font-size: 20px !important;
         padding-bottom: 10px !important;
-
     }
     
     .textFieldLogin > input {
-        text-indent: 30px;
+        text-indent: 5px;
+        width: 89% !important;
         left: 15px;
-        padding-bottom: 10px !important;
-        font-size: 20px !important;
+        font-size:17px !important;
     }
-    
-    /* .section__Container {
-        margin: 0 auto;
-        width: 100%;
-        margin-top: 100px;
-    }
-    
-    .section__Container > div {
-        background-color: white;
-        opacity: 0.8;
-        width: 400px;
-        margin: 0 auto;
-        text-align: center;
-    } */
 }  

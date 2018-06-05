@@ -1,156 +1,58 @@
-import React, {Component} from 'react';
+// Import Default Components
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
 
-import TableHead from '@material-ui/core/TableHead';
-import Tooltip from '@material-ui/core/Tooltip';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
+// Import Icons
+import {
+  Info as AardIcon,
+  Fingerprint as DossierIcon,
+  Check as DatePaidIcon,
+  DateRange as DateCreatedIcon,
+  EuroSymbol as FeeIcon,
+  AccountCircle as NameIcon,
+  Close as CloseIcon,
+  ExpandLess,
+  ExpandMore
+} from "@material-ui/icons";
 
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '../../MenuComponents/Menu';
-import Header from '../../HeaderComponents/Header';
+import {
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
+  Snackbar,
+  IconButton,
+  Collapse,
+  DialogContent,
+  DialogActions,
+  Button,
+  Checkbox,
+  ListItemText,
+  ListItem,
+  List,
+  Dialog,
+  Divider,
+  Paper,
+  withStyles
+} from '@material-ui/core';
+
+// Import Database
+import * as firebase from 'firebase';
+
+// Import CSS
 import './Invoices.css';
-import * as firebase from 'firebase';  
 
-import Snackbar from '@material-ui/core/Snackbar';
-import CloseIcon from '@material-ui/icons/Close';
-
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { SnackbarContent } from '@material-ui/core';
-
-
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-  },
-  table: {
-    minWidth: 1020,
-  },
-  tableWrapper: {
-    overflowX: 'auto',
-  },
-  row: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.black,
-    },
-  },
-});
-
-const columnData = [
-  { id: 'paid', label: 'Betalen' },
-  { id: 'dossierNr', label: 'Dossier' },
-  { id: 'fullName', label: 'Naam' },
-  { id: 'aardInvoice', label: 'Aard Factuur' },
-  { id: 'fee', label: 'Ereloon' },
-  { id: 'dateCreated', label: 'Opgesteld op' },
-  { id: 'datePaid', label: 'Betaald op' },
-];
-
-class EnhancedTableHead extends React.Component {
-    createSortHandler = property => event => {
-      this.props.onRequestSort(event, property);
-    };
-  
-    render() {
-      const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
-  
-      return (
-        <TableHead className="Head">
-          <TableRow className="Header">
-            {columnData.map(column => {
-              return (
-                <TableCell
-                  key={column.id}
-                  numeric={column.numeric}
-                  padding={column.disablePadding ? 'none' : 'default'}
-                  sortDirection={orderBy === column.id ? order : false}
-                  className={column.id + "ColumnHeaderInvoices"}
-                >
-                  <Tooltip
-                    title="Sort"
-                    placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                    enterDelay={300}
-                  >
-                    <TableSortLabel
-                      active={orderBy === column.id}
-                      direction={order}
-                      onClick={this.createSortHandler(column.id)}
-                    >
-                      {column.label}
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
-              );
-            }, this)}
-          </TableRow>
-        </TableHead>
-      );
-    }
-  }
-  
-  EnhancedTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.string.isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-  };
-  
-  const toolbarStyles = theme => ({
-    root: {
-      paddingRight: theme.spacing.unit,
-    },
-    highlight:
-      theme.palette.type === 'light'
-        ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
-        : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
-    spacer: {
-      flex: '1 1 100%',
-    },
-    actions: {
-      color: theme.palette.text.secondary,
-    },
-    title: {
-      flex: '0 0 auto',
-    },
-  });
-
-class EnhancedTable extends Component {
+class Invoices extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
       userUid: '',
-      order: 'asc',
-      orderBy: 'DateCreated',
-      selected: [],
       plannen: [],
       invoices: [],
       dataPlannen: [],
       dataInvoices: [],
       data: [],
-      page: 0,
-      rowsPerPage: 10,
       openConfirmationDialogPaid: false,
       paimentId: '',
       paimentInvoice: [],
@@ -158,62 +60,61 @@ class EnhancedTable extends Component {
       snackBarContent: '',
       kwartaal: '',
       paid: '',
-      initialDataCall: false,
-      dialogContent: '',
-      confirmOrCancel: false
+      confirmOrCancel: false,
+      checked: [0],
     };
     this.database = firebase.database().ref('/invoices');
     this.filterData = this.filterData.bind(this);
     this.getData = this.getData.bind(this);
   }
 
-  componentWillMount (){
+  componentWillMount() {
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      if (user) this.setState({userUid: user.uid});        
-    });    
+      if (user) this.setState({ userUid: user.uid });
+    });
   }
 
-  async componentDidMount (){
-    await this.getData(); 
+  async componentDidMount() {
+    await this.getData();
   }
 
-  async getData () {   
+  async getData() {
     let itemsInvoices = [];
     let itemsPlannen = [];
     let tempData = [];
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
       firebase.database().ref('/invoices').on('value', (snapshotInvoices) => {
-        itemsInvoices = Object.entries(snapshotInvoices.val()).map((itemInvoices, iInvoices) => { 
-          if (user){
-            if (user.uid == itemInvoices[1].userUid){
+        itemsInvoices = Object.entries(snapshotInvoices.val()).map((itemInvoices, iInvoices) => {
+          if (user) {
+            if (user.uid == itemInvoices[1].userUid) {
               var invoiceKey = itemInvoices[0];
               itemInvoices = itemInvoices[1];
               itemInvoices.key = invoiceKey;
-              return itemInvoices; 
+              return itemInvoices;
             }
-        }
-        });     
+          }
+        });
         itemsInvoices = itemsInvoices.filter(Boolean);
-        this.setState({dataInvoices: itemsInvoices});
-        
+        this.setState({ dataInvoices: itemsInvoices });
+
         firebase.database().ref('/plannen').on('value', (snapshotPlannen) => {
-          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {     
-            if (user){     
-              if (user.uid == itemPlannen[1].userUid){ 
+          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {
+            if (user) {
+              if (user.uid == itemPlannen[1].userUid) {
                 itemPlannen = itemPlannen[1];
                 itemPlannen.key = iPlannen;
-                return itemPlannen;  
+                return itemPlannen;
               }
             }
           });
-          itemsPlannen = itemsPlannen.filter(Boolean);  
-          this.setState({dataPlannen: itemsPlannen});
+          itemsPlannen = itemsPlannen.filter(Boolean);
+          this.setState({ dataPlannen: itemsPlannen });
 
           let combinedInvoices = [];
-          for (var i = 0; i < itemsInvoices.length; i++){
-            for (var j = 0; j < itemsPlannen.length; j++){    
+          for (var i = 0; i < itemsInvoices.length; i++) {
+            for (var j = 0; j < itemsPlannen.length; j++) {
               if (itemsPlannen[j].key === itemsInvoices[i].planKey) {
-                combinedInvoices.push ({
+                combinedInvoices.push({
                   userUid: itemsInvoices[i].userUid,
                   dossierNr: itemsPlannen[j].dossierNr,
                   key: itemsInvoices[i].key,
@@ -224,71 +125,26 @@ class EnhancedTable extends Component {
                   datePaid: itemsInvoices[i].datePaid,
                   fullName: itemsPlannen[j].name + " " + itemsPlannen[j].familyName,
                 })
-                
+
               }
             }
           }
           tempData = combinedInvoices;
-          this.setState({data: tempData});
+          this.setState({ data: tempData });
         });
       });
     });
   }
 
-  handleRequestSort = (event, property) => {
-    const orderBy = property;
-    let order = 'desc';
-
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
-    }
-
-    const data =
-      order === 'desc'
-        ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-        : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
-
-    this.setState({ data, order, orderBy });
-  };
-
-  handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({ selected: newSelected });
-  };
-
-  handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
-
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
-
-  pushPaiment = () => {    
+  pushPaiment = () => {
     const paidInvoice = this.state.paimentInvoice;
 
     let now = new Date();
-    let val = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+    let val = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
     var tempDate = '';
 
-    for (var i = 0; i < this.state.data.length; i++){
-      if (this.state.data[i].key === this.state.paimentId) {   
+    for (var i = 0; i < this.state.data.length; i++) {
+      if (this.state.data[i].key === this.state.paimentId) {
         if (this.state.confirmOrCancel) tempDate = val;
         else tempDate = ""
         paidInvoice.push({
@@ -301,53 +157,44 @@ class EnhancedTable extends Component {
           paimentId: this.state.paimentId,
           userUid: this.state.data[i].userUid
         });
-        this.setState({paimentInvoice: paidInvoice});   
+        this.setState({ paimentInvoice: paidInvoice });
       }
     }
 
     firebase.database().ref().child('/invoices/' + this.state.paimentInvoice[0].paimentId)
-      .set({ 
+      .set({
         aardInvoice: this.state.paimentInvoice[0].aardInvoice,
         dateCreated: this.state.paimentInvoice[0].dateCreated,
         datePaid: this.state.paimentInvoice[0].datePaid,
         fee: this.state.paimentInvoice[0].fee,
         planKey: this.state.paimentInvoice[0].planKey,
         userUid: this.state.paimentInvoice[0].userUid
-    });
+      });
     this.setState({
-      openConfirmationDialogPaid: false, 
-      openSnackbar: true, 
+      openConfirmationDialogPaid: false,
+      openSnackbar: true,
     });
-  }
-
-  handleCloseConfirmationDialogPaid = () => {
-    this.setState({openConfirmationDialogPaid: false});
   }
 
   handleOpenConfirmationDialogPaid = (event, id, datePaid) => {
     var selectedFullName = '';
     var selectedFee = '';
     for (var i = 0; i < this.state.data.length; i++) {
-      if (id == this.state.data[i].key){
-          selectedFullName = this.state.data[i].fullName,
-          selectedFee = this.state.data[i].fee,          
+      if (id == this.state.data[i].key) {
+        selectedFullName = this.state.data[i].fullName,
+          selectedFee = this.state.data[i].fee,
           this.setState({
             confirmOrCancel: datePaid ? false : true,
             openConfirmationDialogPaid: true,
             paimentId: id,
-            dialogContent: 
-              datePaid ? 
-                "Wilt u de factuur van " + selectedFullName + "  -  €" +  selectedFee + " Ongedaan maken?": 
-                "Bevestiging van factuur " + selectedFullName + "  -  €" + selectedFee,
-            snackBarContent: "Factuur van " + this.state.data[i].fullName + "  -  €" +  this.state.data[i].fee + " Is betaald!",
+            snackBarContent: "Factuur van " + this.state.data[i].fullName + "  -  €" + this.state.data[i].fee + " Is betaald!",
+            selectedDatePaid: datePaid,
+            selectedFullName,
+            selectedFee
           });
       }
     }
   }
-
-  handleOpenSnackbar = () => {
-    this.setState({ openSnackbar: true });
-  };
 
   handleCloseSnackBar = (event, reason) => {
     if (reason === 'clickaway') {
@@ -356,86 +203,62 @@ class EnhancedTable extends Component {
     this.setState({ openSnackbar: false });
   };
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
-
-  handleChangeKwartaal = event => {
-    this.setState({ [event.target.name]: event.target.value});
-  };
-
-  isOfKwartaal (item) {
+  isOfKwartaal(item) {
     if (this.state.kwartaal === "" || this.state.kwartaal == 0) return true;
     if (this.state.kwartaal === 1) {
-      if (item.dateCreated.split('/')[1] >= 1 && item.dateCreated.split('/')[1] <= 3){
+      if (item.dateCreated.split('/')[1] >= 1 && item.dateCreated.split('/')[1] <= 3) {
         return true;
-      }     
+      }
     }
     else if (this.state.kwartaal === 2) {
-      if (item.dateCreated.split('/')[1] >= 4 && item.dateCreated.split('/')[1] <= 6){
+      if (item.dateCreated.split('/')[1] >= 4 && item.dateCreated.split('/')[1] <= 6) {
         return true;
-      }     
+      }
     }
     else if (this.state.kwartaal === 3) {
-      if (item.dateCreated.split('/')[1] >= 7 && item.dateCreated.split('/')[1] <= 9){
+      if (item.dateCreated.split('/')[1] >= 7 && item.dateCreated.split('/')[1] <= 9) {
         return true;
-      }     
+      }
     }
     else if (this.state.kwartaal === 4) {
-      if (item.dateCreated.split('/')[1] >= 10 && item.dateCreated.split('/')[1] <= 12){
+      if (item.dateCreated.split('/')[1] >= 10 && item.dateCreated.split('/')[1] <= 12) {
         return true;
-      }     
+      }
     }
 
     return false;
   }
 
-  isPaid (item) {
+  isPaid(item) {
     if (this.state.paid === "" || this.state.paid == 5) {
       return true;
     }
     else if (this.state.paid == 0) {
-      if (item.datePaid == ""){
+      if (item.datePaid == "") {
         return true;
-      }     
+      }
     }
     else if (this.state.paid == 1) {
-      if (item.datePaid != ""){
+      if (item.datePaid != "") {
         return true;
-      }     
+      }
     }
     return false;
   }
 
-  filterData () {
+  filterData() {
     let filterData = this.state.data.filter(item => (
       this.isOfKwartaal(item) && this.isPaid(item)
     ));
     return filterData;
   }
-
-  handleChangePaid = event => {
-    this.setState({ [event.target.name]: event.target.value });
+  handleClickExpand = (e) => {
+    this.setState({ [e]: !this.state[e] });
   };
 
   render() {
-    const { classes } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
-    const actionsConfirmationDialogPaid = [
-      <FlatButton
-          label={this.state.confirmOrCancel ? "Bevestigen" : "Ongedaan maken"}
-          primary={true}
-          keyboardFocused={true}
-          onClick={this.pushPaiment}
-      />,
-      <FlatButton
-          label="Annuleer"
-          secondary={true}
-          keyboardFocused={true}
-          onClick={this.handleCloseConfirmationDialogPaid}
-      />
-    ];
-
+    const { fullScreen } = this.props;
+    const { data } = this.state;
     return (
       <div>
         <form autoComplete="off" className="formInvoices">
@@ -443,7 +266,7 @@ class EnhancedTable extends Component {
             <InputLabel htmlFor="age-simple">Kwartaal</InputLabel>
             <Select
               value={this.state.kwartaal}
-              onChange={this.handleChangeKwartaal}
+              onChange={(event) =>  this.setState({ [event.target.name]: event.target.value })}
               inputProps={{
                 name: 'kwartaal',
                 id: 'kwartaal',
@@ -460,7 +283,7 @@ class EnhancedTable extends Component {
             <InputLabel htmlFor="age-simple">Betalingsstatus</InputLabel>
             <Select
               value={this.state.paid}
-              onChange={this.handleChangePaid}
+              onChange={(event) =>  this.setState({ [event.target.name]: event.target.value })}
               inputProps={{
                 name: 'paid',
                 id: 'paid',
@@ -473,110 +296,114 @@ class EnhancedTable extends Component {
           </FormControl>
         </form>
         <div className="ContainerInvoices">
-        <Paper className={classes.root}>
-          
-          <div className={classes.tableWrapper}>
-            <Table className={classes.table} aria-labelledby="tableTitle">
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
-              />
-              <TableBody>
-                {this.filterData().slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
+          <Paper className="root">
+
+            <div className="tableWrapper">
+              <List>
+                {this.filterData() == "" ? <div>
+                  <ListItem
+                    role={undefined}
+                    dense
+                    button
+                  >
+                    <ListItemText
+                      primary={"Geen items te vinden voor deze filter"}
+                    />
+                  </ListItem>
+                </div> : ""}
+                {this.filterData().map(value => (
+                  <div>
+                    <ListItem
+                      key={value}
+                      role={undefined}
+                      onClick={this.handleClickExpand.bind(this, value.fullName + "_" + value.aardInvoice)}
+                      button
                     >
-                      <TableCell className="paidColumnInvoices">
-                        <FlatButton 
-                          label={n.datePaid ? "Annuleer" : "Betalen"}
-                          primary={!n.datePaid}
-                          secondary={n.datePaid} 
-                          onClick={event => this.handleOpenConfirmationDialogPaid(event, n.key, n.datePaid)}                          
-                        />
-                      </TableCell>
-                      <TableCell className="dossierNrColumnInvoices">{n.dossierNr}</TableCell>
-                      <TableCell className="fullNameColumnInvoices">{n.fullName}</TableCell>
-                      <TableCell className="aardInvoiceColumnInvoices">{n.aardInvoice}</TableCell>
-                      <TableCell className="feeColumnInvoices">€{n.fee}</TableCell>
-                      <TableCell className="dateCreatedColumnInvoices">{n.dateCreated}</TableCell>
-                      <TableCell className="datePaidColumnInvoices">{n.datePaid}</TableCell>
-                    </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 49 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-          <TablePagination
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-              'aria-label': 'Previous Page',
-            }}
-            nextIconButtonProps={{
-              'aria-label': 'Next Page',
-            }}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          />
-        </Paper>
+                      <Checkbox
+                        checked={value.datePaid ? true : false}
+                        tabIndex={-1}
+                        disableRipple
+                        onClick={event => this.handleOpenConfirmationDialogPaid(event, value.key, value.datePaid)}
+                      />
+                      <ListItemText
+                        primary={value.dossierNr}
+                        secondary={value.fullName}
+                      />
+                      {this.state[value.fullName + "_" + value.aardInvoice] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Divider />
+                    <Collapse key={this.filterData("lastMonth").values.key + "_" + value.aardInvoice} in={this.state[value.fullName + "_" + value.aardInvoice]} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        <ListItem className="containerInfo" button>
+                          <NameIcon className="icon" /><p>{value.fullName}</p><br />
+                          <DossierIcon className="icon" /><p>{value.dossierNr}</p><br />
+                          <FeeIcon className="icon" /><p>{value.fee}</p><br />
+                          <AardIcon className="icon" /><p>{value.aardInvoice}</p><br />
+                          <DateCreatedIcon className="icon" /><p>{value.dateCreated}</p><br />
+                          <DatePaidIcon className="icon" style={{color: value.datePaid ? "black" : "red" }}/><p>{value.datePaid ? value.datePaid : <p style={{color: "red"}}>Nog niet betaald!</p>}</p><br />
+                        </ListItem>
+                      </List>
+                    </Collapse>
+                    <Divider />
+                  </div>
+                ))}
+              </List>
+            </div>
+          </Paper>
         </div>
-        
         <Dialog
-            title={this.state.dialogContent}
-            actions={actionsConfirmationDialogPaid}
-            modal={false}
-            open={this.state.openConfirmationDialogPaid}
-            onRequestClose={this.handleCloseConfirmationDialogPaid}
-        >   
+          fullScreen={false}
+          open={this.state.openConfirmationDialogPaid}
+          onRequestClose={this.handleClose}
+          modal={false}
+        >
+          <DialogContent>
+            {this.state.selectedDatePaid ?
+              "Wilt u deze Factuur annuleren?" :
+              "Wilt u deze Factuur bevestigingen?"}<br />
+            <NameIcon className="icon" /><p>{this.state.selectedFullName}</p><br />
+            <FeeIcon className="icon" /><p>{this.state.selectedFee}</p>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={this.pushPaiment}
+              color="primary"
+              label={this.state.confirmOrCancel ? "Bevestigen" : "Ongedaan"}
+            />
+            <Button
+              onClick={() => this.setState({ openConfirmationDialogPaid: false })}
+              color="secondary"
+              label={"Annuleer"}
+            />
+          </DialogActions>
         </Dialog>
+
         <Snackbar
           anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
+            vertical: 'bottom',
+            horizontal: 'right',
           }}
           open={this.state.openSnackbar}
           autoHideDuration={6000}
           onClose={this.handleCloseSnackBar}
           ContentProps={{
-              'aria-describedby': 'message-id',
+            'aria-describedby': 'message-id',
           }}
           message={<span id="message-id">{this.state.snackBarContent}</span>}
           action={[
-              <IconButton
-                  key="close"
-                  aria-label="Close"
-                  color="inherit"
-                  onClick={this.handleCloseSnackBar}
-              >
-                  <CloseIcon />
-              </IconButton>,
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleCloseSnackBar}
+            >
+              <CloseIcon />
+            </IconButton>,
           ]}
-      />
-      </div>
+        />
+      </div >
     );
   }
 }
 
-EnhancedTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(EnhancedTable);
+export default Invoices;

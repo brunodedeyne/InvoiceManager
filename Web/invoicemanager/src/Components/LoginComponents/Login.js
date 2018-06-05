@@ -1,30 +1,32 @@
+// Import Default Components
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from "material-ui/TextField";
-import FlatButton from 'material-ui/FlatButton';
-import PasswordIcon from '@material-ui/icons/Lock';
-import MailIcon from '@material-ui/icons/Email';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+// Import Icons
+import {
+    Lock as PasswordIcon,
+    Email as MailIcon,
+    Close as CloseIcon
+} from '@material-ui/icons/';
 
-import * as firebase from 'firebase';
-// import {withRouter} from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import * as routes from '../../constants/routes/routes';
-import Dialog from 'material-ui/Dialog';
-
+// Import Material UI Components
+import {
+    RaisedButton,
+    TextField,
+    FlatButton,
+    Dialog,
+    IconButton
+} from 'material-ui';
 import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 
-import logoImg from '../../assets/img/logo_white.png'
-import logo2Img from '../../assets/img/logo2.png'
+// Import Database
+import * as firebase from 'firebase';
+
+// Import CSS
+import logoImg from '../../assets/img/logo_white.webp'
 import './Login.css';
 
-class Login extends Component {   
-    constructor (props) {
+class Login extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             email: '',
@@ -33,43 +35,41 @@ class Login extends Component {
             passwordErrorText: '',
             resetEmailErrorText: '',
             resetEmail: '',
-            openSnackbar: false
+            openSnackbar: false,
+            openResetEmail: false
         };
         this.handleSignIn = this.handleSignIn.bind(this);
         this.resetPassword = this.resetPassword.bind(this);
     }
-    updateEmail = (e) =>{ 
-        this.setState({email: e.target.value});
+
+    updateEmail = (e) => {
+        this.setState({ email: e.target.value });
     }
 
-    updatePassword = (e) =>{ 
-        this.setState({password: e.target.value});
+    updatePassword = (e) => {
+        this.setState({ password: e.target.value });
     }
 
-    updateResetEmail = (e) =>{         
-        if (e.target.value.length <= 0) this.setState({resetEmailErrorText: "Email mag niet leeg zijn!"});
-        else this.setState({resetEmailErrorText: "", resetEmail: e.target.value});
+    updateResetEmail = (e) => {
+        if (e.target.value.length <= 0) this.setState({ resetEmailErrorText: "Email mag niet leeg zijn!" });
+        else this.setState({ resetEmailErrorText: "", resetEmail: e.target.value });
     }
 
-    handleOpenSnackbar = () => {
-        this.setState({ openSnackbar: true });
-    };
-    
     handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
-        }    
+            return;
+        }
         this.setState({ openSnackbar: false });
     };
 
-    async handleSignIn () {
+    async handleSignIn() {
         let errorCode;
         let tempEmailErrorText;
         let tempPasswordErrorText;
-        await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+        await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function (error) {
             errorCode = error.code;
         });
-        
+
         if (errorCode === "auth/invalid-email") tempEmailErrorText = "Controleer Email!";
         if (errorCode === "auth/user-not-found") tempEmailErrorText = "Geen geldige gebruiker!";
         if (errorCode === "auth/wrong-password") tempPasswordErrorText = "Controleer Wachtwoord!";;
@@ -79,19 +79,17 @@ class Login extends Component {
         })
     }
 
-    async resetPassword () {
-        if (this.state.resetEmail.length == 0) this.setState({resetEmailErrorText: "Email mag niet leeg zijn!"});
+    async resetPassword() {
+        if (this.state.resetEmail.length == 0) this.setState({ resetEmailErrorText: "Email mag niet leeg zijn!" });
         else {
             var auth = firebase.auth();
             let errorCode;
             let tempResetEmailErrorText;
-            await auth.sendPasswordResetEmail(this.state.resetEmail).then(function() {
-                console.log("verzodnen");
-            }).catch(function(error) {
-                console.log(error.code);
+            await auth.sendPasswordResetEmail(this.state.resetEmail).then(function () {
+            }).catch(function (error) {
                 errorCode = error.code;
             });
-    
+
             if (errorCode) {
                 if (errorCode === "auth/invalid-email") tempResetEmailErrorText = "Ongeldig Emailadres!";
                 if (errorCode === "auth/user-not-found") tempResetEmailErrorText = "Ongeldige Gebruiker!";
@@ -101,7 +99,7 @@ class Login extends Component {
             }
             else {
                 this.setState({
-                    snackBarContent: "Reset email verzonden naar " + this.state.resetEmail,
+                    snackBarContent: "Reset email verzonden!",
                     openResetEmail: false,
                     openSnackbar: true
                 });
@@ -111,109 +109,96 @@ class Login extends Component {
 
     _handleKeyPress = (e) => {
         if (e.key === 'Enter') {
-          this.handleSignIn();
+            this.handleSignIn();
         }
     }
 
-    handleOpenResetEmail = () => {
-        this.setState({openResetEmail: true});
-    };
-
-    handleCloseResetEmail = () => {
-        this.setState({openResetEmail: false});
-    };
-    
-    render () {
+    render() {
         const actionsResetEmail = [
             <FlatButton
                 label="Wachtwoord Resetten"
                 primary={true}
                 onClick={this.resetPassword}
-
             />,
             <FlatButton
                 label="Annuleer"
                 secondary={true}
-                keyboardFocused={true}
-                onClick={this.handleCloseResetEmail}
-          />,
+                onClick={() =>  this.setState({ openResetEmail: false })}
+            />,
         ];
         const { email, password } = this.state;
         const enabledLoginButton =
             email.length > 0 &&
             password.length > 0;
-        return (        
+        return (
             <section className="section__Container">
-                <Card>
-                    <CardContent>            
-                        <div className="section__Box">
-                            <img src={logoImg} alt="logo" className="section__Img" />              
-                        </div>
-                        <div className="section__TextfieldsLogin">
-                            <div className="divTextFieldLogin">
-                                <MailIcon className="mailIcon" />
-                                <TextField
-                                    name="email"
-                                    floatingLabelText="Email"
-                                    onChange={this.updateEmail}
-                                    errorText={this.state.emailErrorText}
-                                    onKeyPress={this._handleKeyPress}
-                                    inputStyle={{color: "white"}}
-                                    className="textFieldLogin"
-                                    autoComplete="off"
-                                /><br/>
-                            </div>
-                            <div className="divTextFieldLogin">
-                                <PasswordIcon  className="passwordIcon" />
-                                <TextField
-                                    name="password"
-                                    floatingLabelText="Wachtwoord"
-                                    type="password"
-                                    onChange={this.updatePassword}
-                                    errorText={this.state.passwordErrorText}
-                                    onKeyPress={this._handleKeyPress}
-                                    inputStyle={{color: "white"}}
-                                    className="textFieldLogin"
-                                /><br/><br/>
-                            </div>
-                            <RaisedButton 
-                                onClick={this.handleSignIn}  
-                                disabled={!enabledLoginButton} 
-                                className="loginButton" 
-                            >    
-                                Inloggen 
+                <div className="div__logoContainer">
+                    <img src={logoImg} alt="logo" className="div__logoImg" />
+                </div>
+                <div className="div__textfieldsContainer">
+                    <div className="divTextFieldLogin">
+                        <MailIcon className="mailIcon" />
+                        <TextField
+                            name="email"
+                            floatingLabelText="Email"
+                            onChange={this.updateEmail}
+                            errorText={this.state.emailErrorText}
+                            onKeyPress={this._handleKeyPress}
+                            inputStyle={{ color: "white" }}
+                            className="textFieldLogin"
+                            autoComplete="off"
+                        /><br />
+                    </div>
+                    <div className="divTextFieldLogin">
+                        <PasswordIcon />
+                        <TextField
+                            name="password"
+                            floatingLabelText="Wachtwoord"
+                            type="password"
+                            onChange={this.updatePassword}
+                            errorText={this.state.passwordErrorText}
+                            onKeyPress={this._handleKeyPress}
+                            inputStyle={{ color: "white" }}
+                            className="textFieldLogin"
+                        /><br /><br />
+                    </div>
+                    <RaisedButton
+                        onClick={this.handleSignIn}
+                        disabled={!enabledLoginButton}
+                        className="loginButton"
+                    >
+                        Inloggen
                             </RaisedButton>
-                            <footer>
-                                <p>
-                                    <FlatButton className="flatButton" onClick={this.handleOpenResetEmail} label="Wachtwoord Vergeten?" primary={true} />
-                                </p>
-                            </footer><br/>
-                        </div>
-                    </CardContent>
-                </Card>
+                    <footer>
+                        <p>
+                            <FlatButton onClick={() => this.setState({ openResetEmail: true })} label="Wachtwoord Vergeten?" primary={true} />
+                        </p>
+                    </footer><br />
+                </div>
                 <Dialog
                     actions={actionsResetEmail}
                     modal={false}
                     open={this.state.openResetEmail}
-                    onRequestClose={this.handleCloseResetEmail}
+                    onRequestClose={() => this.setState({openResetEmail: false})}
                 >
-                    <form className="form__ContainerEditEmail">
+                    <form>
                         <TextField
                             name="email"
                             floatingLabelText="Emailadres *"
                             className="form__TextFieldEditEmail"
                             onChange={this.updateResetEmail}
                             errorText={this.state.resetEmailErrorText}
+                            autoComplete="off"
                         />
                     </form>
                 </Dialog>
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
-                        horizontal: 'right',
+                        horizontal: 'left',
                     }}
                     open={this.state.openSnackbar}
-                    autoHideDuration={5000}
+                    autoHideDuration={2000}
                     onClose={this.handleCloseSnackBar}
                     ContentProps={{
                         'aria-describedby': 'message-id',

@@ -2,76 +2,46 @@
     margin-top: 0 !important;
 }
 
-.HeaderClients {
-    margin-left: 10px;
-}
-
-.Head {
-    background-color: #dcdcdc;
-}
-
-.dossierNrColumnClients {
-    padding: 4px 0 4px 20px !important;
-    width: 64px !important;
-}
-
-.fullNameColumnClients {
-    padding: 4px 0 4px 15px !important;
-}
-
-.addressColumnClients {
-    padding: 4px 0 4px 0 !important;
-}
-
-.buildingAddressColumnClients {
-    padding: 4px 0 4px 0 !important; 
-}
-
-.aardColumnClients {
-    padding: 0 !important;   
-}
-
-.phoneColumnClients {
-    padding: 4px 0 4px 0 !important;
-}
-
-.table {
-    border-top: 1px solid rgb(158, 158, 158);
-}
-
 .MuiTableCell-paddingNone-178 {
     padding: 4px 56px 4px 24px !important;
 }
 
-.deleteClientClients {
+.deleteClient {
+    float: left !important;
+}
+
+.icon {
+    margin: 10px;
+    display: inline-block;
     float: left;
 }
 
-.dossierNrColumnHeaderClients {
-    padding: 4px 0 4px 20px !important;
+.addressIcon, .buildingAddressIcon {
+    margin-top: 20px !important;
 }
 
-.fullNameColumnHeaderClients {
-    padding: 4px 0 4px 15px !important;
-    width: 140px !important;
+.tableWrapper {
+    overflow-x: auto;
+    width: 100%;
 }
 
-.addressColumnHeaderClients {
-    padding: 4px 0 4px 0 !important;
-    width: 150px !important;
+.root {
+    width: 100%;
 }
 
-.buildingAddressColumnHeaderClients {
-    padding: 4px 0 4px 0 !important;
-    width: 150px !important;
+.icon + p {
+    margin-top: 11px;
 }
 
-.phoneColumnHeaderClients {
-    padding: 4px 0 4px 0 !important;
-    width: 110px !important;
+.form__TextField__EditPlan {
+    width: 95% !important;
+    margin-right: 0 !important;
 }
 
-.aardColumnHeaderClients {
-    padding: 4px 0 4px 0 !important;   
-    width: 200px !important;
+.actionsEdit {
+    display: inline-block !important;
+}
+
+.actionsEdit > Button{
+    float: right;
 }
