@@ -498,7 +498,7 @@ class NewPlan extends React.Component {
                                     </div>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button>
+                                    <Button
                                         color="secondary"
                                         onClick={() => this.setState({ openPreview: false })}
                                     >Annuleer</Button>

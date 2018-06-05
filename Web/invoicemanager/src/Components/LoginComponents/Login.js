@@ -150,7 +150,7 @@ class Login extends Component {
                         /><br />
                     </div>
                     <div className="divTextFieldLogin">
-                        <PasswordIcon />
+                        <PasswordIcon className="passwordIcon" />
                         <TextField
                             name="password"
                             floatingLabelText="Wachtwoord"

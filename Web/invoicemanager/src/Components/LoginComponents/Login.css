@@ -39,12 +39,16 @@
 }
 
 .textFieldLogin > input {
-    text-indent: 30px;
-    left: 0px;
+    width: 89% !important;
+    left: 14px !important;
 }
 
 .mailIcon {
     bottom: 13px !important;
+}
+
+.passwordIcon {
+    bottom: 34px !important
 }
 
 .passwordIcon {

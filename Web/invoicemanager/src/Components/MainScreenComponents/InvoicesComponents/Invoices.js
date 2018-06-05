@@ -96,6 +96,7 @@ class Invoices extends Component {
         });
         itemsInvoices = itemsInvoices.filter(Boolean);
         this.setState({ dataInvoices: itemsInvoices });
+        console.log(itemsInvoices);
 
         firebase.database().ref('/plannen').on('value', (snapshotPlannen) => {
           itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {
@@ -109,11 +110,12 @@ class Invoices extends Component {
           });
           itemsPlannen = itemsPlannen.filter(Boolean);
           this.setState({ dataPlannen: itemsPlannen });
+          console.log(itemsPlannen);
 
           let combinedInvoices = [];
           for (var i = 0; i < itemsInvoices.length; i++) {
             for (var j = 0; j < itemsPlannen.length; j++) {
-              if (itemsPlannen[j].key === itemsInvoices[i].planKey) {
+              if (itemsPlannen[j].key == itemsInvoices[i].planKey) {
                 combinedInvoices.push({
                   userUid: itemsInvoices[i].userUid,
                   dossierNr: itemsPlannen[j].dossierNr,
@@ -131,6 +133,7 @@ class Invoices extends Component {
           }
           tempData = combinedInvoices;
           this.setState({ data: tempData });
+          console.log(tempData);
         });
       });
     });
@@ -368,13 +371,11 @@ class Invoices extends Component {
             <Button
               onClick={this.pushPaiment}
               color="primary"
-              label={this.state.confirmOrCancel ? "Bevestigen" : "Ongedaan"}
-            />
+            >{this.state.confirmOrCancel ? "Bevestigen" : "Ongedaan"}</Button>
             <Button
               onClick={() => this.setState({ openConfirmationDialogPaid: false })}
               color="secondary"
-              label={"Annuleer"}
-            />
+            >Annuleer</Button>
           </DialogActions>
         </Dialog>
 

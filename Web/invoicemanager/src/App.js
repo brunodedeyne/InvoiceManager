@@ -166,16 +166,16 @@ class App extends React.Component {
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
       firebase.database().ref('/invoices').on('value', (snapshotInvoices) => {
         itemsInvoices = Object.values(snapshotInvoices.val()).map((itemInvoices) => {
-          if (user) {
+          if (user) {            
             if (itemInvoices.userUid == user.uid) {
               return itemInvoices;
             }
           }
         });
-        itemsInvoices = itemsInvoices.filter(Boolean);
         this.setState({ dataInvoices: itemsInvoices });
 
         let number = 0;
+        itemsInvoices = itemsInvoices.filter(Boolean);
         if (itemsInvoices != "") {
           for (var i = 0; i < itemsInvoices.length; i++) {
             if (itemsInvoices[i].datePaid == "") number++;
@@ -209,13 +209,13 @@ class App extends React.Component {
         avatarButton: avatarButton,
       });
     });
-    var tempNumberOfUnpaidInvoices = 0;
+    // var tempNumberOfUnpaidInvoices = 0;
 
-    this.database.on('value', snapshot => {
-      tempNumberOfUnpaidInvoices = snapshot.numChildren();
-    })
-    this.setState({ numberOfUnpaidInvoices: tempNumberOfUnpaidInvoices });
-    this.forceUpdate();
+    // this.database.on('value', snapshot => {
+    //   tempNumberOfUnpaidInvoices = snapshot.numChildren();
+    // })
+    // this.setState({ numberOfUnpaidInvoices: tempNumberOfUnpaidInvoices });
+    // this.forceUpdate();
   }
 
   componentWillUnmount() {
@@ -269,6 +269,8 @@ class App extends React.Component {
                       </Menu>
                     </Toolbar>
                   </AppBar>
+
+
                   <AppBar
                     className="appBarTabs"
                   >
@@ -279,12 +281,11 @@ class App extends React.Component {
                       <Typography variant="title" color="inherit" className={classes.flex}>
                         {this.state.title}
                       </Typography>
-                      {/* {auth && ( */}
                       <div>
                         <IconButton
                           aria-owns={null}
                           aria-haspopup="true"
-                          onClick={this.handleClickAccountMenu}
+                          onClick={(event) => this.setState({ anchorEl: event.currentTarget })}
                           color="inherit"
                         >
                           <Avatar className="avatar">{this.state.avatarButton}</Avatar>
@@ -299,7 +300,6 @@ class App extends React.Component {
                           <MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem>
                         </Menu>
                       </div>
-                      {/* )} */}
                     </Toolbar>
                   </AppBar>
 
@@ -373,6 +373,8 @@ class App extends React.Component {
                       </List>
                     </div>
                   </Drawer>
+
+
                   <Drawer
                     variant="permanent"
                     classes={{

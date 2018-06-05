@@ -197,7 +197,7 @@ class MyAccount extends React.Component {
                             <TextField
                                 name="newPassword"
                                 floatingLabelText="Wachtwoord *"
-                                className="form__TextField"
+                                className="form__TextFieldEditEmail"
                                 onChange={this.updatePasswordInput}
                                 errorText={this.state.errorTextPassword}
                                 type="password"
@@ -205,7 +205,7 @@ class MyAccount extends React.Component {
                             <TextField
                                 name="newPasswordConfirmation"
                                 floatingLabelText="Wachtwoord Bevestiging *"
-                                className="form__TextField"
+                                className="form__TextFieldEditEmail"
                                 onChange={this.updatePasswordConfirmationInput}
                                 errorText={this.state.errorTextPasswordConfirmation}
                                 type="password"
