@@ -42,20 +42,20 @@ h2 {
   top: -15px !important;
 }
 
-.App-toolbar-7, .jss7 {
+/* .App-toolbar-7, .jss7 {
   background-color: white !important;
   display: inline-block !important;
   height: 72px !important;
   padding: 0 !important;
   float: left;
-}
+} */
 
-.App-menuButton-3, .jss3 {
+/* .App-menuButton-3, .jss3 {
   margin-top:  4px !important;
   margin-left:  4px !important;
   margin-right:  0 !important;
-}
-
+} */
+/* 
 .MuiToolbar-root-44, .jss44 {
   display: inline-block !important;
 }
@@ -66,7 +66,7 @@ h2 {
 
 .App-drawerPaperClose-6 {
   width: 60px !important;
-}
+} */
 
 .header__ZIndex > header {
   z-index: none !important;
@@ -105,12 +105,12 @@ h2 {
 .newStuff {
   padding: 0 !important;
 }
-
+/* 
 .jss3 {
   margin-top: 4px !important;
   margin-left: 4px !important;
   margin-right: 0 !important;
-}
+} */
 
 .appBarToolbar {
   display: none !important;
@@ -163,7 +163,7 @@ a > span {
     background-color: transparent;
   }
 
-  .App-toolbar-7, .jss7 {
+  /* .App-toolbar-7, .jss7 {
     padding-left: 0 !important;
   }
 
@@ -173,15 +173,15 @@ a > span {
 
   .App-drawerPaperClose-6, .jss6 {
     width: 60px !important;
-  }
+  } */
 
   .header__ZIndex > header {
     z-index: 1201 !important;
   }
 
-  .jss44 {
+  /* .jss44 {
     padding-left:  0 !important;
-  }
+  } */
 
   .appBarToolbar {
     display: block !important;
@@ -207,7 +207,7 @@ a > span {
     min-height: 0px;
   }
   
-  .App-toolbar-7, .jss7 {
+  /* .App-toolbar-7, .jss7 {
     height: 60px !important;
-  }
+  } */
 }
