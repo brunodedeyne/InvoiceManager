@@ -45,9 +45,21 @@
     width: 100%;
 }
 
+.plotButton {
+    margin-top: 20px !important;
+    width: 220px;
+}
+
 @media screen and (min-width: 450px) {
     .formControlInvoices {
         width: 200px;
         margin: 0 10px 0 10px ! important;
+    }
+}
+
+@media screen and (min-width: 827px) {
+    .plotButton {
+        margin-top: 0 !important;
+        float: right;
     }
 }
