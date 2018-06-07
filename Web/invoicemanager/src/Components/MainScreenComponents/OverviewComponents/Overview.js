@@ -105,7 +105,7 @@ class Overview extends React.Component {
           let combinedInvoices = [];
           for (var i = 0; i < itemsInvoices.length; i++) {
             for (var j = 0; j < itemsPlannen.length; j++) {
-              if (itemsPlannen[j].key === itemsInvoices[i].planKey) {
+              if (itemsPlannen[j].key == itemsInvoices[i].planKey) {
                 combinedInvoices.push({
                   userUid: itemsInvoices[i].userUid,
                   dossierNr: itemsPlannen[j].dossierNr,
@@ -123,6 +123,7 @@ class Overview extends React.Component {
           }
           tempData = combinedInvoices;
           this.setState({ data: tempData });
+          console.log(tempData);
         });
       });
     });

@@ -470,7 +470,7 @@ class NewInvoice extends React.Component {
                             horizontal: 'right',
                         }}
                         open={this.state.openSnackbar}
-                        autoHideDuration={6000}
+                        autoHideDuration={2000}
                         onClose={this.handleCloseSnackBar}
                         ContentProps={{
                             'aria-describedby': 'message-id',

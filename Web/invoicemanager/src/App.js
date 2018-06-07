@@ -222,6 +222,14 @@ class App extends React.Component {
     this.authSubscription();
   }
 
+  handleClickAccount = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleCloseAccount = () => {
+    this.setState({ anchorEl: null });
+  };
+
   render() {
     const { classes } = this.props;
     const { anchorEl } = this.state;
@@ -253,7 +261,7 @@ class App extends React.Component {
                         <Button
                           aria-owns={anchorEl ? 'simple-menu' : null}
                           aria-haspopup="true"
-                          onClick={(event) => this.setState({ anchorEl: event.currentTarget })}
+                          onClick={this.handleClickAccount}
                         >
                           <Avatar className="avatar">{this.state.avatarButton}</Avatar>
                         </Button>
@@ -262,9 +270,10 @@ class App extends React.Component {
                         id="simple-menu"
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
-                        onClose={() => this.setState({ anchorEl: null })}
+                        onClose={this.handleCloseAccount}
+                        onClick={this.handleCloseAccount}
                       >
-                        <Link to={routes.My_ACCOUNT} onClick={(value) => this.setState({ title: "Mijn Account", value })}><MenuItem onClick={() => this.setState({ anchorEl: null })}>Mijn Account</MenuItem></Link>
+                        <Link to={routes.My_ACCOUNT} onClick={(value, event) => this.setState({ title: "Mijn Account", value, anchorEl: !event.currentTarget })}><MenuItem onClick={() => this.setState({ anchorEl: null })}>Mijn Account</MenuItem></Link>
                         <MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem>
                       </Menu>
                     </Toolbar>
@@ -283,9 +292,9 @@ class App extends React.Component {
                       </Typography>
                       <div>
                         <IconButton
-                          aria-owns={null}
+                          aria-owns={anchorEl ? 'simple-menu' : null}
                           aria-haspopup="true"
-                          onClick={(event) => this.setState({ anchorEl: event.currentTarget })}
+                          onClick={this.handleClickAccount}
                           color="inherit"
                         >
                           <Avatar className="avatar">{this.state.avatarButton}</Avatar>
@@ -294,7 +303,8 @@ class App extends React.Component {
                           id="simple-menu"
                           anchorEl={anchorEl}
                           open={Boolean(anchorEl)}
-                          onClose={this.handleCloseAccountMenu}
+                          onClose={this.handleCloseAccount}
+                          onClick={this.handleCloseAccount}
                         >
                           <Link to={routes.My_ACCOUNT} onClick={(value) => this.setState({ title: "Mijn Account", value })}><MenuItem onClick={this.handleMyAccount}>Mijn Account</MenuItem></Link>
                           <MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem>

@@ -1,12 +1,10 @@
 .parent {
-    max-width: 400px;
     margin: 0 auto;
     width: 100%;
 }
 
 .parent >  div > div {
     width: 100% !important;
-    max-width: 400px;
     margin:  0 auto;
 }
 
@@ -120,6 +118,15 @@
 
 .icon + p {
     margin-top: 11px;
+}
+@media screen and (min-width: 500px) {
+    .parent {
+        min-width: 400px;
+    }
+
+    .parent >  div > div {
+        min-width: 400px;
+    }
 }
 
 @media screen and (min-width: 800px) {

@@ -437,7 +437,7 @@ class Clients extends React.Component {
             </div>
           </Paper>
           <Dialog
-            fullScreen={true}
+            fullScreen={window.innerWidth <= 600 ? true : false}
             open={this.state.openPlanEdit}
             onRequestClose={this.handleCloseEditPlan}
             autoScrollBodyContent={true}
@@ -455,7 +455,7 @@ class Clients extends React.Component {
                 <TextField
                   name="name"
                   floatingLabelText="Voornaam *"
-                  className="form__TextField__NewPlan form__TextField__EditPlan"
+                  className=" form__TextField__EditPlan"
                   onChange={this.updateName}
                   errorText={this.state.nameErrorText}
                   value={this.state.selectedName}
@@ -464,7 +464,7 @@ class Clients extends React.Component {
                   name="street"
                   id="street"
                   floatingLabelText="Straat + Nummer *"
-                  className="form__TextField__NewPlan form__TextField__EditPlan"
+                  className=" form__TextField__EditPlan"
                   onChange={this.updateStreet}
                   type="text"
                   placeholder=""
@@ -474,7 +474,7 @@ class Clients extends React.Component {
                 <TextField
                   name="city"
                   floatingLabelText="Postcode + Stad *"
-                  className="form__TextField__NewPlan form__TextField__EditPlan"
+                  className=" form__TextField__EditPlan"
                   onChange={this.updateCity}
                   value={this.state.city}
                   errorText={this.state.cityErrorText}
@@ -484,7 +484,7 @@ class Clients extends React.Component {
                   name="phone"
                   id="phone"
                   floatingLabelText="Telefoon *"
-                  className="form__TextField__NewPlan form__TextField__EditPlan"
+                  className=" form__TextField__EditPlan"
                   maxLength="12"
                   onKeyPress={this.updatePhone}
                   onChange={this.updatePhoneOnChange}
@@ -494,7 +494,7 @@ class Clients extends React.Component {
                 <TextField
                   name="email"
                   floatingLabelText="Email *"
-                  className="form__TextField__NewPlan form__TextField__EditPlan"
+                  className=" form__TextField__EditPlan"
                   onChange={this.updateEmail}
                   type="email"
                   errorText={this.state.emailErrorText}
@@ -503,7 +503,7 @@ class Clients extends React.Component {
                 <TextField
                   name="BTW"
                   floatingLabelText="BTW Nummer"
-                  className={"form__TextField__NewPlan form__TextField__EditPlan" + this.state.BTWClasses}
+                  className={" form__TextField__EditPlan " + this.state.BTWClasses}
                   onKeyPress={this.updateBTW}
                   maxLength="12"
                   errorText={this.state.BTWErrorText}
@@ -512,21 +512,18 @@ class Clients extends React.Component {
                 <TextField
                   name="RRN"
                   floatingLabelText="Rijksregisternummer *"
-                  className={"form__TextField__NewPlan RRNNewPlan " + this.state.RRNClasses}
+                  className={" RRNNewPlan form__TextField__EditPlan " + this.state.RRNClasses}
                   onKeyPress={this.updateRRN}
                   onChange={this.updateRRNOnChange}
                   maxLength="15"
                   errorText={this.state.RRNErrorText}
                   value={this.state.selectedRRN}
                 />
-              </div>
-              <div className="border"></div>
-              <div className="form__PlanNewPlan">
                 <TextField
                   name="buildingStreet"
                   id="buildingStreet"
                   floatingLabelText="Ligging *"
-                  className="form__TextField__NewPlan buildingStreetNewPlan"
+                  className=" form__TextField__EditPlan buildingStreetEditPlan"
                   onChange={this.updateBuildingStreet}
                   placeholder=""
                   errorText={this.state.buildingStreetErrorText}
@@ -535,7 +532,7 @@ class Clients extends React.Component {
                 <TextField
                   name="buildingCity"
                   floatingLabelText="Bouwplaats *"
-                  className="form__TextField__NewPlan"
+                  className=" form__TextField__EditPlan buildingCityEditPlan"
                   onChange={this.updateBuildingCity}
                   value={this.state.buildingCity}
                   errorText={this.state.buildingCityErrorText}
@@ -544,7 +541,7 @@ class Clients extends React.Component {
                 <TextField
                   name="Aard"
                   floatingLabelText="Aard *"
-                  className="form__TextField__NewPlan"
+                  className="aardEditPlan form__TextField__EditPlan"
                   onChange={this.updateAard}
                   errorText={this.state.aardErrorText}
                   value={this.state.selectedAard}
@@ -562,6 +559,7 @@ class Clients extends React.Component {
               <Button
                 color="secondary"
                 onClick={() => this.setState({ openPlanEdit: false })}
+                className="cancelButtonClients"
               >Annuleer</Button>
               <Button
                 color="primary"

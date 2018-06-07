@@ -34,8 +34,20 @@
 }
 
 .form__TextField__EditPlan {
-    width: 95% !important;
+    width: 100% !important;
     margin-right: 0 !important;
+    float: left;
+    font-size: 20px !important;
+    height: 85px !important;
+    margin-top: 10px;
+}
+
+.form__TextField__EditPlan > input {
+    color: #293541 !important;
+}
+
+.form__TextField__EditPlan > label {
+    color: #293541 !important;
 }
 
 .actionsEdit {
@@ -44,4 +56,30 @@
 
 .actionsEdit > Button{
     float: right;
+}
+
+.actionsEdit, .deleteClient, .cancelButtonClients {
+    margin: 0 !important;
+}
+
+.buildingStreetEditPlan {
+    border-top: 1px solid #293541;
+}
+
+@media screen and (min-width: 550px) {
+    .form__TextField__EditPlan {
+        width: 48% !important;
+    }
+
+    .form__TextField__EditPlan:nth-child(2n) {
+        margin-left: 4% !important;
+    }
+
+    .aardEditPlan {
+        width: 100% !important;
+    }
+
+    .buildingStreetEditPlan, .buildingCityEditPlan {
+        border-top: 1px solid #293541;
+    }
 }

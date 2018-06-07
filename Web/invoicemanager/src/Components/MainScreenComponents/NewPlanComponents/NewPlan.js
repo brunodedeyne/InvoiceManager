@@ -479,7 +479,7 @@ class NewPlan extends React.Component {
                                 open={this.state.openPreview}
                                 onRequestClose={() => this.setState({ openPreview: false })}
                                 className="parent"
-                                fullScreen={true}
+                                fullScreen={window.innerWidth <= 500 ? true : false}
                             >
                                 <DialogContent>
                                     <div className="card">
