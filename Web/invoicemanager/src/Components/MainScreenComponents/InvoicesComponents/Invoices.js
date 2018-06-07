@@ -222,7 +222,7 @@ class Invoices extends Component {
   }
 
   isOfJaar(item) {
-    if (this.state.jaar === "") return true;
+    if (this.state.jaar === "" || this.state.jaar == 0) return true;
     if (this.state.jaar === 2017) {
       if (item.invoiceInfo.dateCreated.split('/')[2] == 2017) {
         return true;
@@ -233,7 +233,6 @@ class Invoices extends Component {
         return true;
       }
     }
-
     return false;
   }
 
@@ -253,7 +252,7 @@ class Invoices extends Component {
     }
     return false;
   }
-  
+
   filterData() {
     let filterData = this.state.data.filter(item => (
       this.isOfKwartaal(item) && this.isPaid(item) && this.isOfJaar(item)
