@@ -168,7 +168,9 @@ class NewPlan extends React.Component {
         else {
             this.setState({ RRNErrorText: "", RRN: e.target.value, RRNDummy: e.target.value });
             if (e.target.value.length === 15) {
-                var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
+                var numb;
+                if (e.target.value.substring(0, 1) == 0) numb = parseInt("2" + e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
+                else numb =  parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
                 if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
                     this.setState({ RRNClasses: "errorFillIn" });
                     this.setState({ RRNClassesCard: "errorFillInCard" });
@@ -233,67 +235,67 @@ class NewPlan extends React.Component {
             });
         });
 
-        const input = document.getElementById('street');
-        const building = document.getElementById('buildingStreet');
-        const options = {
-            componentRestrictions: { country: 'be' },
-            types: ['address']
-        };
-        const geoAutocomplete = new window.google.maps.places.Autocomplete((input), options);
+        // const input = document.getElementById('street');
+        // const building = document.getElementById('buildingStreet');
+        // const options = {
+        //     componentRestrictions: { country: 'be' },
+        //     types: ['address']
+        // };
+        // const geoAutocomplete = new window.google.maps.places.Autocomplete((input), options);
 
-        const geoAutocompleteBuilding = new window.google.maps.places.Autocomplete((building), options);
+        // const geoAutocompleteBuilding = new window.google.maps.places.Autocomplete((building), options);
 
-        geoAutocomplete.addListener('place_changed', () => {
-            const selectedPlace = geoAutocomplete.getPlace();
-            const componentForm = {
-                street_number: 'long_name',
-                route: 'long_name',
-                locality: 'long_name',
-                administrative_area_level_1: 'short_name',
-                country: 'long_name',
-                postal_code: 'long_name'
-            };
-            // Get each component of the address from the place details
-            // and fill the corresponding field on the form.
-            let selectedSuggest = {};
-            for (let addressComponent of selectedPlace.address_components) {
-                const addressType = addressComponent.types[0];
-                if (componentForm[addressType]) {
-                    selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-                };
-            };
-            this.setState({ street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-            this.setState({ city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
-            var newCity = this.state.city;
-            input.value = this.state.street;
-            this.setState({ cityDummy: newCity });
-        })
+        // geoAutocomplete.addListener('place_changed', () => {
+        //     const selectedPlace = geoAutocomplete.getPlace();
+        //     const componentForm = {
+        //         street_number: 'long_name',
+        //         route: 'long_name',
+        //         locality: 'long_name',
+        //         administrative_area_level_1: 'short_name',
+        //         country: 'long_name',
+        //         postal_code: 'long_name'
+        //     };
+        //     // Get each component of the address from the place details
+        //     // and fill the corresponding field on the form.
+        //     let selectedSuggest = {};
+        //     for (let addressComponent of selectedPlace.address_components) {
+        //         const addressType = addressComponent.types[0];
+        //         if (componentForm[addressType]) {
+        //             selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
+        //         };
+        //     };
+        //     this.setState({ street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
+        //     this.setState({ city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
+        //     var newCity = this.state.city;
+        //     input.value = this.state.street;
+        //     this.setState({ cityDummy: newCity });
+        // })
 
-        geoAutocompleteBuilding.addListener('place_changed', () => {
-            const selectedPlace = geoAutocompleteBuilding.getPlace();
-            const componentForm = {
-                street_number: 'long_name',
-                route: 'long_name',
-                locality: 'long_name',
-                administrative_area_level_1: 'short_name',
-                country: 'long_name',
-                postal_code: 'long_name'
-            };
-            // Get each component of the address from the place details
-            // and fill the corresponding field on the form.
-            let selectedSuggest = {};
-            for (let addressComponent of selectedPlace.address_components) {
-                const addressType = addressComponent.types[0];
-                if (componentForm[addressType]) {
-                    selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-                };
-            };
-            this.setState({ buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-            this.setState({ buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
-            var newCityBuilding = this.state.buildingCity;
-            building.value = this.state.buildingStreet;
-            this.setState({ buildingCityDummy: newCityBuilding });
-        })
+        // geoAutocompleteBuilding.addListener('place_changed', () => {
+        //     const selectedPlace = geoAutocompleteBuilding.getPlace();
+        //     const componentForm = {
+        //         street_number: 'long_name',
+        //         route: 'long_name',
+        //         locality: 'long_name',
+        //         administrative_area_level_1: 'short_name',
+        //         country: 'long_name',
+        //         postal_code: 'long_name'
+        //     };
+        //     // Get each component of the address from the place details
+        //     // and fill the corresponding field on the form.
+        //     let selectedSuggest = {};
+        //     for (let addressComponent of selectedPlace.address_components) {
+        //         const addressType = addressComponent.types[0];
+        //         if (componentForm[addressType]) {
+        //             selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
+        //         };
+        //     };
+        //     this.setState({ buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
+        //     this.setState({ buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
+        //     var newCityBuilding = this.state.buildingCity;
+        //     building.value = this.state.buildingStreet;
+        //     this.setState({ buildingCityDummy: newCityBuilding });
+        // })
     }
     pushForm = (e) => {
         let now = new Date();
@@ -321,16 +323,16 @@ class NewPlan extends React.Component {
     }
 
     handleOpenPreview() {
-        if (!/\d/.test(this.state.street)) this.setState({ streetErrorText: "Deze straat bevat geen huisnummer!" });
+        if (!/\d/.test(this.state.street)) {this.state.streetErrorText = "Deze straat bevat geen huisnummer!"; this.setState ({streetErrorText: "Deze straat bevat geen huisnummer!"});}
         else this.state.streetErrorText = "";
 
-        if (!/\d/.test(this.state.buildingStreet)) this.state.buildingStreetErrorText = "Deze straat bevat geen huisnummer!";
+        if (!/\d/.test(this.state.buildingStreet)) {this.state.buildingStreetErrorText = "Deze straat bevat geen huisnummer!"; this.setState ({buildingStreetErrorText: "Deze straat bevat geen huisnummer!"});}
         else this.state.buildingStreetErrorText = "";
 
-        if (!/\d/.test(this.state.city)) { this.state.cityErrorText = "Deze Stad bevat geen Postcode!"; }
+        if (!/\d/.test(this.state.city)) {this.state.cityErrorText = "Deze stad bevat geen postcode!"; this.setState ({cityErrorText: "Deze stad bevat geen postcode!"});}
         else this.state.cityErrorText = "";
 
-        if (!/\d/.test(this.state.buildingCity)) this.state.buildingCityErrorText = "Deze Stad bevat geen Postcode!";
+        if (!/\d/.test(this.state.buildingCity)) {this.state.buildingCityErrorText = "Deze stad bevat geen postcode!"; this.setState ({buildingCityErrorText: "Deze stad bevat geen postcode!"});}
         else this.state.buildingCityErrorText = "";
 
         if (this.state.name.length === 0) this.state.nameErrorText = "Naam mag niet leeg zijn!";
@@ -338,27 +340,23 @@ class NewPlan extends React.Component {
         if (this.state.email.length === 0) this.state.emailErrorText = "Email mag niet leeg zijn!";
         if (this.state.phone.length === 0) this.state.phoneErrorText = "Telefoonnummer mag niet leeg zijn!";
         if (this.state.phone.length < 11) this.state.phoneErrorText = "Telefoonnummer moet min. 9 lang zijn!";
-        if (this.state.street.length === 0) this.state.streetErrorText = "Straat mag niet leeg zijn!";
-        if (this.state.city.length === 0) this.state.cityErrorText = "Stad mag niet leeg zijn!";
         if (this.state.RRN.length === 0) this.state.RRNErrorText = "Rijksregisternummer mag niet leeg zijn!";
         if (this.state.RRN.length < 15) this.state.RRNErrorText = "Rijksregisternummer moet min. 11 lang zijn!";
-        if (this.state.buildingStreet.length === 0) this.state.buildingStreetErrorText = "Straat mag niet leeg zijn!";
-        if (this.state.buildingCity.length === 0) this.state.buildingCityErrorText = "Stad mag niet leeg zijn!";
         if (this.state.aard.length === 0) this.state.aardErrorText = "Aard mag niet leeg zijn!";
         var tempFullScreen = true;
         if (window.innerWidth >= 600) tempFullScreen = false;
         else tempFullScreen = true
         if (
-            this.state.nameErrorText == "" &&
-            this.state.familyNameErrorText == "" &&
-            this.state.streetErrorText == "" &&
-            this.state.cityErrorText == "" &&
-            this.state.phoneErrorText == "" &&
-            this.state.emailErrorText == "" &&
-            this.state.RRNErrorText == "" &&
-            this.state.buildingStreetErrorText == "" &&
-            this.state.buildingCityErrorText == "" &&
-            this.state.aardErrorText == ""
+            !this.state.nameErrorText &&
+            !this.state.familyNameErrorText &&
+            !this.state.streetErrorText &&
+            !this.state.cityErrorText &&
+            !this.state.phoneErrorText &&
+            !this.state.emailErrorText &&
+            !this.state.RRNErrorText &&
+            !this.state.buildingStreetErrorText &&
+            !this.state.buildingCityErrorText &&
+            !this.state.aardErrorText
         ) { this.setState({ openPreview: true, fullScreen: tempFullScreen }); }
     };
 

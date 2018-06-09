@@ -42,7 +42,7 @@ class Overview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      unPaid: '1100, 20',
+      unPaid: '0',
       invoices: [],
       plannen: [],
       dataLastMonth: [],
@@ -123,7 +123,6 @@ class Overview extends React.Component {
           }
           tempData = combinedInvoices;
           this.setState({ data: tempData });
-          console.log(tempData);
         });
       });
     });
@@ -193,7 +192,7 @@ class Overview extends React.Component {
             <div >
               <List>
                 <ListItem>
-                  <ListItemText style={{ textAlign: "center" }} primary={Parser("Onbetaald bedrag: <strong>€" + this.state.unPaid + "</strong>")} />
+                  <ListItemText style={{ textAlign: "center" }} primary={Parser("Totaal onbetaald: <strong>€ " + this.state.unPaid + "</strong>")} />
                 </ListItem>
               </List>
               <List className="unPaidInvoices">
@@ -206,7 +205,7 @@ class Overview extends React.Component {
                       button
                     >
                       <ListItemText
-                        primary={"Geen items te vinden"}
+                        primary={"Geen onbetaalde Facturen"}
                       />
                     </ListItem>
                   </div> : ""}
@@ -244,7 +243,7 @@ class Overview extends React.Component {
                     </div>
                   ))}
                 </List>
-                <List className="unPaidInvoices">
+                <List className="lastMonthInvoices">
                   <ListSubheader>Laatste Maand</ListSubheader>
                   <Divider />
                   {this.filterData("lastMonth") == "" ? <div>
@@ -254,7 +253,7 @@ class Overview extends React.Component {
                       button
                     >
                       <ListItemText
-                        primary={"Geen items te vinden voor deze filter"}
+                        primary={"Geen facturen in de laatste maand"}
                       />
                     </ListItem>
                   </div> : ""}

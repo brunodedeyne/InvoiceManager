@@ -137,7 +137,7 @@ class Login extends Component {
                 </div>
                 <div className="div__textfieldsContainer">
                     <div className="divTextFieldLogin">
-                        <MailIcon className="mailIcon" />
+                        <MailIcon className={"mailIcon " + (this.state.emailErrorText ? " mailIconErrorUp" : "")}/>
                         <TextField
                             name="email"
                             floatingLabelText="Email"
@@ -150,7 +150,7 @@ class Login extends Component {
                         /><br />
                     </div>
                     <div className="divTextFieldLogin">
-                        <PasswordIcon className="passwordIcon" />
+                        <PasswordIcon className={"passwordIcon " + (this.state.passwordErrorText ? " passwordIconErrorUp" : "")} />
                         <TextField
                             name="password"
                             floatingLabelText="Wachtwoord"

@@ -236,7 +236,9 @@ class Clients extends React.Component {
     else {
       this.setState({ RRNErrorText: "", selectedRRN: e.target.value });
       if (e.target.value.length === 15) {
-        var numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
+        var numb;
+        if (e.target.value.substring(0, 1) == 0) numb = parseInt("2" + e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
+        else numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
         if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
           this.setState({ RRNClasses: "errorFillIn" });
           this.setState({ RRNClassesCard: "errorFillInCard" });
@@ -377,7 +379,7 @@ class Clients extends React.Component {
   };
 
   render() {
-    const { data} = this.state;
+    const { data } = this.state;
 
     return (
       <div>
@@ -392,7 +394,7 @@ class Clients extends React.Component {
                     button
                   >
                     <ListItemText
-                      primary={"Geen items te vinden voor deze filter"}
+                      primary={"Geen Cliënten te vinden"}
                     />
                   </ListItem>
                 </div> : ""}

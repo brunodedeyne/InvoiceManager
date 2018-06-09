@@ -278,67 +278,67 @@ class NewInvoice extends React.Component {
             });
         });
 
-        const input = document.getElementById('street');
-        const building = document.getElementById('buildingStreet');
-        const options = {
-            componentRestrictions: { country: 'be' },
-            types: ['address']
-        };
-        const geoAutocomplete = new window.google.maps.places.Autocomplete((input), options);
+        // const input = document.getElementById('street');
+        // const building = document.getElementById('buildingStreet');
+        // const options = {
+        //     componentRestrictions: { country: 'be' },
+        //     types: ['address']
+        // };
+        // const geoAutocomplete = new window.google.maps.places.Autocomplete((input), options);
 
-        const geoAutocompleteBuilding = new window.google.maps.places.Autocomplete((building), options);
+        // const geoAutocompleteBuilding = new window.google.maps.places.Autocomplete((building), options);
 
-        geoAutocomplete.addListener('place_changed', () => {
-            const selectedPlace = geoAutocomplete.getPlace();
-            const componentForm = {
-                street_number: 'long_name',
-                route: 'long_name',
-                locality: 'long_name',
-                administrative_area_level_1: 'short_name',
-                country: 'long_name',
-                postal_code: 'long_name'
-            };
-            // Get each component of the address from the place details
-            // and fill the corresponding field on the form.
-            let selectedSuggest = {};
-            for (let addressComponent of selectedPlace.address_components) {
-                const addressType = addressComponent.types[0];
-                if (componentForm[addressType]) {
-                    selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-                };
-            };
-            this.setState({ street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-            this.setState({ city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
-            var newCity = this.state.city;
-            input.value = this.state.street;
-            this.setState({ cityDummy: newCity });
-        })
+        // geoAutocomplete.addListener('place_changed', () => {
+        //     const selectedPlace = geoAutocomplete.getPlace();
+        //     const componentForm = {
+        //         street_number: 'long_name',
+        //         route: 'long_name',
+        //         locality: 'long_name',
+        //         administrative_area_level_1: 'short_name',
+        //         country: 'long_name',
+        //         postal_code: 'long_name'
+        //     };
+        //     // Get each component of the address from the place details
+        //     // and fill the corresponding field on the form.
+        //     let selectedSuggest = {};
+        //     for (let addressComponent of selectedPlace.address_components) {
+        //         const addressType = addressComponent.types[0];
+        //         if (componentForm[addressType]) {
+        //             selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
+        //         };
+        //     };
+        //     this.setState({ street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
+        //     this.setState({ city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
+        //     var newCity = this.state.city;
+        //     input.value = this.state.street;
+        //     this.setState({ cityDummy: newCity });
+        // })
 
-        geoAutocompleteBuilding.addListener('place_changed', () => {
-            const selectedPlace = geoAutocompleteBuilding.getPlace();
-            const componentForm = {
-                street_number: 'long_name',
-                route: 'long_name',
-                locality: 'long_name',
-                administrative_area_level_1: 'short_name',
-                country: 'long_name',
-                postal_code: 'long_name'
-            };
-            // Get each component of the address from the place details
-            // and fill the corresponding field on the form.
-            let selectedSuggest = {};
-            for (let addressComponent of selectedPlace.address_components) {
-                const addressType = addressComponent.types[0];
-                if (componentForm[addressType]) {
-                    selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-                };
-            };
-            this.setState({ buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-            this.setState({ buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
-            var newCityBuilding = this.state.buildingCity;
-            building.value = this.state.buildingStreet;
-            this.setState({ buildingCityDummy: newCityBuilding });
-        })
+        // geoAutocompleteBuilding.addListener('place_changed', () => {
+        //     const selectedPlace = geoAutocompleteBuilding.getPlace();
+        //     const componentForm = {
+        //         street_number: 'long_name',
+        //         route: 'long_name',
+        //         locality: 'long_name',
+        //         administrative_area_level_1: 'short_name',
+        //         country: 'long_name',
+        //         postal_code: 'long_name'
+        //     };
+        //     // Get each component of the address from the place details
+        //     // and fill the corresponding field on the form.
+        //     let selectedSuggest = {};
+        //     for (let addressComponent of selectedPlace.address_components) {
+        //         const addressType = addressComponent.types[0];
+        //         if (componentForm[addressType]) {
+        //             selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
+        //         };
+        //     };
+        //     this.setState({ buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
+        //     this.setState({ buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
+        //     var newCityBuilding = this.state.buildingCity;
+        //     building.value = this.state.buildingStreet;
+        //     this.setState({ buildingCityDummy: newCityBuilding });
+        // })
     }
 
     render() {
@@ -374,7 +374,7 @@ class NewInvoice extends React.Component {
                             filter={AutoComplete.caseInsensitiveFilter}
                             className="form__TextFieldSearchName"
                             onNewRequest={this.selectClient}
-                            value={this.state.selectedDossierNr}
+                            ={this.state.familyName}
                         />
                     </div>
                     <div className="contactCardInvoice">

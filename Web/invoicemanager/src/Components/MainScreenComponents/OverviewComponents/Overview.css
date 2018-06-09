@@ -26,3 +26,11 @@
         display: inline-block;
     }
 }
+
+@media screen and (min-width: 900px) {
+    .unPaidInvoices, .lastMonthInvoices {
+        float: left;
+        width: 47%;
+        margin: 0 1.5% 0 1.5% !important;
+    }    
+}

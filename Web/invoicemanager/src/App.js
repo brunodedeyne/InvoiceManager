@@ -190,6 +190,7 @@ class App extends React.Component {
   componentDidMount() {
     var currentRoute = window.location.href.split('/')[(window.location.href.split('/').length) - 1];
     if (currentRoute == "Cli%C3%ABnten") currentRoute = "Cliënten";
+    if (currentRoute == "index.html") currentRoute = "Overzicht";
     if (currentRoute == "") this.setState({ title: "Overzicht" });
     else this.setState({ title: currentRoute.replace('_', ' ') });
     this.getNumberOfUnPaidInvoices();
