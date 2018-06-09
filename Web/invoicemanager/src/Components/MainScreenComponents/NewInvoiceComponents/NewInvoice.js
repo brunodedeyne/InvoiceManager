@@ -374,7 +374,6 @@ class NewInvoice extends React.Component {
                             filter={AutoComplete.caseInsensitiveFilter}
                             className="form__TextFieldSearchName"
                             onNewRequest={this.selectClient}
-                            ={this.state.familyName}
                         />
                     </div>
                     <div className="contactCardInvoice">
