@@ -105,12 +105,13 @@ class Invoices extends Component {
         this.setState({ dataInvoices: itemsInvoices });
 
         firebase.database().ref('/plannen').on('value', (snapshotPlannen) => {
-          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {
+          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemsPlannen, iPlannen) => {
             if (user) {
-              if (user.uid == itemPlannen[1].userUid) {
-                itemPlannen = itemPlannen[1];
-                itemPlannen.key = iPlannen;
-                return itemPlannen;
+              if (user.uid == itemsPlannen[1].userUid) {
+                var planKey = itemsPlannen[0];
+                itemsPlannen = itemsPlannen[1];
+                itemsPlannen.key = planKey;
+                return itemsPlannen;
               }
             }
           });
@@ -237,10 +238,11 @@ class Invoices extends Component {
   }
 
   isPaid(item) {
+    console.log(item);
     if (this.state.paid === "" || this.state.paid == 5) {
       return true;
     }
-    else if (this.state.paid == 0) {
+    else if (this.state.paid == 2) {
       if (item.invoiceInfo.datePaid == "") {
         return true;
       }

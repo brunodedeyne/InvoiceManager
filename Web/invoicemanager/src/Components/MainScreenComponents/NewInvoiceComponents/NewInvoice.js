@@ -114,7 +114,9 @@ class NewInvoice extends React.Component {
 
     handleChange = (event, index, value) => {
         for (var i = 0; i < this.state.plannen.length; i++) {
-            if (this.state.plannen[i].key === value) {
+            console.log(this.state.plannen[i].key);
+            if (this.state.plannen[i].key == value) {
+                
                 this.setState({
                     nameDummy: this.state.plannen[i].name,
                     name: this.state.plannen[i].name,
@@ -185,6 +187,7 @@ class NewInvoice extends React.Component {
     }
 
     selectClient = (val) => {
+        console.log(val);
         this.setState({
             nameDummy: val.name,
             name: val.name,
@@ -260,23 +263,30 @@ class NewInvoice extends React.Component {
         this.setState({ openSnackbar: false });
     };
 
-    componentDidMount() {
+    fillData() {
+        let items = [];
         this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-            if (user) this.setState({ userUid: user.uid });
-            let items = [];
-            this.database.on('value', (snapshot) => {
-                items = Object.values(snapshot.val()).map((item, i) => {
-                    if (user) {
-                        if (item.userUid == user.uid) {
-                            item.key = i;
-                            return item;
-                        }
-                    }
-                });
-                items = items.filter(Boolean);
-                this.setState({ plannen: items });
+          if (user) this.setState({ userUid: user.uid });
+          let items = [];
+          this.database.on('value', (snapshot) => {
+            items = Object.entries(snapshot.val()).map((item, i) => {
+              if (user) {
+                if (item[1].userUid == user.uid) {
+                  var itemKey = item[0];
+                  item = item[1];
+                  item.key = itemKey;
+                  return item;
+                }
+              }
             });
+            items = items.filter(Boolean);
+            this.setState({ plannen: items })
+          });
         });
+      }
+
+    componentDidMount() {
+        this.fillData();
 
         // const input = document.getElementById('street');
         // const building = document.getElementById('buildingStreet');

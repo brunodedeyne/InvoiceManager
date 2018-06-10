@@ -210,13 +210,6 @@ class App extends React.Component {
         avatarButton: avatarButton,
       });
     });
-    // var tempNumberOfUnpaidInvoices = 0;
-
-    // this.database.on('value', snapshot => {
-    //   tempNumberOfUnpaidInvoices = snapshot.numChildren();
-    // })
-    // this.setState({ numberOfUnpaidInvoices: tempNumberOfUnpaidInvoices });
-    // this.forceUpdate();
   }
 
   componentWillUnmount() {

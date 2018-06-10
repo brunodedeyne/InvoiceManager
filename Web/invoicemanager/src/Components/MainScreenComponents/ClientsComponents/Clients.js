@@ -112,12 +112,10 @@ class Clients extends React.Component {
         items = Object.entries(snapshot.val()).map((item, i) => {
           if (user) {
             if (item[1].userUid == user.uid) {
+              console.log(item);
               var itemKey = item[0];
               item = item[1];
               item.key = itemKey;
-              item.fullName = item.name + " " + item.familyName;
-              item.address = item.street + `<br />` + item.city;
-              item.buildingAddress = item.buildingStreet + '<br />' + item.buildingCity;
               return item;
             }
           }
@@ -289,11 +287,10 @@ class Clients extends React.Component {
   };
 
   handleDeleteClient = () => {
-    firebase.database().ref().child('/plannen/' + this.state.selectedKey).remove();
     const allInvoices = this.state.invoices;
     firebase.database().ref('/invoices').on('child_added', snapshot => {
-
-      if (snapshot.val().planKey === this.state.selectedKey) {
+      console.log(snapshot.val().planKey);
+      if (snapshot.val().planKey === this.state.selectedKey) {        
         allInvoices.push({
           key: snapshot.key,
         })
@@ -304,7 +301,7 @@ class Clients extends React.Component {
     for (var i = 0; i < this.state.invoices.length; i++) {
       firebase.database().ref().child('/invoices/' + this.state.invoices[i].key).remove();
     }
-
+    firebase.database().ref().child('/plannen/' + this.state.selectedKey).remove();
     this.setState({
       openPlanEdit: false,
       openDeleteClient: false,
@@ -314,16 +311,16 @@ class Clients extends React.Component {
   }
 
   handleEditPlan = () => {
-    if (!/\d/.test(this.state.selectedStreet)) this.setState({ streetErrorText: "Deze straat bevat geen huisnummer!" });
+    if (!/\d/.test(this.state.selectedStreet)) {this.state.streetErrorText = "Deze straat bevat geen huisnummer!"; this.setState ({streetErrorText: "Deze straat bevat geen huisnummer!"});}
     else this.state.streetErrorText = "";
 
-    if (!/\d/.test(this.state.selectedBuildingStreet)) this.state.buildingStreetErrorText = "Deze straat bevat geen huisnummer!";
+    if (!/\d/.test(this.state.selectedBuildingStreet)) {this.state.buildingStreetErrorText = "Deze straat bevat geen huisnummer!"; this.setState ({buildingStreetErrorText: "Deze straat bevat geen huisnummer!"});}
     else this.state.buildingStreetErrorText = "";
 
-    if (!/\d/.test(this.state.selectedCity)) { this.state.cityErrorText = "Deze Stad bevat geen Postcode!"; }
+    if (!/\d/.test(this.state.selectedCity)) {this.state.cityErrorText = "Deze stad bevat geen postcode!"; this.setState ({cityErrorText: "Deze stad bevat geen postcode!"});}
     else this.state.cityErrorText = "";
 
-    if (!/\d/.test(this.state.selectedBuildingCity)) this.state.buildingCityErrorText = "Deze Stad bevat geen Postcode!";
+    if (!/\d/.test(this.state.selectedBuildingCity)) {this.state.buildingCityErrorText = "Deze stad bevat geen postcode!"; this.setState ({buildingCityErrorText: "Deze stad bevat geen postcode!"});}
     else this.state.buildingCityErrorText = "";
 
     if (this.state.selectedName.length === 0) this.state.nameErrorText = "Naam mag niet leeg zijn!";
@@ -331,25 +328,21 @@ class Clients extends React.Component {
     if (this.state.selectedEmail.length === 0) this.state.emailErrorText = "Email mag niet leeg zijn!";
     if (this.state.selectedPhone.length === 0) this.state.phoneErrorText = "Telefoonnummer mag niet leeg zijn!";
     if (this.state.selectedPhone.length < 11) this.state.phoneErrorText = "Telefoonnummer moet min. 9 lang zijn!";
-    if (this.state.selectedStreet.length === 0) this.state.streetErrorText = "Straat mag niet leeg zijn!";
-    if (this.state.selectedCity.length === 0) this.state.cityErrorText = "Stad mag niet leeg zijn!";
     if (this.state.selectedRRN.length === 0) this.state.RRNErrorText = "Rijksregisternummer mag niet leeg zijn!";
     if (this.state.selectedRRN.length < 15) this.state.RRNErrorText = "Rijksregisternummer moet min. 11 lang zijn!";
-    if (this.state.selectedBuildingStreet.length === 0) this.state.buildingStreetErrorText = "Straat mag niet leeg zijn!";
-    if (this.state.selectedBuildingCity.length === 0) this.state.buildingCityErrorText = "Stad mag niet leeg zijn!";
     if (this.state.selectedAard.length === 0) this.state.aardErrorText = "Aard mag niet leeg zijn!";
     if (
-      this.state.nameErrorText == "" &&
-      this.state.familyNameErrorText == "" &&
-      this.state.streetErrorText == "" &&
-      this.state.cityErrorText == "" &&
-      this.state.phoneErrorText == "" &&
-      this.state.emailErrorText == "" &&
-      this.state.RRNErrorText == "" &&
-      this.state.buildingStreetErrorText == "" &&
-      this.state.buildingCityErrorText == "" &&
-      this.state.aardErrorText == ""
-    ) {
+        !this.state.nameErrorText &&
+        !this.state.familyNameErrorText &&
+        !this.state.streetErrorText &&
+        !this.state.cityErrorText &&
+        !this.state.phoneErrorText &&
+        !this.state.emailErrorText &&
+        !this.state.RRNErrorText &&
+        !this.state.buildingStreetErrorText &&
+        !this.state.buildingCityErrorText &&
+        !this.state.aardErrorText
+    ) { 
       firebase.database().ref().child('/plannen/' + this.state.selectedKey)
         .set({
           dossierNr: this.state.selectedDossierNr,
@@ -369,6 +362,7 @@ class Clients extends React.Component {
         });
       this.setState({
         openPlanEdit: false,
+        openSnackbar: true,
         snackBarContent: "Plan van " + this.state.selectedName + " " + this.state.selectedFamilyName + " is aangepast!"
       });
     }
@@ -403,7 +397,7 @@ class Clients extends React.Component {
                     <ListItem
                       key={value}
                       role={undefined}
-                      onClick={this.handleClickExpand.bind(this, value.fullName + "_" + value.aard)}
+                      onClick={this.handleClickExpand.bind(this, value.key)}
                       button
                     >
                       <EditIcon
@@ -412,15 +406,15 @@ class Clients extends React.Component {
                       />
                       <ListItemText
                         primary={value.dossierNr}
-                        secondary={value.fullName}
+                        secondary={value.name + " " + value.familyName}
                       />
-                      {this.state[value.fullName + "_" + value.aard] ? <ExpandLess /> : <ExpandMore />}
+                      {this.state[value.key] ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Divider />
-                    <Collapse key={data.values.key + "_" + value.aard} in={this.state[value.fullName + "_" + value.aard]} timeout="auto" unmountOnExit>
+                    <Collapse key={data.values.key} in={this.state[value.key]} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
                         <ListItem className="containerInfo" button>
-                          <FullNameIcon className="icon" /><p>{value.fullName}</p><br />
+                          <FullNameIcon className="icon" /><p>{value.name + " " + value.familyName}</p><br />
                           <DossierIcon className="icon" /><p>{value.dossierNr}</p><br />
                           <AddressIcon className="icon addressIcon" /><p>{value.street}<br />{value.city}</p><br />
                           <EmailIcon className="icon" /><p>{value.email}</p><br />

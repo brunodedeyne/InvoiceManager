@@ -90,12 +90,13 @@ class Overview extends React.Component {
         this.setState({ dataInvoices: itemsInvoices });
 
         firebase.database().ref('/plannen').on('value', (snapshotPlannen) => {
-          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemPlannen, iPlannen) => {
+          itemsPlannen = Object.entries(snapshotPlannen.val()).map((itemsPlannen, iPlannen) => {
             if (user) {
-              if (user.uid == itemPlannen[1].userUid) {
-                itemPlannen = itemPlannen[1];
-                itemPlannen.key = iPlannen;
-                return itemPlannen;
+              if (user.uid == itemsPlannen[1].userUid) {
+                var planKey = itemsPlannen[0];
+                itemsPlannen = itemsPlannen[1];
+                itemsPlannen.key = planKey;
+                return itemsPlannen;
               }
             }
           });

@@ -299,7 +299,8 @@ class NewPlan extends React.Component {
     }
     pushForm = (e) => {
         let now = new Date();
-        let newDossierNr = now.getFullYear() + "/" + this.state.maxDossierNr;
+        console.log(this.state.maxDossierNr);
+        let newDossierNr = now.getFullYear() + "/" + (this.state.maxDossierNr ? this.state.maxDossierNr : 1);
         this.setState({ lastDossierNr: newDossierNr });
 
         e.preventDefault();
