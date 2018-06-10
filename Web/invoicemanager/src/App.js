@@ -189,7 +189,7 @@ class App extends React.Component {
 
   componentDidMount() {
     var currentRoute = window.location.href.split('/')[(window.location.href.split('/').length) - 1];
-    if (currentRoute == "Cli%C3%ABnten") currentRoute = "Cliënten";
+    if (currentRoute == "Cli%C3%ABnten") currentRoute = "Plannen";
     if (currentRoute == "index.html") currentRoute = "Overzicht";
     if (currentRoute == "") this.setState({ title: "Overzicht" });
     else this.setState({ title: currentRoute.replace('_', ' ') });
@@ -351,12 +351,12 @@ class App extends React.Component {
                               <ListItemText primary="Overzicht" className="listItems" />
                             </ListItem>
                           </Link>
-                          <Link to={routes.CLIENTS} onClick={(value) => this.setState({ title: "Cliënten", value })}>
+                          <Link to={routes.CLIENTS} onClick={(value) => this.setState({ title: "Plannen", value })}>
                             <ListItem button>
                               <ListItemIcon className="listItems">
                                 <ClientsIcon />
                               </ListItemIcon>
-                              <ListItemText primary="Cliënten" className="listItems" />
+                              <ListItemText primary="Plannen" className="listItems" />
                             </ListItem>
                           </Link>
                           <Link to={routes.INVOICES} onClick={(value) => this.setState({ title: "Facturatie", value })}>
@@ -417,12 +417,12 @@ class App extends React.Component {
                             <ListItemText primary="Overzicht" className="listItems" />
                           </ListItem>
                         </Link>
-                        <Link to={routes.CLIENTS} onClick={(value) => this.setState({ title: "Cliënten", value })}>
+                        <Link to={routes.CLIENTS} onClick={(value) => this.setState({ title: "Plannen", value })}>
                           <ListItem button>
                             <ListItemIcon className="listItems">
                               <ClientsIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Cliënten" className="listItems" />
+                            <ListItemText primary="Plannen" className="listItems" />
                           </ListItem>
                         </Link>
                         <Link to={routes.INVOICES} onClick={(value) => this.setState({ title: "Facturatie", value })}>
