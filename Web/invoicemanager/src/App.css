@@ -4,7 +4,7 @@
 }
 
 html {
-  background:linear-gradient(0deg,rgba(0,0,0,0.35),rgba(0,0,0,0.35)),url('./assets/img/backgroundHQ.webp');
+  background:linear-gradient(0deg,rgba(0,0,0,0.35),rgba(0,0,0,0.35)),url('./assets/img/backgroundHQ.jpg');
   background-size:cover;
   background-position-x: center;
   width: 100%;

@@ -115,27 +115,13 @@ class NewPlan extends React.Component {
         else this.setState({ cityErrorText: "", city: e.target.value, cityDummy: e.target.value });
     }
 
-    updatePhone = (e) => {
-        if (e.target.value.substring(0, 1) == 0) {
-            this.setState({ phoneErrorText: "" });
-            if (parseInt(e.target.value.substring(1, 2)) !== 4) {
-                if (e.target.value.length === 6 || e.target.value.length === 9) e.target.value += ".";
-                if (e.target.value.length === 3) e.target.value += "/";
-            }
-            if (parseInt(e.target.value.substring(1, 2)) === 4) {
-                if (e.target.value.length === 8) e.target.value += ".";
-                if (e.target.value.length === 4) e.target.value += "/";
-            }
-            this.setState({ phone: e.target.value, phoneDummy: e.target.value });
-        }
-    }
-
     updatePhoneOnChange = (e) => {
+        console.log(e.target.value);
         if (e.target.value.length <= 0) this.setState({ phoneErrorText: "Telefoonnummer mag niet leeg zijn!" });
         else if (e.target.value.substring(0, 1) != 0) this.setState({ phoneErrorText: "Telefoonnummer moet met 0 beginnen!" });
         else {
             this.setState({ phone: e.target.value, phoneDummy: e.target.value, phoneErrorText: "" });
-            if (this.state.phone.length === 11) this.setState({ phoneValid: true })
+            if (this.state.phone.length === 9) this.setState({ phoneValid: true })
         }
     }
 
@@ -170,7 +156,7 @@ class NewPlan extends React.Component {
             if (e.target.value.length === 15) {
                 var numb;
                 if (e.target.value.substring(0, 1) == 0) numb = parseInt("2" + e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
-                else numb =  parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
+                else numb = parseInt(e.target.value.substring(0, 12).replace(/\./g, "").replace("-", ""));
                 if (97 - (numb % 97) !== parseInt(e.target.value.substring(13, 15))) {
                     this.setState({ RRNClasses: "errorFillIn" });
                     this.setState({ RRNClassesCard: "errorFillInCard" });
@@ -264,8 +250,8 @@ class NewPlan extends React.Component {
                     selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
                 };
             };
-            this.setState({ street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-            this.setState({ city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
+            this.setState({ street: `${selectedSuggest.route} ${(selectedSuggest.street_number ? selectedSuggest.street_number : "")}`, streetDummy: `${selectedSuggest.route} ${(selectedSuggest.street_number ? selectedSuggest.street_number : "")}` });
+            this.setState({ city: `${(selectedSuggest.postal_code ? selectedSuggest.postal_code : "")} ${selectedSuggest.locality}`, cityDummy: `${(selectedSuggest.postal_code ? selectedSuggest.postal_code : "")} ${selectedSuggest.locality}` });
             var newCity = this.state.city;
             input.value = this.state.street;
             this.setState({ cityDummy: newCity });
@@ -290,8 +276,8 @@ class NewPlan extends React.Component {
                     selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
                 };
             };
-            this.setState({ buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-            this.setState({ buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
+            this.setState({ buildingStreet: `${selectedSuggest.route} ${(selectedSuggest.street_number ? selectedSuggest.street_number : "")}`, buildingStreetDummy: `${selectedSuggest.route} ${(selectedSuggest.street_number ? selectedSuggest.street_number : "")}` });
+            this.setState({ buildingCity: `${(selectedSuggest.postal_code ? selectedSuggest.postal_code : "")} ${selectedSuggest.locality}`, buildingCityDummy: `${(selectedSuggest.postal_code ? selectedSuggest.postal_code : "")} ${selectedSuggest.locality}` });
             var newCityBuilding = this.state.buildingCity;
             building.value = this.state.buildingStreet;
             this.setState({ buildingCityDummy: newCityBuilding });
@@ -299,7 +285,6 @@ class NewPlan extends React.Component {
     }
     pushForm = (e) => {
         let now = new Date();
-        console.log(this.state.maxDossierNr);
         let newDossierNr = now.getFullYear() + "/" + (this.state.maxDossierNr ? this.state.maxDossierNr : 1);
         this.setState({ lastDossierNr: newDossierNr });
 
@@ -324,29 +309,30 @@ class NewPlan extends React.Component {
     }
 
     handleOpenPreview() {
-        if (!/\d/.test(this.state.street)) {this.state.streetErrorText = "Deze straat bevat geen huisnummer!"; this.setState ({streetErrorText: "Deze straat bevat geen huisnummer!"});}
+        if (!/\d/.test(this.state.street)) { this.state.streetErrorText = "Deze straat bevat geen huisnummer!"; this.setState({ streetErrorText: "Deze straat bevat geen huisnummer!" }); }
         else this.state.streetErrorText = "";
 
-        if (!/\d/.test(this.state.buildingStreet)) {this.state.buildingStreetErrorText = "Deze straat bevat geen huisnummer!"; this.setState ({buildingStreetErrorText: "Deze straat bevat geen huisnummer!"});}
+        if (!/\d/.test(this.state.buildingStreet)) { this.state.buildingStreetErrorText = "Deze straat bevat geen huisnummer!"; this.setState({ buildingStreetErrorText: "Deze straat bevat geen huisnummer!" }); }
         else this.state.buildingStreetErrorText = "";
 
-        if (!/\d/.test(this.state.city)) {this.state.cityErrorText = "Deze stad bevat geen postcode!"; this.setState ({cityErrorText: "Deze stad bevat geen postcode!"});}
+        if (!/\d/.test(this.state.city)) { this.state.cityErrorText = "Deze stad bevat geen postcode!"; this.setState({ cityErrorText: "Deze stad bevat geen postcode!" }); }
         else this.state.cityErrorText = "";
 
-        if (!/\d/.test(this.state.buildingCity)) {this.state.buildingCityErrorText = "Deze stad bevat geen postcode!"; this.setState ({buildingCityErrorText: "Deze stad bevat geen postcode!"});}
+        if (!/\d/.test(this.state.buildingCity)) { this.state.buildingCityErrorText = "Deze stad bevat geen postcode!"; this.setState({ buildingCityErrorText: "Deze stad bevat geen postcode!" }); }
         else this.state.buildingCityErrorText = "";
 
         if (this.state.name.length === 0) this.state.nameErrorText = "Naam mag niet leeg zijn!";
         if (this.state.familyName.length === 0) this.state.familyNameErrorText = "Familienaam mag niet leeg zijn!";
         if (this.state.email.length === 0) this.state.emailErrorText = "Email mag niet leeg zijn!";
         if (this.state.phone.length === 0) this.state.phoneErrorText = "Telefoonnummer mag niet leeg zijn!";
-        if (this.state.phone.length < 11) this.state.phoneErrorText = "Telefoonnummer moet min. 9 lang zijn!";
+        if (this.state.phone.length < 9) { this.setState({ phoneErrorText: "Ongeldig Telefoonnummer!" }); this.state.phoneErrorText = "Ongeldig Telefoonnummer!"; }
         if (this.state.RRN.length === 0) this.state.RRNErrorText = "Rijksregisternummer mag niet leeg zijn!";
-        if (this.state.RRN.length < 15) this.state.RRNErrorText = "Rijksregisternummer moet min. 11 lang zijn!";
+        if (this.state.RRN.length < 15) this.state.RRNErrorText = "Ongeldig Rijksregisternummer!";
         if (this.state.aard.length === 0) this.state.aardErrorText = "Aard mag niet leeg zijn!";
         var tempFullScreen = true;
         if (window.innerWidth >= 600) tempFullScreen = false;
         else tempFullScreen = true
+        console.log(this.state.phoneErrorText);
         if (
             !this.state.nameErrorText &&
             !this.state.familyNameErrorText &&
@@ -413,8 +399,7 @@ class NewPlan extends React.Component {
                                 id="phone"
                                 floatingLabelText="Telefoon *"
                                 className="form__TextField__NewPlan"
-                                maxLength="12"
-                                onKeyPress={this.updatePhone}
+                                maxLength="10"
                                 onChange={this.updatePhoneOnChange}
                                 errorText={this.state.phoneErrorText}
                             />
@@ -480,8 +465,8 @@ class NewPlan extends React.Component {
                                 className="parent"
                                 fullScreen={window.innerWidth <= 500 ? true : false}
                             >
-                                <DialogContent>
-                                    <div className="card">
+                                <DialogContent onClick={(e) => e.preventDefault()}>
+                                    <div className="card" onClick={(e) => e.preventDefault()}>
                                         <List component="div" disablePadding>
                                             <ListItem className="containerInfo" button>
                                                 <FullNameIcon className="icon" /><p>{this.state.name + " " + this.state.familyName}</p><br />
@@ -509,10 +494,14 @@ class NewPlan extends React.Component {
                                 </DialogActions>
                             </Dialog>
                         </div>
-
                         <div className="SubmitButton">
-                            <input value="NIEUW PLAN" onClick={this.handleOpenPreview} className="RaisedButton" />
+                        <Button variant="contained" onClick={this.handleOpenPreview} color="primary" className="RaisedButton">
+                            NIEUW PLAN
+                        </Button>
                         </div>
+                        {/* <div className="SubmitButton">
+                            <input value="NIEUW PLAN" onClick={this.handleOpenPreview} className="RaisedButton" />
+                        </div> */}
                     </form>
 
                     <Snackbar

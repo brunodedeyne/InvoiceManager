@@ -22,7 +22,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import * as firebase from 'firebase';
 
 // Import CSS
-import logoImg from '../../assets/img/logo_white.webp'
+import logoImg from '../../assets/img/logo_white.png'
 import './Login.css';
 
 class Login extends Component {
@@ -72,7 +72,7 @@ class Login extends Component {
 
         if (errorCode === "auth/invalid-email") tempEmailErrorText = "Controleer Email!";
         if (errorCode === "auth/user-not-found") tempEmailErrorText = "Geen geldige gebruiker!";
-        if (errorCode === "auth/wrong-password") tempPasswordErrorText = "Controleer Wachtwoord!";;
+        if (errorCode === "auth/wrong-password") tempPasswordErrorText = "Controleer Wachtwoord!";
         this.setState({
             emailErrorText: tempEmailErrorText,
             passwordErrorText: tempPasswordErrorText

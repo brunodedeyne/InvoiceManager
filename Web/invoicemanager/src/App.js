@@ -1,10 +1,10 @@
 // Import Default Components
 import React, { Component } from 'react';
-import { 
-  BrowserRouter as Router, 
-  Route, 
-  Switch, 
-  withRouter, 
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  withRouter,
   Link
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -166,7 +166,7 @@ class App extends React.Component {
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
       firebase.database().ref('/invoices').on('value', (snapshotInvoices) => {
         itemsInvoices = Object.values(snapshotInvoices.val()).map((itemInvoices) => {
-          if (user) {            
+          if (user) {
             if (itemInvoices.userUid == user.uid) {
               return itemInvoices;
             }
@@ -268,7 +268,7 @@ class App extends React.Component {
                         onClick={this.handleCloseAccount}
                       >
                         <Link to={routes.My_ACCOUNT} onClick={(value, event) => this.setState({ title: "Mijn Account", value, anchorEl: !event.currentTarget })}><MenuItem onClick={() => this.setState({ anchorEl: null })}>Mijn Account</MenuItem></Link>
-                        <MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem>
+                        <Link to={routes.My_ACCOUNT}><MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem></Link>
                       </Menu>
                     </Toolbar>
                   </AppBar>
@@ -279,7 +279,7 @@ class App extends React.Component {
                   >
                     <Toolbar>
                       <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                        <MenuIcon onClick={() => this.setState({left: true})} />
+                        <MenuIcon onClick={() => this.setState({ left: true })} />
                       </IconButton>
                       <Typography variant="title" color="inherit" className={classes.flex}>
                         {this.state.title}
@@ -301,19 +301,19 @@ class App extends React.Component {
                           onClick={this.handleCloseAccount}
                         >
                           <Link to={routes.My_ACCOUNT} onClick={(value) => this.setState({ title: "Mijn Account", value })}><MenuItem onClick={this.handleMyAccount}>Mijn Account</MenuItem></Link>
-                          <MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem>
+                          <Link to={routes.My_ACCOUNT}><MenuItem onClick={this.handleSignOut}>Uitloggen</MenuItem></Link>
                         </Menu>
                       </div>
                     </Toolbar>
                   </AppBar>
 
 
-                  <Drawer open={this.state.left} onClose={() => this.setState({left: false})}>
+                  <Drawer open={this.state.left} onClose={() => this.setState({ left: false })}>
                     <div
                       tabIndex={0}
                       role="button"
-                      onClick={() => this.setState({left: false})}
-                      onKeyDown={() => this.setState({left: true})}
+                      onClick={() => this.setState({ left: false })}
+                      onKeyDown={() => this.setState({ left: true })}
                     >
                       <section className={classes.flex + " archBureau"}>
                         <p>Architectenbureau</p><br />
@@ -499,5 +499,4 @@ App.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
 };
-
-export default withStyles(styles, { withTheme: true })(App);
+export default withStyles(styles, { winTheme: true })(App);

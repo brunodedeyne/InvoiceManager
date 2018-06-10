@@ -12,6 +12,11 @@
     width: 100%;
 }
 
+.containerInfo {
+    cursor: initial !important;
+    background-color: transparent !important;
+}
+
 .errorFillIn > input {
     color: red !important;
 }
@@ -149,5 +154,9 @@
 
     .RaisedButton {
         margin-top: 0;
+    }
+
+    .form__PersonalNewPlan, .form__PlanNewPlan {
+        padding-left: 5%;
     }
 }

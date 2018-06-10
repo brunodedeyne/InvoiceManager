@@ -27,7 +27,10 @@ import {
     Dialog,
     DialogContent,
     DialogActions,
-    Button
+    Button,
+    Select,
+    FormControl,
+    InputLabel
 } from '@material-ui/core';
 import {
     MenuItem,
@@ -52,7 +55,7 @@ class NewInvoice extends React.Component {
         super(props);
         this.state = {
             plannen: [],
-            value: "Default",
+            value: '',
             nameDummy: 'John',
             name: '',
 
@@ -97,7 +100,7 @@ class NewInvoice extends React.Component {
             selectedDossierNr: '',
 
             key: '',
-
+            client: '',
             openInvoice: false,
             openConfirmationDialogInvoices: false,
             enableNewInvoiceContactCard: true,
@@ -112,10 +115,10 @@ class NewInvoice extends React.Component {
         this.database = firebase.database().ref('/plannen');
     }
 
-    handleChange = (event, index, value) => {
+    handleChange = event => {
+        this.setState({ [event.target.name]: event.target.value });
         for (var i = 0; i < this.state.plannen.length; i++) {
-            console.log(this.state.plannen[i].key);
-            if (this.state.plannen[i].key == value) {
+            if (this.state.plannen[i].key == event.target.value) {
                 
                 this.setState({
                     nameDummy: this.state.plannen[i].name,
@@ -156,9 +159,9 @@ class NewInvoice extends React.Component {
                     selectedDossierNr: this.state.plannen[i].dossierNr,
 
                     key: this.state.plannen[i].key,
-                    value: value,
                     enableNewInvoiceContactCard: false,
-                })
+                    value: this.state.plannen[i].dossierNr + ", " + this.state.plannen[i].name + " " + this.state.plannen[i].familyName
+                });
             }
         }
     }
@@ -187,7 +190,6 @@ class NewInvoice extends React.Component {
     }
 
     selectClient = (val) => {
-        console.log(val);
         this.setState({
             nameDummy: val.name,
             name: val.name,
@@ -228,7 +230,9 @@ class NewInvoice extends React.Component {
 
             key: val.key,
             enableNewInvoiceContactCard: false,
+            
         })
+        this.state.client= val.dossierNr + ", " + val.name + " " + val.familyName;
     };
 
     componentWillMount() {
@@ -287,68 +291,6 @@ class NewInvoice extends React.Component {
 
     componentDidMount() {
         this.fillData();
-
-        // const input = document.getElementById('street');
-        // const building = document.getElementById('buildingStreet');
-        // const options = {
-        //     componentRestrictions: { country: 'be' },
-        //     types: ['address']
-        // };
-        // const geoAutocomplete = new window.google.maps.places.Autocomplete((input), options);
-
-        // const geoAutocompleteBuilding = new window.google.maps.places.Autocomplete((building), options);
-
-        // geoAutocomplete.addListener('place_changed', () => {
-        //     const selectedPlace = geoAutocomplete.getPlace();
-        //     const componentForm = {
-        //         street_number: 'long_name',
-        //         route: 'long_name',
-        //         locality: 'long_name',
-        //         administrative_area_level_1: 'short_name',
-        //         country: 'long_name',
-        //         postal_code: 'long_name'
-        //     };
-        //     // Get each component of the address from the place details
-        //     // and fill the corresponding field on the form.
-        //     let selectedSuggest = {};
-        //     for (let addressComponent of selectedPlace.address_components) {
-        //         const addressType = addressComponent.types[0];
-        //         if (componentForm[addressType]) {
-        //             selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-        //         };
-        //     };
-        //     this.setState({ street: `${selectedSuggest.route} ${selectedSuggest.street_number}`, streetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-        //     this.setState({ city: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, cityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
-        //     var newCity = this.state.city;
-        //     input.value = this.state.street;
-        //     this.setState({ cityDummy: newCity });
-        // })
-
-        // geoAutocompleteBuilding.addListener('place_changed', () => {
-        //     const selectedPlace = geoAutocompleteBuilding.getPlace();
-        //     const componentForm = {
-        //         street_number: 'long_name',
-        //         route: 'long_name',
-        //         locality: 'long_name',
-        //         administrative_area_level_1: 'short_name',
-        //         country: 'long_name',
-        //         postal_code: 'long_name'
-        //     };
-        //     // Get each component of the address from the place details
-        //     // and fill the corresponding field on the form.
-        //     let selectedSuggest = {};
-        //     for (let addressComponent of selectedPlace.address_components) {
-        //         const addressType = addressComponent.types[0];
-        //         if (componentForm[addressType]) {
-        //             selectedSuggest[addressType] = addressComponent[componentForm[addressType]]
-        //         };
-        //     };
-        //     this.setState({ buildingStreet: `${selectedSuggest.route} ${selectedSuggest.street_number}`, buildingStreetDummy: `${selectedSuggest.route} ${selectedSuggest.street_number}` });
-        //     this.setState({ buildingCity: `${selectedSuggest.postal_code} ${selectedSuggest.locality}`, buildingCityDummy: `${selectedSuggest.postal_code} ${selectedSuggest.locality}` });
-        //     var newCityBuilding = this.state.buildingCity;
-        //     building.value = this.state.buildingStreet;
-        //     this.setState({ buildingCityDummy: newCityBuilding });
-        // })
     }
 
     render() {
@@ -360,22 +302,6 @@ class NewInvoice extends React.Component {
         return (
             <div>
                 <section className="form__Container">
-                    <div className="labelDropDown">Kies Uw Cliënt: </div>
-                    <div className="Dropdown">
-                        <DropDownMenu
-                            value={this.state.value}
-                            onChange={this.handleChange}
-                            autoWidth={false}
-                        >
-                            {
-                                this.state.plannen.map((plan) => {
-                                    return (
-                                        <MenuItem key={plan.key} value={plan.key} primaryText={plan.dossierNr + ", " + plan.name + " " + plan.familyName} />
-                                    )
-                                })
-                            }
-                        </DropDownMenu>
-                    </div>
                     <div className="labelSearchName">
                         <AutoComplete
                             floatingLabelText="Zoek op Familienaam"
@@ -384,12 +310,35 @@ class NewInvoice extends React.Component {
                             filter={AutoComplete.caseInsensitiveFilter}
                             className="form__TextFieldSearchName"
                             onNewRequest={this.selectClient}
+                            value="test"
                         />
+                    </div>
+                    <div className="Dropdown">
+                    <FormControl>
+                        <InputLabel htmlFor="client-dropdown">Kies Uw Cliënt:</InputLabel>
+                        <Select
+                            value={this.state.client}
+                            onChange={this.handleChange}
+                            inputProps={{
+                                name: 'client',
+                                id: 'client-dropdown',
+                            }}
+                            className="selectDropdown"
+                        >
+                            {
+                                this.state.plannen.map((plan) => {
+                                    return (
+                                        <MenuItem key={plan.key} value={plan.key}>{plan.dossierNr + ", " + plan.name + " " + plan.familyName}</MenuItem>
+                                    )
+                                })
+                            }
+                        </Select>
+                        </FormControl>
                     </div>
                     <div className="contactCardInvoice">
                         <List component="div" disablePadding>
                             <ListItem className="containerInfo" button>
-                                <div className="info personalInfoInvoice">
+                                <div className="infoInvoice personalInfoInvoice">
                                     <FullNameIcon className="icon" /><p>{this.state.nameDummy + " " + this.state.familyNameDummy}</p><br />
                                     <AddressIcon className="icon addressIcon" /><p>{this.state.streetDummy}<br />{this.state.cityDummy}</p><br />
                                     <EmailIcon className="icon" /><p>{this.state.emailDummy}</p><br />
@@ -397,7 +346,7 @@ class NewInvoice extends React.Component {
                                     <BTWIcon className="icon" /><p>{this.state.BTWDummy ? this.state.BTWDummy : "Geen BTW"}</p><br />
                                     <RRNIcon className="icon" /><p>{this.state.RRNDummy}</p><br />
                                 </div>
-                                <div className="info buildingInfo">
+                                <div className="infoInvoice buildingInfoInvoice">
                                     <BuildingAddressIcon className="icon buildingAddressIcon" /><p>{this.state.buildingStreetDummy}<br />{this.state.buildingCityDummy}</p><br />
                                     <AardIcon className="icon" /><p>{this.state.aardDummy}</p><br />
                                 </div>
