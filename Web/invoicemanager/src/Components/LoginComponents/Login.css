@@ -21,6 +21,12 @@
     text-align: center;
 }
 
+.Wrapper {
+    min-height: 100%;
+    position: relative;
+    padding-bottom:50px; /* footer's height */
+}
+
 .divTextFieldLogin {
     position: relative;
 }

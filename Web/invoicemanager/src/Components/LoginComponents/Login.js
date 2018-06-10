@@ -131,6 +131,7 @@ class Login extends Component {
             email.length > 0 &&
             password.length > 0;
         return (
+            <div className="Wrapper">
             <section className="section__Container">
                 <div className="div__logoContainer">
                     <img src={logoImg} alt="logo" className="div__logoImg" />
@@ -216,6 +217,7 @@ class Login extends Component {
                     ]}
                 />
             </section>
+            </div>
         );
     }
 }
